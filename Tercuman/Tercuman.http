@@ -1,0 +1,6 @@
+@Tercuman_HostAddress = http://localhost:5125
+
+GET {{Tercuman_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
