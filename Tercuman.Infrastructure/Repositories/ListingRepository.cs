@@ -48,5 +48,12 @@ namespace Tercuman.Infrastructure.Repositories
             return await _context.Listings
                 .CountAsync(x => x.IsActive && x.IsApproved && !x.IsDeleted);
         }
+
+        // / <summary>
+        public async Task AddImagesAsync(List<ListingImage> images)
+        {
+            await _context.ListingImages.AddRangeAsync(images);
+            await _context.SaveChangesAsync();
+        }
     }
 }

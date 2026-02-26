@@ -2,75 +2,87 @@
 using Tercuman.Application.Interfaces;
 using Tercuman.Domin.Entities;
 
-namespace Tercuman.Application.Services
+namespace Tercuman.Application.Services;
+
+public class ListingService : IListingService
 {
-    public class ListingService : IListingService
+    private readonly IListingRepository _listingRepository;
+
+    public ListingService(IListingRepository listingRepository)
     {
-        private readonly IListingRepository _listingRepository;
+        _listingRepository = listingRepository;
+    }
 
-        public ListingService(IListingRepository listingRepository)
+    public async Task CreateAsync(CreateListingDto dto, Guid userId)
+    {
+        var listing = new Listing
         {
-            _listingRepository = listingRepository;
-        }
+            Title = dto.Title,
+            Description = dto.Description,
+            Price = dto.Price,
+            CityId = dto.CityId,
+            UserId = userId,
+            ExperienceLevel = dto.ExperienceLevel,
+            ServiceType = dto.ServiceType,
+            SourceLanguageId = dto.SourceLanguageId,
+            TargetLanguageId = dto.TargetLanguageId
+        };
 
-        public async Task CreateAsync(CreateListingDto dto, Guid userId)
+        await _listingRepository.AddAsync(listing);
+        await _listingRepository.SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<ListingDto>> GetPagedAsync(int page, int pageSize)
+    {
+        var listings = await _listingRepository.GetPagedAsync(page, pageSize);
+
+        return listings.Select(x => new ListingDto
         {
-            var listing = new Listing
-            {
-                Title = dto.Title,
-                Description = dto.Description,
-                Price = dto.Price,
-                CityId = dto.CityId,
-                UserId = userId
-            };
+            Id = x.Id,
+            Title = x.Title,
+            Price = x.Price,
+            City = x.City != null ? x.City.Name : "",
+            ViewCount = x.ViewCount
+        });
+    }
 
-            await _listingRepository.AddAsync(listing);
-            await _listingRepository.SaveChangesAsync();
-        }
+    public async Task<int> CountAsync()
+    {
+        return await _listingRepository.CountAsync();
+    }
 
-        public async Task<IEnumerable<ListingDto>> GetPagedAsync(int page, int pageSize)
+    public async Task<ListingDetailDto?> GetDetailAsync(Guid id)
+    {
+        var listing = await _listingRepository.GetDetailAsync(id);
+
+        if (listing == null)
+            return null;
+
+        listing.ViewCount++;
+        _listingRepository.Update(listing);
+        await _listingRepository.SaveChangesAsync();
+
+        return new ListingDetailDto
         {
-            var listings = await _listingRepository.GetPagedAsync(page, pageSize);
+            Id = listing.Id,
+            Title = listing.Title,
+            Description = listing.Description,
+            Price = listing.Price,
+            City = listing.City != null ? listing.City.Name : "",
+            ViewCount = listing.ViewCount,
+            CreatedDate = listing.CreatedDate,
+            Images = listing.Images.Select(i => i.ImageUrl).ToList()
+        };
+    }
 
-            return listings.Select(x => new ListingDto
-            {
-                Id = x.Id,
-                Title = x.Title,
-                Price = x.Price,
-                City = x.City.Name,
-                ViewCount = x.ViewCount
-            });
-        }
-
-        public async Task<int> CountAsync()
+    public async Task AddImagesAsync(Guid listingId, List<string> imageUrls)
+    {
+        var images = imageUrls.Select(url => new ListingImage
         {
-            return await _listingRepository.CountAsync();
-        }
+            ListingId = listingId,
+            ImageUrl = url
+        }).ToList();
 
-        public async Task<ListingDetailDto?> GetDetailAsync(Guid id)
-        {
-            var listing = await _listingRepository.GetDetailAsync(id);
-
-            if (listing == null)
-                return null;
-
-            // ViewCount artır
-            listing.ViewCount++;
-            _listingRepository.Update(listing);
-            await _listingRepository.SaveChangesAsync();
-
-            return new ListingDetailDto
-            {
-                Id = listing.Id,
-                Title = listing.Title,
-                Description = listing.Description,
-                Price = listing.Price,
-                City = listing.City.Name,
-                ViewCount = listing.ViewCount,
-                CreatedDate = listing.CreatedDate,
-                Images = listing.Images?.Select(i => i.ImageUrl).ToList()
-                         ?? new List<string>()
-            };
-        }
+        await _listingRepository.AddImagesAsync(images);
     }
 }

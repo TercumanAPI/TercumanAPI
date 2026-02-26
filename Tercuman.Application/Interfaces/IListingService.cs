@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tercuman.Application.DTOs.Listing;
-
 namespace Tercuman.Application.Interfaces
 {
     public interface IListingService
@@ -13,6 +12,7 @@ namespace Tercuman.Application.Interfaces
         Task<IEnumerable<ListingDto>> GetPagedAsync(int page, int pageSize);
         Task<int> CountAsync();
         Task<ListingDetailDto?> GetDetailAsync(Guid id);
+        Task AddImagesAsync(Guid listingId, List<string> imageUrls);
     }
 }
 

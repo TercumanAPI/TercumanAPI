@@ -13,5 +13,6 @@ namespace Tercuman.Application.Interfaces
         Task<int> CountAsync();
         Task<Listing?> GetDetailAsync(Guid id);
         Task IncrementViewCountAsync(Listing listing);
+        Task AddImagesAsync(List<ListingImage> images);
     }
 }

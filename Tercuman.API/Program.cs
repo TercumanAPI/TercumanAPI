@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 using Tercuman.Application.Interfaces;
 using Tercuman.Application.Services;
@@ -8,24 +9,62 @@ using Tercuman.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// =========================
+// Services
+// =========================
 
-// Configure Entity Framework and SQL Server
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+
+// ?? Swagger + JWT Config
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Tercuman API",
+        Version = "v1"
+    });
+
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "JWT Authorization header. Örnek: Bearer {token}"
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
+
+// DB
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Register repositories
+// Repositories
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IListingRepository, ListingRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-// Register services
+// Services
 builder.Services.AddScoped<IListingService, ListingService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
-// Configure JWT authentication
+// ?? JWT Authentication
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
@@ -44,16 +83,14 @@ builder.Services.AddAuthentication("Bearer")
         };
     });
 
-// Register authentication and user services
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-
-// Add authorization services
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// =========================
+// Middleware
+// =========================
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -62,12 +99,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseStaticFiles();
+
+app.UseAuthentication();   // ?? AUTH FIRST
 app.UseAuthorization();
 
 app.MapControllers();
-
-// Add authentication and authorization middleware
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.Run();

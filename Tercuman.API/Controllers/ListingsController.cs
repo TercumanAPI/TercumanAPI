@@ -78,5 +78,50 @@ namespace Tercuman.API.Controllers
                 data = result
             });
         }
+
+        // POST: api/listings/{id}/images
+        [Authorize]
+        [HttpPost("{id}/images")]
+        public async Task<IActionResult> UploadImages(Guid id, List<IFormFile> files)
+        {
+            if (files == null || files.Count == 0)
+                return BadRequest("En az 1 fotoğraf yüklemelisiniz.");
+
+            if (files.Count > 10)
+                return BadRequest("En fazla 10 fotoğraf yüklenebilir.");
+
+            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
+
+            if (!Directory.Exists(uploadPath))
+                Directory.CreateDirectory(uploadPath);
+
+            var imageUrls = new List<string>();
+
+            foreach (var file in files)
+            {
+                var extension = Path.GetExtension(file.FileName).ToLower();
+
+                if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
+                    return BadRequest("Sadece JPG/PNG yüklenebilir.");
+
+                var fileName = Guid.NewGuid() + extension;
+                var filePath = Path.Combine(uploadPath, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                imageUrls.Add("/images/" + fileName);
+            }
+
+            await _listingService.AddImagesAsync(id, imageUrls);
+
+            return Ok(new
+            {
+                success = true,
+                images = imageUrls
+            });
+        }
     }
 }

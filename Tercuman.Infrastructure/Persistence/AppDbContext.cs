@@ -23,6 +23,7 @@ namespace Tercuman.Infrastructure.Persistence
         public DbSet<Favorite> Favorites { get; set; }
         public DbSet<ListingView> ListingViews { get; set; }
         public DbSet<City> Cities { get; set; }
+        public DbSet<Language> Languages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -170,6 +171,59 @@ namespace Tercuman.Infrastructure.Persistence
                 new City { Id = Guid.Parse("00000000-0000-0000-0000-000000000081"), Name = "Düzce", CreatedDate = createdDate, IsDeleted = false }
 
             );
+
+            modelBuilder.Entity<Language>().HasData(
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000001"), Name = "Turkish", Code = "tr" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000002"), Name = "Arabic", Code = "ar" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000003"), Name = "English", Code = "en" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000004"), Name = "German", Code = "de" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000005"), Name = "French", Code = "fr" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000006"), Name = "Spanish", Code = "es" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000007"), Name = "Italian", Code = "it" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000008"), Name = "Russian", Code = "ru" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000009"), Name = "Chinese", Code = "zh" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000010"), Name = "Japanese", Code = "ja" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000011"), Name = "Korean", Code = "ko" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000012"), Name = "Portuguese", Code = "pt" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000013"), Name = "Dutch", Code = "nl" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000014"), Name = "Greek", Code = "el" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000015"), Name = "Persian", Code = "fa" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000016"), Name = "Hindi", Code = "hi" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000017"), Name = "Urdu", Code = "ur" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000018"), Name = "Hebrew", Code = "he" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000019"), Name = "Swedish", Code = "sv" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000020"), Name = "Norwegian", Code = "no" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000021"), Name = "Danish", Code = "da" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000022"), Name = "Finnish", Code = "fi" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000023"), Name = "Polish", Code = "pl" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000024"), Name = "Czech", Code = "cs" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000025"), Name = "Hungarian", Code = "hu" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000026"), Name = "Romanian", Code = "ro" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000027"), Name = "Bulgarian", Code = "bg" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000028"), Name = "Serbian", Code = "sr" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000029"), Name = "Croatian", Code = "hr" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000030"), Name = "Bosnian", Code = "bs" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000031"), Name = "Albanian", Code = "sq" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000032"), Name = "Ukrainian", Code = "uk" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000033"), Name = "Georgian", Code = "ka" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000034"), Name = "Armenian", Code = "hy" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000035"), Name = "Thai", Code = "th" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000036"), Name = "Vietnamese", Code = "vi" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000037"), Name = "Malay", Code = "ms" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000038"), Name = "Indonesian", Code = "id" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000039"), Name = "Swahili", Code = "sw" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000040"), Name = "Afrikaans", Code = "af" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000041"), Name = "Amharic", Code = "am" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000042"), Name = "Azerbaijani", Code = "az" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000043"), Name = "Kazakh", Code = "kk" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000044"), Name = "Uzbek", Code = "uz" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000045"), Name = "Turkmen", Code = "tk" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000046"), Name = "Kurdish", Code = "ku" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000047"), Name = "Pashto", Code = "ps" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000048"), Name = "Bengali", Code = "bn" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000049"), Name = "Tamil", Code = "ta" },
+new Language { Id = Guid.Parse("00000000-0000-0000-0000-000000000050"), Name = "Telugu", Code = "te" }
+);
         }
 
         
