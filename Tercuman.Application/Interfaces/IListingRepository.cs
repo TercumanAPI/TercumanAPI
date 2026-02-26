@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tercuman.Application.DTOs.Listing;
 using Tercuman.Domin.Entities;
 
 namespace Tercuman.Application.Interfaces
@@ -14,5 +15,6 @@ namespace Tercuman.Application.Interfaces
         Task<Listing?> GetDetailAsync(Guid id);
         Task IncrementViewCountAsync(Listing listing);
         Task AddImagesAsync(List<ListingImage> images);
+        Task<List<Listing>> FilterAsync(FilterListingDto filter);
     }
 }

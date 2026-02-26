@@ -1,4 +1,5 @@
-﻿using Tercuman.Application.DTOs.Listing;
+﻿using Microsoft.EntityFrameworkCore;
+using Tercuman.Application.DTOs.Listing;
 using Tercuman.Application.Interfaces;
 using Tercuman.Domin.Entities;
 
@@ -85,4 +86,20 @@ public class ListingService : IListingService
 
         await _listingRepository.AddImagesAsync(images);
     }
+
+    public async Task<List<ListingDto>> FilterAsync(FilterListingDto filter)
+    {
+        var listings = await _listingRepository.FilterAsync(filter);
+
+        return listings.Select(x => new ListingDto
+        {
+            Id = x.Id,
+            Title = x.Title,
+            Price = x.Price,
+            City = x.City != null ? x.City.Name : "",
+            ViewCount = x.ViewCount
+        }).ToList();
+    }
+
+
 }

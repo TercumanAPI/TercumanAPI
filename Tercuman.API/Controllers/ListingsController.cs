@@ -17,13 +17,13 @@ namespace Tercuman.API.Controllers
             _listingService = listingService;
         }
 
-        //  POST: api/listings
-        // Login olan kullanıcı ilan ekleyebilir
+        // ============================
+        // CREATE LISTING
+        // ============================
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateListingDto dto)
         {
-            // Token içindeki userId'yi al
             var userIdClaim = User.FindFirst(JwtRegisteredClaimNames.Sub);
 
             if (userIdClaim == null)
@@ -40,7 +40,9 @@ namespace Tercuman.API.Controllers
             });
         }
 
-        //  GET: api/listings?page=1&pageSize=10
+        // ============================
+        // GET PAGED
+        // ============================
         [HttpGet]
         public async Task<IActionResult> GetPaged(
             [FromQuery] int page = 1,
@@ -59,7 +61,9 @@ namespace Tercuman.API.Controllers
             });
         }
 
-        //  GET: api/listings/{id}
+        // ============================
+        // GET DETAIL
+        // ============================
         [HttpGet("{id}")]
         public async Task<IActionResult> GetDetail(Guid id)
         {
@@ -79,7 +83,9 @@ namespace Tercuman.API.Controllers
             });
         }
 
-        // POST: api/listings/{id}/images
+        // ============================
+        // UPLOAD IMAGES
+        // ============================
         [Authorize]
         [HttpPost("{id}/images")]
         public async Task<IActionResult> UploadImages(Guid id, List<IFormFile> files)
@@ -121,6 +127,21 @@ namespace Tercuman.API.Controllers
             {
                 success = true,
                 images = imageUrls
+            });
+        }
+
+        // ============================
+        // FILTER LISTINGS
+        // ============================
+        [HttpGet("filter")]
+        public async Task<IActionResult> Filter([FromQuery] FilterListingDto filter)
+        {
+            var result = await _listingService.FilterAsync(filter);
+
+            return Ok(new
+            {
+                success = true,
+                data = result
             });
         }
     }
