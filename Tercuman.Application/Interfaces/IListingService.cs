@@ -15,3 +15,4 @@ namespace Tercuman.Application.Interfaces
         Task<ListingDetailDto?> GetDetailAsync(Guid id);
     }
 }
+

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 using Tercuman.Application.DTOs.Listing;
 using Tercuman.Application.Interfaces;
 
@@ -15,27 +17,41 @@ namespace Tercuman.API.Controllers
             _listingService = listingService;
         }
 
-        // POST: api/listings
+        //  POST: api/listings
+        // Login olan kullanıcı ilan ekleyebilir
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateListingDto dto)
         {
-            // Şimdilik userId sabit (JWT gelince token’dan alacağız)
-            Guid userId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+            // Token içindeki userId'yi al
+            var userIdClaim = User.FindFirst(JwtRegisteredClaimNames.Sub);
+
+            if (userIdClaim == null)
+                return Unauthorized("Token içinde userId bulunamadı");
+
+            var userId = Guid.Parse(userIdClaim.Value);
 
             await _listingService.CreateAsync(dto, userId);
 
-            return Ok(new { message = "Listing created successfully" });
+            return Ok(new
+            {
+                success = true,
+                message = "Listing created successfully"
+            });
         }
 
-        // GET: api/listings?page=1&pageSize=10
+        //  GET: api/listings?page=1&pageSize=10
         [HttpGet]
-        public async Task<IActionResult> GetPaged([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        public async Task<IActionResult> GetPaged(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
         {
             var listings = await _listingService.GetPagedAsync(page, pageSize);
             var totalCount = await _listingService.CountAsync();
 
             return Ok(new
             {
+                success = true,
                 data = listings,
                 totalCount,
                 page,
@@ -43,16 +59,24 @@ namespace Tercuman.API.Controllers
             });
         }
 
-        // GET: api/listings/{id}
+        //  GET: api/listings/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetDetail(Guid id)
         {
             var result = await _listingService.GetDetailAsync(id);
 
             if (result == null)
-                return NotFound();
+                return NotFound(new
+                {
+                    success = false,
+                    message = "Listing bulunamadı"
+                });
 
-            return Ok(result);
+            return Ok(new
+            {
+                success = true,
+                data = result
+            });
         }
     }
 }

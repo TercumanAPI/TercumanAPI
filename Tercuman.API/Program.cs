@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using Tercuman.Infrastructure.Persistence;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using Tercuman.Application.Interfaces;
-using Tercuman.Infrastructure.Repositories;
 using Tercuman.Application.Services;
+using Tercuman.Infrastructure.Persistence;
+using Tercuman.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +25,32 @@ builder.Services.AddScoped<IListingRepository, ListingRepository>();
 // Register services
 builder.Services.AddScoped<IListingService, ListingService>();
 
+// Configure JWT authentication
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer("Bearer", options =>
+    {
+        var jwtSettings = builder.Configuration.GetSection("Jwt");
+        var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtSettings["Issuer"],
+            ValidAudience = jwtSettings["Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(key)
+        };
+    });
+
+// Register authentication and user services
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+// Add authorization services
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -37,5 +65,9 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Add authentication and authorization middleware
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.Run();

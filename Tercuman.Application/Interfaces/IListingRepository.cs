@@ -12,5 +12,6 @@ namespace Tercuman.Application.Interfaces
         Task<IEnumerable<Listing>> GetPagedAsync(int page, int pageSize);
         Task<int> CountAsync();
         Task<Listing?> GetDetailAsync(Guid id);
+        Task IncrementViewCountAsync(Listing listing);
     }
 }

@@ -21,13 +21,21 @@ namespace Tercuman.Infrastructure.Repositories
         public async Task<Listing?> GetDetailAsync(Guid id)
         {
             return await _context.Listings
+                .Include(x => x.City)
                 .Include(x => x.Images)
                 .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
         }
 
+        public async Task IncrementViewCountAsync(Listing listing)
+        {
+            listing.ViewCount++;
+            _context.Listings.Update(listing);
+            await _context.SaveChangesAsync();
+        }
         public async Task<IEnumerable<Listing>> GetPagedAsync(int page, int pageSize)
         {
             return await _context.Listings
+                .Include(x => x.City)
                 .Where(x => x.IsActive && x.IsApproved && !x.IsDeleted)
                 .OrderByDescending(x => x.CreatedDate)
                 .Skip((page - 1) * pageSize)

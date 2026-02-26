@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Tercuman.Application.DTOs.Listing;
+﻿using Tercuman.Application.DTOs.Listing;
 using Tercuman.Application.Interfaces;
 using Tercuman.Domin.Entities;
 
@@ -59,15 +54,22 @@ namespace Tercuman.Application.Services
             if (listing == null)
                 return null;
 
+            // ViewCount artır
+            listing.ViewCount++;
+            _listingRepository.Update(listing);
+            await _listingRepository.SaveChangesAsync();
+
             return new ListingDetailDto
             {
                 Id = listing.Id,
                 Title = listing.Title,
                 Description = listing.Description,
                 Price = listing.Price,
-                City = listing.City.Name,   
+                City = listing.City.Name,
                 ViewCount = listing.ViewCount,
+                CreatedDate = listing.CreatedDate,
                 Images = listing.Images?.Select(i => i.ImageUrl).ToList()
+                         ?? new List<string>()
             };
         }
     }
