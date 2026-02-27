@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using Tercuman.Application.DTOs.Listing;
 using Tercuman.Application.Interfaces;
 
@@ -20,14 +20,20 @@ public class ListingsController : ControllerBase
     // ============================
     // CREATE LISTING
     // ============================
-    [Authorize]
+    [Authorize] // 🔥 Sadece login yeterli
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateListingDto dto)
     {
-        var userIdClaim = User.FindFirst(JwtRegisteredClaimNames.Sub);
+
+        var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+
 
         if (userIdClaim == null)
-            return Unauthorized("Token içinde userId bulunamadı");
+            return Unauthorized(new
+            {
+                success = false,
+                message = "UserId claim bulunamadı"
+            });
 
         var userId = Guid.Parse(userIdClaim.Value);
 
@@ -63,7 +69,7 @@ public class ListingsController : ControllerBase
     }
 
     // ============================
-    // GET PAGED (DEFAULT LIST)
+    // GET PAGED
     // ============================
     [HttpGet]
     public async Task<IActionResult> GetPaged(

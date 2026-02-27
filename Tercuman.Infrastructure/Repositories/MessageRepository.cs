@@ -29,4 +29,25 @@ public class MessageRepository
             .OrderBy(m => m.CreatedDate)
             .ToListAsync();
     }
+    public async Task<List<Message>> GetUserNotificationsAsync(Guid userId)
+    {
+        return await _context.Messages
+            .Include(x => x.Sender)
+            .Where(x => x.ReceiverId == userId)
+            .OrderByDescending(x => x.CreatedDate)
+            .Take(10)
+            .ToListAsync();
+    }
+    public async Task MarkAsReadAsync(Guid messageId, Guid userId)
+    {
+        var message = await _context.Messages
+            .FirstOrDefaultAsync(x => x.Id == messageId && x.ReceiverId == userId);
+
+        if (message == null)
+            return;
+
+        message.IsRead = true;
+
+        await _context.SaveChangesAsync();
+    }
 }
