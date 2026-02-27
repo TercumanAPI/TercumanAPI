@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System;
 using Tercuman.Domin.Enums;
 
 namespace Tercuman.Application.DTOs.Listing
@@ -18,7 +13,9 @@ namespace Tercuman.Application.DTOs.Listing
         public decimal Price { get; set; }
 
         public Guid CityId { get; set; }
-        public string CityName { get; set; }
+
+        // 🔥 SADECE BUNU KULLAN
+        public string City { get; set; }
 
         public Guid SourceLanguageId { get; set; }
         public Guid TargetLanguageId { get; set; }
@@ -27,6 +24,5 @@ namespace Tercuman.Application.DTOs.Listing
         public ExperienceLevel ExperienceLevel { get; set; }
 
         public int ViewCount { get; set; }
-        public string City { get; internal set; }
     }
 }

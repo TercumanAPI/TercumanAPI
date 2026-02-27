@@ -64,11 +64,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Repositories
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped<IListingRepository, ListingRepository>();
+builder.Services.AddScoped<IListingRepository, ListingRepository>(); 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 // Services
-builder.Services.AddScoped<IListingService, ListingService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 // ?? JWT Authentication

@@ -6,15 +6,14 @@ using System.Threading.Tasks;
 using Tercuman.Application.DTOs.Listing;
 using Tercuman.Domin.Entities;
 
-namespace Tercuman.Application.Interfaces
+namespace Tercuman.Application.Interfaces;
+
+
+public interface IListingRepository : IGenericRepository<Listing>
 {
-    public interface IListingRepository : IGenericRepository<Listing>
-    {
-        Task<IEnumerable<Listing>> GetPagedAsync(int page, int pageSize);
-        Task<int> CountAsync();
-        Task<Listing?> GetDetailAsync(Guid id);
-        Task IncrementViewCountAsync(Listing listing);
-        Task AddImagesAsync(List<ListingImage> images);
-        Task<List<Listing>> FilterAsync(FilterListingDto filter);
-    }
+    Task<Listing?> GetDetailAsync(Guid id);
+    Task<List<Listing>> GetPagedAsync(int page, int pageSize);
+    Task<IQueryable<Listing>> QueryAsync();
+    Task<int> CountAsync();
+    Task AddImagesAsync(List<ListingImage> images);
 }

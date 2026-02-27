@@ -4,145 +4,143 @@ using System.IdentityModel.Tokens.Jwt;
 using Tercuman.Application.DTOs.Listing;
 using Tercuman.Application.Interfaces;
 
-namespace Tercuman.API.Controllers
+namespace Tercuman.API.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class ListingsController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ListingsController : ControllerBase
+    private readonly IListingService _listingService;
+
+    public ListingsController(IListingService listingService)
     {
-        private readonly IListingService _listingService;
+        _listingService = listingService;
+    }
 
-        public ListingsController(IListingService listingService)
+    // ============================
+    // CREATE LISTING
+    // ============================
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateListingDto dto)
+    {
+        var userIdClaim = User.FindFirst(JwtRegisteredClaimNames.Sub);
+
+        if (userIdClaim == null)
+            return Unauthorized("Token içinde userId bulunamadı");
+
+        var userId = Guid.Parse(userIdClaim.Value);
+
+        await _listingService.CreateAsync(dto, userId);
+
+        return Ok(new
         {
-            _listingService = listingService;
-        }
+            success = true,
+            message = "Listing created successfully"
+        });
+    }
 
-        // ============================
-        // CREATE LISTING
-        // ============================
-        [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateListingDto dto)
-        {
-            var userIdClaim = User.FindFirst(JwtRegisteredClaimNames.Sub);
+    // ============================
+    // GET DETAIL
+    // ============================
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetDetail(Guid id)
+    {
+        var result = await _listingService.GetDetailAsync(id);
 
-            if (userIdClaim == null)
-                return Unauthorized("Token içinde userId bulunamadı");
-
-            var userId = Guid.Parse(userIdClaim.Value);
-
-            await _listingService.CreateAsync(dto, userId);
-
-            return Ok(new
+        if (result == null)
+            return NotFound(new
             {
-                success = true,
-                message = "Listing created successfully"
+                success = false,
+                message = "Listing bulunamadı"
             });
-        }
 
-        // ============================
-        // GET PAGED
-        // ============================
-        [HttpGet]
-        public async Task<IActionResult> GetPaged(
-            [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 10)
+        return Ok(new
         {
-            var listings = await _listingService.GetPagedAsync(page, pageSize);
-            var totalCount = await _listingService.CountAsync();
+            success = true,
+            data = result
+        });
+    }
 
-            return Ok(new
-            {
-                success = true,
-                data = listings,
-                totalCount,
-                page,
-                pageSize
-            });
-        }
+    // ============================
+    // GET PAGED (DEFAULT LIST)
+    // ============================
+    [HttpGet]
+    public async Task<IActionResult> GetPaged(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] string? sort = null)
+    {
+        var listings = await _listingService.GetPagedAsync(page, pageSize, sort);
+        var totalCount = await _listingService.CountAsync();
 
-        // ============================
-        // GET DETAIL
-        // ============================
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetDetail(Guid id)
+        return Ok(new
         {
-            var result = await _listingService.GetDetailAsync(id);
+            success = true,
+            data = listings,
+            totalCount,
+            page,
+            pageSize
+        });
+    }
 
-            if (result == null)
-                return NotFound(new
-                {
-                    success = false,
-                    message = "Listing bulunamadı"
-                });
+    // ============================
+    // FILTER LISTINGS
+    // ============================
+    [HttpGet("filter")]
+    public async Task<IActionResult> Filter([FromQuery] FilterListingDto filter)
+    {
+        var result = await _listingService.FilterAsync(filter);
 
-            return Ok(new
-            {
-                success = true,
-                data = result
-            });
-        }
-
-        // ============================
-        // UPLOAD IMAGES
-        // ============================
-        [Authorize]
-        [HttpPost("{id}/images")]
-        public async Task<IActionResult> UploadImages(Guid id, List<IFormFile> files)
+        return Ok(new
         {
-            if (files == null || files.Count == 0)
-                return BadRequest("En az 1 fotoğraf yüklemelisiniz.");
+            success = true,
+            data = result
+        });
+    }
 
-            if (files.Count > 10)
-                return BadRequest("En fazla 10 fotoğraf yüklenebilir.");
+    // ============================
+    // UPLOAD IMAGES
+    // ============================
+    [Authorize]
+    [HttpPost("{id}/images")]
+    public async Task<IActionResult> UploadImages(Guid id, List<IFormFile> files)
+    {
+        if (files == null || files.Count == 0)
+            return BadRequest("En az 1 fotoğraf yüklemelisiniz.");
 
-            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
+        if (files.Count > 10)
+            return BadRequest("En fazla 10 fotoğraf yüklenebilir.");
 
-            if (!Directory.Exists(uploadPath))
-                Directory.CreateDirectory(uploadPath);
+        var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
 
-            var imageUrls = new List<string>();
+        if (!Directory.Exists(uploadPath))
+            Directory.CreateDirectory(uploadPath);
 
-            foreach (var file in files)
-            {
-                var extension = Path.GetExtension(file.FileName).ToLower();
+        var imageUrls = new List<string>();
 
-                if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
-                    return BadRequest("Sadece JPG/PNG yüklenebilir.");
-
-                var fileName = Guid.NewGuid() + extension;
-                var filePath = Path.Combine(uploadPath, fileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
-
-                imageUrls.Add("/images/" + fileName);
-            }
-
-            await _listingService.AddImagesAsync(id, imageUrls);
-
-            return Ok(new
-            {
-                success = true,
-                images = imageUrls
-            });
-        }
-
-        // ============================
-        // FILTER LISTINGS
-        // ============================
-        [HttpGet("filter")]
-        public async Task<IActionResult> Filter([FromQuery] FilterListingDto filter)
+        foreach (var file in files)
         {
-            var result = await _listingService.FilterAsync(filter);
+            var extension = Path.GetExtension(file.FileName).ToLower();
 
-            return Ok(new
-            {
-                success = true,
-                data = result
-            });
+            if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
+                return BadRequest("Sadece JPG/PNG yüklenebilir.");
+
+            var fileName = Guid.NewGuid() + extension;
+            var filePath = Path.Combine(uploadPath, fileName);
+
+            using var stream = new FileStream(filePath, FileMode.Create);
+            await file.CopyToAsync(stream);
+
+            imageUrls.Add("/images/" + fileName);
         }
+
+        await _listingService.AddImagesAsync(id, imageUrls);
+
+        return Ok(new
+        {
+            success = true,
+            images = imageUrls
+        });
     }
 }
