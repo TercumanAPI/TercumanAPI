@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -6,6 +7,10 @@ using Tercuman.Application.Interfaces;
 using Tercuman.Application.Services;
 using Tercuman.Infrastructure.Persistence;
 using Tercuman.Infrastructure.Repositories;
+using Tercuman.Application.Validators;
+using FluentValidation.AspNetCore;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +19,8 @@ var builder = WebApplication.CreateBuilder(args);
 // =========================
 
 builder.Services.AddControllers();
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateListingValidator>(); 
 builder.Services.AddEndpointsApiExplorer();
 
 // ?? Swagger + JWT Config
@@ -84,6 +91,9 @@ builder.Services.AddAuthentication("Bearer")
     });
 
 builder.Services.AddAuthorization();
+
+
+
 
 var app = builder.Build();
 
