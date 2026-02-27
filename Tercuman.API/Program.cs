@@ -1,29 +1,35 @@
-using FluentValidation;
+﻿using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Tercuman.API.Hubs;
 using Tercuman.Application.Interfaces;
 using Tercuman.Application.Services;
+using Tercuman.Application.Validators;
 using Tercuman.Infrastructure.Persistence;
 using Tercuman.Infrastructure.Repositories;
-using Tercuman.Application.Validators;
-using FluentValidation.AspNetCore;
-
-
 
 var builder = WebApplication.CreateBuilder(args);
 
 // =========================
-// Services
+// SERVICES
 // =========================
 
 builder.Services.AddControllers();
+
 builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddValidatorsFromAssemblyContaining<CreateListingValidator>(); 
+builder.Services.AddValidatorsFromAssemblyContaining<CreateListingValidator>();
+
 builder.Services.AddEndpointsApiExplorer();
 
-// ?? Swagger + JWT Config
+// =========================
+// SWAGGER + JWT CONFIG
+// =========================
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -39,7 +45,7 @@ builder.Services.AddSwaggerGen(options =>
         Scheme = "bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "JWT Authorization header. �rnek: Bearer {token}"
+        Description = "Bearer {token}"
     });
 
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -58,21 +64,36 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// DB
+// =========================
+// DATABASE
+// =========================
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Repositories
+// =========================
+// REPOSITORIES
+// =========================
+
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped<IListingRepository, ListingRepository>(); 
+builder.Services.AddScoped<IListingRepository, ListingRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 
-// Services
+// =========================
+// SERVICES
+// =========================
+
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IListingService, ListingService>();
 
-// ?? JWT Authentication
-builder.Services.AddAuthentication("Bearer")
-    .AddJwtBearer("Bearer", options =>
+// =========================
+// AUTHENTICATION (TEK BLOK)
+// =========================
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
     {
         var jwtSettings = builder.Configuration.GetSection("Jwt");
         var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
@@ -87,17 +108,43 @@ builder.Services.AddAuthentication("Bearer")
             ValidAudience = jwtSettings["Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(key)
         };
+
+        // 🔥 SignalR için token fix
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+
+                if (!string.IsNullOrEmpty(accessToken) &&
+                    path.StartsWithSegments("/chatHub"))
+                {
+                    context.Token = accessToken;
+                }
+
+                return Task.CompletedTask;
+            }
+        };
     });
 
 builder.Services.AddAuthorization();
 
+// =========================
+// SIGNALR
+// =========================
 
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 
+// =========================
+// BUILD
+// =========================
 
 var app = builder.Build();
 
 // =========================
-// Middleware
+// MIDDLEWARE
 // =========================
 
 if (app.Environment.IsDevelopment())
@@ -107,12 +154,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
 
-app.UseAuthentication();   // ?? AUTH FIRST
+app.UseAuthentication();   // AUTH FIRST
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();

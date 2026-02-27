@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Tercuman.Domain.Entities;
 using Tercuman.Domin.Entities;
 
 namespace Tercuman.Infrastructure.Persistence
@@ -19,12 +20,12 @@ namespace Tercuman.Infrastructure.Persistence
         public DbSet<User> Users { get; set; }
         public DbSet<Listing> Listings { get; set; }
         public DbSet<ListingImage> ListingImages { get; set; }
-        public DbSet<Message> Messages { get; set; }
         public DbSet<Favorite> Favorites { get; set; }
         public DbSet<ListingView> ListingViews { get; set; }
         public DbSet<City> Cities { get; set; }
         public DbSet<Language> Languages { get; set; }
-
+        public DbSet<Conversation> Conversations { get; set; }
+        public DbSet<Message> Messages { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
