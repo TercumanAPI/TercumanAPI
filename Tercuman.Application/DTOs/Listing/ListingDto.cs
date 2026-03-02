@@ -17,6 +17,12 @@ namespace Tercuman.Application.DTOs.Listing
         // 🔥 SADECE BUNU KULLAN
         public string City { get; set; }
 
+        public string TranslatorName { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public string? Gender { get; set; }
+        public string Phone { get; set; }
+
+
         public Guid SourceLanguageId { get; set; }
         public Guid TargetLanguageId { get; set; }
 
@@ -24,5 +30,8 @@ namespace Tercuman.Application.DTOs.Listing
         public ExperienceLevel ExperienceLevel { get; set; }
 
         public int ViewCount { get; set; }
+
+        public string ListingNo => Id.ToString().Substring(0, 8);
+
     }
 }

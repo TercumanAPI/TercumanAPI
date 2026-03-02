@@ -141,11 +141,13 @@ builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 // BUILD
 // =========================
 
-var app = builder.Build();
 
 // =========================
 // app.Start();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+
+var app = builder.Build();
+
 
 // =========================
 // MIDDLEWARE

@@ -20,6 +20,7 @@ public class ListingRepository
         return await _context.Listings
             .Include(x => x.City)
             .Include(x => x.Images)
+            .Include(x => x.User)
             .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
     }
 
@@ -27,6 +28,7 @@ public class ListingRepository
     {
         return await _context.Listings
             .Include(x => x.City)
+            .Include(x => x.User)
             .Where(x => x.IsActive && x.IsApproved && !x.IsDeleted)
             .OrderByDescending(x => x.CreatedDate)
             .Skip((page - 1) * pageSize)
@@ -44,6 +46,7 @@ public class ListingRepository
     {
         IQueryable<Listing> query = _context.Listings
             .Include(x => x.City)
+            .Include(x => x.User)
             .Where(x => x.IsActive && x.IsApproved && !x.IsDeleted);
 
         return Task.FromResult(query);

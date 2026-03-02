@@ -160,15 +160,34 @@ public class ListingService : IListingService
     // =========================
     // PRIVATE MAPPER
     // =========================
+    // =========================
+    // PRIVATE MAPPER
+    // =========================
     private static ListingDto MapToDto(Listing x)
     {
         return new ListingDto
         {
             Id = x.Id,
             Title = x.Title,
+            Description = x.Description,
             Price = x.Price,
+
+            CityId = x.CityId,
             City = x.City?.Name ?? "",
-            ViewCount = x.ViewCount
+
+            SourceLanguageId = x.SourceLanguageId,
+            TargetLanguageId = x.TargetLanguageId,
+
+            ServiceType = x.ServiceType,
+            ExperienceLevel = x.ExperienceLevel,
+
+            ViewCount = x.ViewCount,
+            CreatedAt = x.CreatedDate,
+
+            // 🔥 User bilgileri
+            TranslatorName = x.User?.FullName ?? "",
+            Gender = x.User?.Gender.ToString() ?? "",
+            Phone = x.User?.PhoneNumber ?? ""
         };
     }
 }
