@@ -85,6 +85,18 @@ namespace Tercuman.Infrastructure.Persistence
                 .HasForeignKey(l => l.CityId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Listing>()
+    .HasOne(l => l.SourceLanguage)
+    .WithMany()
+    .HasForeignKey(l => l.SourceLanguageId)
+    .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Listing>()
+                .HasOne(l => l.TargetLanguage)
+                .WithMany()
+                .HasForeignKey(l => l.TargetLanguageId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             var createdDate = new DateTime(2026, 1, 1);
 
             modelBuilder.Entity<City>().HasData(
