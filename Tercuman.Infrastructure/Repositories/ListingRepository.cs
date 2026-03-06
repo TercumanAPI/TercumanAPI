@@ -31,8 +31,8 @@ public class ListingRepository
         return await _context.Listings
             .Include(x => x.City)
             .Include(x => x.User)
-            .Include(x => x.SourceLanguage)       
-            .Include(x => x.TargetLanguage)       
+            .Include(x => x.SourceLanguage)
+            .Include(x => x.TargetLanguage)
             .Where(x => x.IsActive && x.IsApproved && !x.IsDeleted)
             .OrderByDescending(x => x.CreatedDate)
             .Skip((page - 1) * pageSize)
@@ -46,16 +46,15 @@ public class ListingRepository
             .CountAsync(x => x.IsActive && x.IsApproved && !x.IsDeleted);
     }
 
-    public Task<IQueryable<Listing>> QueryAsync()
+    public IQueryable<Listing> Query()
     {
-        IQueryable<Listing> query = _context.Listings
+        return _context.Listings
             .Include(x => x.City)
             .Include(x => x.User)
+            .Include(x => x.SourceLanguage)
+            .Include(x => x.TargetLanguage)
             .Where(x => x.IsActive && x.IsApproved && !x.IsDeleted);
-
-        return Task.FromResult(query);
     }
-
     public async Task AddImagesAsync(List<ListingImage> images)
     {
         await _context.ListingImages.AddRangeAsync(images);

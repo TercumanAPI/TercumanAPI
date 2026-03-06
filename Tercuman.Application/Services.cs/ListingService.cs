@@ -29,7 +29,8 @@ public class ListingService : IListingService
             ExperienceLevel = dto.ExperienceLevel,
             ServiceType = dto.ServiceType,
             SourceLanguageId = dto.SourceLanguageId,
-            TargetLanguageId = dto.TargetLanguageId
+            TargetLanguageId = dto.TargetLanguageId,
+            CreatedDate = DateTime.UtcNow // 🔥 garanti set
         };
 
         await _listingRepository.AddAsync(listing);
@@ -42,7 +43,6 @@ public class ListingService : IListingService
     public async Task<IEnumerable<ListingDto>> GetPagedAsync(int page, int pageSize, string? sort)
     {
         var listings = await _listingRepository.GetPagedAsync(page, pageSize);
-
         var query = listings.AsQueryable();
 
         if (!string.IsNullOrEmpty(sort))
@@ -88,16 +88,19 @@ public class ListingService : IListingService
             Price = listing.Price,
             City = listing.City?.Name ?? "",
 
-            // 🔥 Listing bilgileri
             ViewCount = listing.ViewCount,
             CreatedAt = listing.CreatedDate,
 
-            // 🔥 User bilgileri
+            // 🔥 USER
             UserFullName = listing.User?.FullName ?? "",
-            Gender = listing.User?.Gender.ToString() ?? "",
+            Gender = listing.User != null 
+                        ? listing.User.Gender.ToString() 
+                        : "",
             UserCreatedAt = listing.User?.CreatedDate ?? DateTime.MinValue,
 
-            Images = listing.Images.Select(i => i.ImageUrl).ToList()
+            Images = listing.Images != null
+                        ? listing.Images.Select(i => i.ImageUrl).ToList()
+                        : new List<string>()
         };
     }
 
@@ -120,9 +123,8 @@ public class ListingService : IListingService
     // =========================
     public async Task<List<ListingDto>> FilterAsync(FilterListingDto filter)
     {
-        var query = await _listingRepository.QueryAsync();
-
-        // ================= FILTER =================
+        var query = _listingRepository.Query();
+        // FILTER
         if (filter.CityId.HasValue)
             query = query.Where(x => x.CityId == filter.CityId.Value);
 
@@ -141,7 +143,7 @@ public class ListingService : IListingService
         if (filter.MaxPrice.HasValue)
             query = query.Where(x => x.Price <= filter.MaxPrice.Value);
 
-        // ================= SORT =================
+        // SORT
         if (!string.IsNullOrEmpty(filter.Sort))
         {
             query = filter.Sort switch
@@ -152,7 +154,6 @@ public class ListingService : IListingService
             };
         }
 
-        // ================= PAGINATION =================
         var page = filter.Page <= 0 ? 1 : filter.Page;
         var pageSize = filter.PageSize <= 0 ? 10 : filter.PageSize;
         if (pageSize > 50) pageSize = 50;
@@ -165,9 +166,6 @@ public class ListingService : IListingService
         return listings.Select(MapToDto).ToList();
     }
 
-    // =========================
-    // PRIVATE MAPPER
-    // =========================
     // =========================
     // PRIVATE MAPPER
     // =========================
@@ -192,9 +190,11 @@ public class ListingService : IListingService
             ViewCount = x.ViewCount,
             CreatedAt = x.CreatedDate,
 
-            // 🔥 User bilgileri
+            // 🔥 USER INFO
             TranslatorName = x.User?.FullName ?? "",
-            Gender = x.User?.Gender.ToString() ?? "",
+            Gender = x.User != null 
+                        ? x.User.Gender.ToString() 
+                        : "",
             Phone = x.User?.PhoneNumber ?? ""
         };
     }

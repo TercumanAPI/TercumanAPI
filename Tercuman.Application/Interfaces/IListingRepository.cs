@@ -13,7 +13,7 @@ public interface IListingRepository : IGenericRepository<Listing>
 {
     Task<Listing?> GetDetailAsync(Guid id);
     Task<List<Listing>> GetPagedAsync(int page, int pageSize);
-    Task<IQueryable<Listing>> QueryAsync();
+    IQueryable<Listing> Query();
     Task<int> CountAsync();
     Task AddImagesAsync(List<ListingImage> images);
 }
