@@ -6,30 +6,38 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Text.Json.Serialization;
 using Tercuman.API.Hubs;
 using Tercuman.Application.Interfaces;
 using Tercuman.Application.Services;
 using Tercuman.Application.Validators;
 using Tercuman.Infrastructure.Persistence;
 using Tercuman.Infrastructure.Repositories;
-using System.Text.Json.Serialization;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
 // =========================
-// SERVICES
+// VALIDATION
 // =========================
-
-builder.Services.AddControllers();
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateListingValidator>();
 
+// =========================
+// CONTROLLERS + ENUM FIX
+// =========================
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters
+            .Add(new JsonStringEnumConverter());
+    });
+
 builder.Services.AddEndpointsApiExplorer();
 
 // =========================
-// SWAGGER + JWT CONFIG
+// SWAGGER + JWT
 // =========================
 
 builder.Services.AddSwaggerGen(options =>
@@ -91,14 +99,17 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IListingService, ListingService>();
 
 // =========================
-// AUTHENTICATION (TEK BLOK)
+// AUTHENTICATION
 // =========================
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         var jwtSettings = builder.Configuration.GetSection("Jwt");
-        var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
+        var keyString = jwtSettings["Key"]
+            ?? throw new Exception("JWT Key not found");
+
+        var key = Encoding.UTF8.GetBytes(keyString);
 
         options.TokenValidationParameters = new TokenValidationParameters
         {
@@ -111,7 +122,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(key)
         };
 
-        // 🔥 SignalR için token fix
         options.Events = new JwtBearerEvents
         {
             OnMessageReceived = context =>
@@ -139,25 +149,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 
-// =========================
-// BUILD
-// =========================
-
-
-// =========================
-// app.Start();
-builder.Services.AddScoped<IMessageRepository, MessageRepository>();
-
-
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters
-            .Add(new JsonStringEnumConverter());
-    });
-
 var app = builder.Build();
-
 
 // =========================
 // MIDDLEWARE
@@ -172,7 +164,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.UseAuthentication();   // AUTH FIRST
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

@@ -21,6 +21,6 @@ namespace Tercuman.Application.DTOs.Listing;
         public ServiceType ServiceType { get; set; }
 
         public string Description { get; set; }
-        public string Title { get; internal set; }
-    }
+        public string Title { get; set; } = string.Empty;
+}
 

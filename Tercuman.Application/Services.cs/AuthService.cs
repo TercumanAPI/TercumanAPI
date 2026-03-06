@@ -30,16 +30,17 @@ public class AuthService : IAuthService
 
         var user = new User
         {
+            Name = dto.FullName,                  // 🔥 BaseEntity.Name
             FullName = dto.FullName,
             Email = dto.Email,
             Gender = dto.Gender,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password)
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+            CreatedDate = DateTime.UtcNow
         };
 
         await _userRepository.AddAsync(user);
         await _userRepository.SaveChangesAsync();
     }
-
     public async Task<string?> LoginAsync(LoginDto dto)
     {
         var user = await _userRepository.GetByEmailAsync(dto.Email);
