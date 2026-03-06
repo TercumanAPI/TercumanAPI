@@ -12,6 +12,8 @@ using Tercuman.Application.Services;
 using Tercuman.Application.Validators;
 using Tercuman.Infrastructure.Persistence;
 using Tercuman.Infrastructure.Repositories;
+using System.Text.Json.Serialization;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -145,6 +147,15 @@ builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 // =========================
 // app.Start();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters
+            .Add(new JsonStringEnumConverter());
+    });
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
