@@ -9,9 +9,7 @@ namespace Tercuman.Application.DTOs.Listing
 
         public string Title { get; set; }
         public string Description { get; set; }
-
         public decimal Price { get; set; }
-
         public Guid CityId { get; set; }
 
         // 🔥 SADECE BUNU KULLAN

@@ -18,10 +18,13 @@ namespace Tercuman.Domin.Entities
         public bool IsApproved { get; set; } = true;
         public int ViewCount { get; set; } = 0;
 
-        public ServiceType ServiceType { get; set; }
 
+        public ServiceType ServiceType { get; set; }
         public Guid SourceLanguageId { get; set; }
+        public Language SourceLanguage { get; set; }
+
         public Guid TargetLanguageId { get; set; }
+        public Language TargetLanguage { get; set; }
         // FK
         public Guid UserId { get; set; }
         public User? User { get; set; }

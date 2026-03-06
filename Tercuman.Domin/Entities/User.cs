@@ -23,6 +23,7 @@ namespace Tercuman.Domin.Entities
         public string? ProfileImageUrl { get; set; }
         public bool IsActive { get; set; } = true;
         public Gender Gender { get; set; } = Gender.NotSpecified;
+        public DateTime CreatedAt { get; set; }
         // Navigation
         public ICollection<Listing> Listings { get; set; }
         public ICollection<Message> SentMessages { get; set; }

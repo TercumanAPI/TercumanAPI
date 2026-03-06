@@ -87,8 +87,16 @@ public class ListingService : IListingService
             Description = listing.Description,
             Price = listing.Price,
             City = listing.City?.Name ?? "",
+
+            // 🔥 Listing bilgileri
             ViewCount = listing.ViewCount,
-            CreatedDate = listing.CreatedDate,
+            CreatedAt = listing.CreatedDate,
+
+            // 🔥 User bilgileri
+            UserFullName = listing.User?.FullName ?? "",
+            Gender = listing.User?.Gender.ToString() ?? "",
+            UserCreatedAt = listing.User?.CreatedDate ?? DateTime.MinValue,
+
             Images = listing.Images.Select(i => i.ImageUrl).ToList()
         };
     }
