@@ -155,7 +155,6 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters
             .Add(new JsonStringEnumConverter());
     });
-builder.Services.AddControllers();
 
 var app = builder.Build();
 
