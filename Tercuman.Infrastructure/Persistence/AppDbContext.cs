@@ -86,10 +86,10 @@ namespace Tercuman.Infrastructure.Persistence
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Listing>()
-    .HasOne(l => l.SourceLanguage)
-    .WithMany()
-    .HasForeignKey(l => l.SourceLanguageId)
-    .OnDelete(DeleteBehavior.Restrict);
+               .HasOne(l => l.SourceLanguage)
+               .WithMany()
+               .HasForeignKey(l => l.SourceLanguageId)
+               .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Listing>()
                 .HasOne(l => l.TargetLanguage)

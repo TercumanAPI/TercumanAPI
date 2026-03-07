@@ -31,7 +31,8 @@ public class ChatHub : Hub
 
             SenderId = senderId,
             ReceiverId = receiverId,
-            Content = content
+            Content = content,
+            CreatedDate = DateTime.UtcNow
         };
 
         await _messageRepository.AddAsync(message);

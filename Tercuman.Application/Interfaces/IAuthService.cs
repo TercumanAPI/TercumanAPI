@@ -10,6 +10,9 @@ namespace Tercuman.Application.Interfaces
     public interface IAuthService
     {
         Task RegisterAsync(RegisterDto dto);
-        Task<string?> LoginAsync(LoginDto dto);
+        Task<string> LoginAsync(LoginDto dto);
+        Task<string> RefreshTokenAsync(string refreshToken);
+        Task ForgotPasswordAsync(string email);
+
     }
 }

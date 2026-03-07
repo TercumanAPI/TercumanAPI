@@ -20,7 +20,7 @@ public class ListingsController : ControllerBase
     // ============================
     // CREATE LISTING
     // ============================
-    [Authorize] // 🔥 Sadece login yeterli
+    [Authorize] //  Sadece login yeterli
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateListingDto dto)
     {

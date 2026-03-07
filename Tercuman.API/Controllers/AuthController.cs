@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Google.Apis.Auth.OAuth2.Requests;
+using Microsoft.AspNetCore.Mvc;
 using Tercuman.Application.DTOs.Auth;
 using Tercuman.Application.Interfaces;
 
@@ -15,6 +16,7 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
 
+    // REGISTER
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterDto dto)
     {
@@ -38,6 +40,7 @@ public class AuthController : ControllerBase
         }
     }
 
+    // LOGIN
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto dto)
     {
@@ -46,16 +49,66 @@ public class AuthController : ControllerBase
             var token = await _authService.LoginAsync(dto);
 
             if (token == null)
+            {
                 return Unauthorized(new
                 {
                     success = false,
                     message = "Invalid email or password"
                 });
+            }
 
             return Ok(new
             {
                 success = true,
-                token
+                accessToken = token
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                success = false,
+                message = ex.Message
+            });
+        }
+    }
+
+    // REFRESH TOKEN
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest dto)
+    {
+        try
+        {
+            var newToken = await _authService.RefreshTokenAsync(dto.RefreshToken);
+
+            return Ok(new
+            {
+                success = true,
+                accessToken = newToken
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                success = false,
+                message = ex.Message
+            });
+        }
+    }
+
+    // FORGOT PASSWORD
+    [HttpPost("forgot-password")]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto dto)
+    {
+        try
+        {
+            await _authService.ForgotPasswordAsync(dto.Email);
+
+            return Ok(new
+            {
+                success = true,
+                message = "Password reset link sent"
             });
         }
         catch (Exception ex)

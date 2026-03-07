@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+using Tercuman.Domain.Entities;
 using Tercuman.Domin.Entities;
 using Tercuman.Infrastructure.Persistence;
 
@@ -20,12 +23,15 @@ public class LanguagesController : ControllerBase
     {
         _context.Languages.Add(language);
         await _context.SaveChangesAsync();
+
         return Ok(language);
     }
 
     [HttpGet]
-    public IActionResult GetAll()
+    public async Task<IActionResult> GetAll()
     {
-        return Ok(_context.Languages.ToList());
+        var languages = await _context.Languages.ToListAsync();
+
+        return Ok(languages);
     }
 }
