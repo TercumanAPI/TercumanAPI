@@ -27,6 +27,8 @@ public class ChatHub : Hub
 
         var message = new Message
         {
+            Name = content.Length > 50 ? content.Substring(0, 50) : content,
+
             SenderId = senderId,
             ReceiverId = receiverId,
             Content = content
