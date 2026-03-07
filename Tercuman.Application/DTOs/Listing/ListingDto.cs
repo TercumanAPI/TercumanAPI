@@ -24,6 +24,10 @@ namespace Tercuman.Application.DTOs.Listing
         public Guid SourceLanguageId { get; set; }
         public Guid TargetLanguageId { get; set; }
 
+        public string SourceLanguageName { get; set; } = "";
+        public string TargetLanguageName { get; set; } = "";
+
+
         public ServiceType ServiceType { get; set; }
         public ExperienceLevel ExperienceLevel { get; set; }
 

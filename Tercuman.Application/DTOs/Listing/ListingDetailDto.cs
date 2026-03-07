@@ -23,7 +23,7 @@ namespace Tercuman.Application.DTOs.Listing
             // 🔥 Listing bilgileri
             public int ViewCount { get; set; }
             public DateTime CreatedAt { get; set; }
-            public DateTime CreatedDate { get; set; }
+            //public DateTime CreatedDate { get; set; }
             public List<string> Images { get; set; }
             public ExperienceLevel ExperienceLevel { get; set; }
             public ServiceType ServiceType { get; set; }

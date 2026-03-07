@@ -184,6 +184,10 @@ public class ListingService : IListingService
             SourceLanguageId = x.SourceLanguageId,
             TargetLanguageId = x.TargetLanguageId,
 
+            SourceLanguageName = x.SourceLanguage?.Name ?? "",
+            TargetLanguageName = x.TargetLanguage?.Name ?? "",
+
+
             ServiceType = x.ServiceType,
             ExperienceLevel = x.ExperienceLevel,
 
