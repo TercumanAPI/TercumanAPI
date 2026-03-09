@@ -105,7 +105,10 @@ public class ListingService : IListingService
                 .ToList() ?? new List<string>(),
 
             ExperienceLevel = listing.ExperienceLevel,
-            ServiceType = listing.ServiceType
+            ServiceType = listing.ServiceType,
+
+            SourceLanguageId = listing.SourceLanguageId,
+            TargetLanguageId = listing.TargetLanguageId,
         };
     }
 
