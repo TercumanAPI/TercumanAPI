@@ -30,7 +30,7 @@ public class ListingService : IListingService
             ServiceType = dto.ServiceType,
             SourceLanguageId = dto.SourceLanguageId,
             TargetLanguageId = dto.TargetLanguageId,
-            CreatedDate = DateTime.UtcNow // 🔥 garanti set
+            CreatedDate = DateTime.UtcNow //  garanti set
         };
 
         await _listingRepository.AddAsync(listing);
@@ -91,7 +91,7 @@ public class ListingService : IListingService
             ViewCount = listing.ViewCount,
             CreatedAt = listing.CreatedDate,
 
-            // 🔥 USER
+            //  USER
             UserFullName = listing.User?.FullName ?? "",
             Gender = listing.User != null 
                         ? listing.User.Gender.ToString() 
@@ -100,7 +100,10 @@ public class ListingService : IListingService
 
             Images = listing.Images != null
                         ? listing.Images.Select(i => i.ImageUrl).ToList()
-                        : new List<string>()
+                        : new List<string>(),
+
+            ExperienceLevel = listing.ExperienceLevel,
+            ServiceType = listing.ServiceType
         };
     }
 
@@ -194,7 +197,7 @@ public class ListingService : IListingService
             ViewCount = x.ViewCount,
             CreatedAt = x.CreatedDate,
 
-            // 🔥 USER INFO
+            //  USER INFO
             TranslatorName = x.User?.FullName ?? "",
             Gender = x.User != null 
                         ? x.User.Gender.ToString() 
