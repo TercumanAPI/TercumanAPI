@@ -177,6 +177,7 @@ public class ListingService : IListingService
         return new ListingDto
         {
             Id = x.Id,
+            Name = x.Title, //  name ekledim ama aslında title
             Title = x.Title,
             Description = x.Description,
             Price = x.Price,

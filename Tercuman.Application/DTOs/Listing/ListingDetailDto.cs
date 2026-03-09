@@ -7,19 +7,19 @@ namespace Tercuman.Application.DTOs.Listing
     public class ListingDetailDto
     {
         public Guid Id { get; set; }
-
+        public string Name { get; set; }
         public string Title { get; set; } = "";
         public string Description { get; set; } = "";
         public decimal Price { get; set; }
 
         public string City { get; set; } = "";
 
-        // 🔥 User bilgileri
+        //  User bilgileri
         public string UserFullName { get; set; } = "";
         public string Gender { get; set; } = "";
         public DateTime UserCreatedAt { get; set; }
 
-        // 🔥 Listing bilgileri
+        //  Listing bilgileri
         public int ViewCount { get; set; }
         public DateTime CreatedAt { get; set; }
 
