@@ -19,8 +19,12 @@ public class ListingService : IListingService
     // =========================
     public async Task CreateAsync(CreateListingDto dto, Guid userId)
     {
+        if (string.IsNullOrWhiteSpace(dto.Title))
+            throw new Exception("Title boş olamaz");
+
         var listing = new Listing
         {
+            Name = dto.Title,
             Title = dto.Title,
             Description = dto.Description,
             Price = dto.Price,
@@ -30,7 +34,7 @@ public class ListingService : IListingService
             ServiceType = dto.ServiceType,
             SourceLanguageId = dto.SourceLanguageId,
             TargetLanguageId = dto.TargetLanguageId,
-            CreatedDate = DateTime.UtcNow //  garanti set
+            CreatedDate = DateTime.UtcNow
         };
 
         await _listingRepository.AddAsync(listing);
@@ -55,7 +59,7 @@ public class ListingService : IListingService
             };
         }
 
-        return query.Select(MapToDto).ToList();
+        return query.Select(MapToDto);
     }
 
     // =========================
@@ -77,6 +81,7 @@ public class ListingService : IListingService
             return null;
 
         listing.ViewCount++;
+
         _listingRepository.Update(listing);
         await _listingRepository.SaveChangesAsync();
 
@@ -91,16 +96,13 @@ public class ListingService : IListingService
             ViewCount = listing.ViewCount,
             CreatedAt = listing.CreatedDate,
 
-            //  USER
             UserFullName = listing.User?.FullName ?? "",
-            Gender = listing.User != null 
-                        ? listing.User.Gender.ToString() 
-                        : "",
+            Gender = listing.User?.Gender.ToString() ?? "",
             UserCreatedAt = listing.User?.CreatedDate ?? DateTime.MinValue,
 
-            Images = listing.Images != null
-                        ? listing.Images.Select(i => i.ImageUrl).ToList()
-                        : new List<string>(),
+            Images = listing.Images?
+                .Select(i => i.ImageUrl)
+                .ToList() ?? new List<string>(),
 
             ExperienceLevel = listing.ExperienceLevel,
             ServiceType = listing.ServiceType
@@ -127,7 +129,7 @@ public class ListingService : IListingService
     public async Task<List<ListingDto>> FilterAsync(FilterListingDto filter)
     {
         var query = _listingRepository.Query();
-        // FILTER
+
         if (filter.CityId.HasValue)
             query = query.Where(x => x.CityId == filter.CityId.Value);
 
@@ -146,7 +148,6 @@ public class ListingService : IListingService
         if (filter.MaxPrice.HasValue)
             query = query.Where(x => x.Price <= filter.MaxPrice.Value);
 
-        // SORT
         if (!string.IsNullOrEmpty(filter.Sort))
         {
             query = filter.Sort switch
@@ -159,7 +160,9 @@ public class ListingService : IListingService
 
         var page = filter.Page <= 0 ? 1 : filter.Page;
         var pageSize = filter.PageSize <= 0 ? 10 : filter.PageSize;
-        if (pageSize > 50) pageSize = 50;
+
+        if (pageSize > 50)
+            pageSize = 50;
 
         var listings = await query
             .Skip((page - 1) * pageSize)
@@ -177,7 +180,6 @@ public class ListingService : IListingService
         return new ListingDto
         {
             Id = x.Id,
-            Name = x.Title, //  name ekledim ama aslında title
             Title = x.Title,
             Description = x.Description,
             Price = x.Price,
@@ -191,18 +193,14 @@ public class ListingService : IListingService
             SourceLanguageName = x.SourceLanguage?.Name ?? "",
             TargetLanguageName = x.TargetLanguage?.Name ?? "",
 
-
             ServiceType = x.ServiceType,
             ExperienceLevel = x.ExperienceLevel,
 
             ViewCount = x.ViewCount,
             CreatedAt = x.CreatedDate,
 
-            //  USER INFO
             TranslatorName = x.User?.FullName ?? "",
-            Gender = x.User != null 
-                        ? x.User.Gender.ToString() 
-                        : "",
+            Gender = x.User?.Gender.ToString() ?? "",
             Phone = x.User?.PhoneNumber ?? ""
         };
     }
