@@ -22,5 +22,9 @@ namespace Tercuman.Application.DTOs.Listing
 
         // SORT
         public string? Sort { get; set; }
+
+        public string? SearchKeyword { get; set; }
+        public string? CityName { get; set; }
+        public ExperienceLevel? ExperienceLevel { get; set; }
     }
 }

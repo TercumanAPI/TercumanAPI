@@ -133,6 +133,35 @@ public class ListingService : IListingService
     {
         var query = _listingRepository.Query();
 
+        //  SEARCH KEYWORD
+        if (!string.IsNullOrWhiteSpace(filter.SearchKeyword))
+        {
+            var keyword = filter.SearchKeyword.ToLower();
+
+            query = query.Where(x =>
+                x.Title.ToLower().Contains(keyword) ||
+                x.Description.ToLower().Contains(keyword) ||
+                x.User.FullName.ToLower().Contains(keyword) ||
+                x.Id.ToString().Contains(keyword));
+        }
+
+        //  CITY NAME
+        if (!string.IsNullOrWhiteSpace(filter.CityName))
+        {
+            var city = filter.CityName.ToLower();
+
+            query = query.Where(x =>
+                x.City.Name.ToLower().Contains(city));
+        }
+
+        //  EXPERIENCE LEVEL
+        if (filter.ExperienceLevel.HasValue)
+        {
+            query = query.Where(x =>
+                x.ExperienceLevel == filter.ExperienceLevel.Value);
+        }
+
+        //  Mevcut filtreler
         if (filter.CityId.HasValue)
             query = query.Where(x => x.CityId == filter.CityId.Value);
 
@@ -151,6 +180,7 @@ public class ListingService : IListingService
         if (filter.MaxPrice.HasValue)
             query = query.Where(x => x.Price <= filter.MaxPrice.Value);
 
+        // SORT
         if (!string.IsNullOrEmpty(filter.Sort))
         {
             query = filter.Sort switch
