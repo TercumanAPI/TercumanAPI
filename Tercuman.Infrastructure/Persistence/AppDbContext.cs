@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Tercuman.Domain.Entities;
 using Tercuman.Domin.Entities;
 
 namespace Tercuman.Infrastructure.Persistence
@@ -95,6 +94,19 @@ namespace Tercuman.Infrastructure.Persistence
                 .HasOne(l => l.TargetLanguage)
                 .WithMany()
                 .HasForeignKey(l => l.TargetLanguageId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Conversation
+            modelBuilder.Entity<Conversation>()
+               .HasOne(c => c.User1)
+               .WithMany()
+               .HasForeignKey(c => c.User1Id)
+               .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Conversation>()
+                .HasOne(c => c.User2)
+                .WithMany()
+                .HasForeignKey(c => c.User2Id)
                 .OnDelete(DeleteBehavior.Restrict);
 
             var createdDate = new DateTime(2026, 1, 1);

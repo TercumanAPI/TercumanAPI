@@ -10,6 +10,7 @@ namespace Tercuman.Domin.Entities
 {
     public class Listing : BaseEntity
     {
+        public string Name { get; set; } = string.Empty;
         public long ListingNo { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;

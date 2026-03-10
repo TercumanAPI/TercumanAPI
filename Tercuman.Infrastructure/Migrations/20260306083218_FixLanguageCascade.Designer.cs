@@ -71,7 +71,7 @@ namespace Tercuman.Infrastructure.Migrations
                     b.ToTable("Messages");
                 });
 
-            modelBuilder.Entity("Tercuman.Domain.Entities.Conversation", b =>
+            modelBuilder.Entity("Tercuman.Domin.Entities.Conversation", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1350,7 +1350,7 @@ namespace Tercuman.Infrastructure.Migrations
 
             modelBuilder.Entity("Message", b =>
                 {
-                    b.HasOne("Tercuman.Domain.Entities.Conversation", null)
+                    b.HasOne("Tercuman.Domin.Entities.Conversation", null)
                         .WithMany("Messages")
                         .HasForeignKey("ConversationId");
 
@@ -1453,7 +1453,7 @@ namespace Tercuman.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Tercuman.Domain.Entities.Conversation", b =>
+            modelBuilder.Entity("Tercuman.Domin.Entities.Conversation", b =>
                 {
                     b.Navigation("Messages");
                 });

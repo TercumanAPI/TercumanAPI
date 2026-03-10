@@ -12,8 +12,8 @@ using Tercuman.Infrastructure.Persistence;
 namespace Tercuman.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260306112256_RemoveUserCreatedAt")]
-    partial class RemoveUserCreatedAt
+    [Migration("20260310223514_UpdateConversation")]
+    partial class UpdateConversation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,69 +24,6 @@ namespace Tercuman.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Message", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("ConversationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("ReceiverId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("SenderId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ConversationId");
-
-                    b.HasIndex("ReceiverId");
-
-                    b.HasIndex("SenderId");
-
-                    b.ToTable("Messages");
-                });
-
-            modelBuilder.Entity("Tercuman.Domin.Entities.Conversation", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("User1Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("User2Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Conversations");
-                });
 
             modelBuilder.Entity("Tercuman.Domin.Entities.City", b =>
                 {
@@ -681,6 +618,30 @@ namespace Tercuman.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Tercuman.Domin.Entities.Conversation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("User1Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("User2Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("User1Id");
+
+                    b.HasIndex("User2Id");
+
+                    b.ToTable("Conversations");
+                });
+
             modelBuilder.Entity("Tercuman.Domin.Entities.Favorite", b =>
                 {
                     b.Property<Guid>("Id")
@@ -695,10 +656,6 @@ namespace Tercuman.Infrastructure.Migrations
 
                     b.Property<Guid>("ListingId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -748,401 +705,393 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000001"),
                             Code = "tr",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(501),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Turkish"
+                            Name = "Türkçe"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000002"),
                             Code = "ar",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(504),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Arabic"
+                            Name = "Arapça"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000003"),
                             Code = "en",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(507),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "English"
+                            Name = "İngilizce"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000004"),
                             Code = "de",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(512),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "German"
+                            Name = "Almanca"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000005"),
                             Code = "fr",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(514),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "French"
+                            Name = "Fransızca"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000006"),
                             Code = "es",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(517),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Spanish"
+                            Name = "İspanyolca"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000007"),
                             Code = "it",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(519),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Italian"
+                            Name = "İtalyanca"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000008"),
                             Code = "ru",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(522),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Russian"
+                            Name = "Rusça"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000009"),
                             Code = "zh",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(524),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Chinese"
+                            Name = "Çince"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000010"),
                             Code = "ja",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(526),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Japanese"
+                            Name = "Japonca"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000011"),
                             Code = "ko",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(529),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Korean"
+                            Name = "Korece"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000012"),
                             Code = "pt",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(533),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Portuguese"
+                            Name = "Portekizce"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000013"),
                             Code = "nl",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(536),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Dutch"
+                            Name = "Hollandaca"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000014"),
                             Code = "el",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(538),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Greek"
+                            Name = "Yunanca"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000015"),
                             Code = "fa",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(540),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Persian"
+                            Name = "Farsça"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000016"),
                             Code = "hi",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(543),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Hindi"
+                            Name = "Hintçe"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000017"),
                             Code = "ur",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(545),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Urdu"
+                            Name = "Urduca"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000018"),
                             Code = "he",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(547),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Hebrew"
+                            Name = "İbranice"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000019"),
                             Code = "sv",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(550),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Swedish"
+                            Name = "İsveççe"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000020"),
                             Code = "no",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(554),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Norwegian"
+                            Name = "Norveççe"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000021"),
                             Code = "da",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(556),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Danish"
+                            Name = "Danca"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000022"),
                             Code = "fi",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(559),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Finnish"
+                            Name = "Fince"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000023"),
                             Code = "pl",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(561),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Polish"
-                        },
-                        new
-                        {
-                            Id = new Guid("00000000-0000-0000-0000-000000000024"),
-                            Code = "cs",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(563),
-                            IsDeleted = false,
-                            Name = "Czech"
+                            Name = "Lehçe"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000025"),
                             Code = "hu",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(565),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Hungarian"
+                            Name = "Macarca"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000026"),
                             Code = "ro",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(568),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Romanian"
+                            Name = "Romence"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000027"),
                             Code = "bg",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(570),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Bulgarian"
+                            Name = "Bulgarca"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000028"),
                             Code = "sr",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(574),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Serbian"
+                            Name = "Sırpça"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000029"),
                             Code = "hr",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(577),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Croatian"
+                            Name = "Hırvatça"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000030"),
                             Code = "bs",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(579),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Bosnian"
+                            Name = "Boşnakça"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000031"),
                             Code = "sq",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(581),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Albanian"
+                            Name = "Arnavutça"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000032"),
                             Code = "uk",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(583),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Ukrainian"
+                            Name = "Ukraynaca"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000033"),
                             Code = "ka",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(586),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Georgian"
+                            Name = "Gürcüce"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000034"),
                             Code = "hy",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(588),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Armenian"
+                            Name = "Ermenice"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000035"),
                             Code = "th",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(590),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Thai"
+                            Name = "Tayca"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000036"),
                             Code = "vi",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(595),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Vietnamese"
+                            Name = "Vietnamca"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000037"),
                             Code = "ms",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(597),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Malay"
+                            Name = "Malayca"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000038"),
                             Code = "id",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(599),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Indonesian"
+                            Name = "Endonezce"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000039"),
                             Code = "sw",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(602),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Swahili"
+                            Name = "Svahili"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000040"),
                             Code = "af",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(604),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Afrikaans"
+                            Name = "Afrikanca"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000041"),
                             Code = "am",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(606),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Amharic"
+                            Name = "Amharca"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000042"),
                             Code = "az",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(608),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Azerbaijani"
+                            Name = "Azerice"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000043"),
                             Code = "kk",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(610),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Kazakh"
+                            Name = "Kazakça"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000044"),
                             Code = "uz",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(615),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Uzbek"
+                            Name = "Özbekçe"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000045"),
                             Code = "tk",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(617),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Turkmen"
+                            Name = "Türkmence"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000046"),
                             Code = "ku",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(619),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Kurdish"
+                            Name = "Kürtçe"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000047"),
                             Code = "ps",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(622),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Pashto"
+                            Name = "Peştuca"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000048"),
                             Code = "bn",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(624),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Bengali"
+                            Name = "Bengalce"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000049"),
                             Code = "ta",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(626),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Tamil"
+                            Name = "Tamilce"
                         },
                         new
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000050"),
                             Code = "te",
-                            CreatedDate = new DateTime(2026, 3, 6, 11, 22, 55, 296, DateTimeKind.Utc).AddTicks(629),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
-                            Name = "Telugu"
+                            Name = "Teluguca"
                         });
                 });
 
@@ -1173,6 +1122,9 @@ namespace Tercuman.Infrastructure.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<long>("ListingNo")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -1239,10 +1191,6 @@ namespace Tercuman.Infrastructure.Migrations
                     b.Property<Guid>("ListingId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
@@ -1272,10 +1220,6 @@ namespace Tercuman.Infrastructure.Migrations
                     b.Property<Guid>("ListingId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
@@ -1289,6 +1233,48 @@ namespace Tercuman.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("ListingViews");
+                });
+
+            modelBuilder.Entity("Tercuman.Domin.Entities.Message", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ConversationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("ReceiverId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SenderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConversationId");
+
+                    b.HasIndex("ReceiverId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("Tercuman.Domin.Entities.User", b =>
@@ -1326,10 +1312,6 @@ namespace Tercuman.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1348,27 +1330,23 @@ namespace Tercuman.Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Message", b =>
+            modelBuilder.Entity("Tercuman.Domin.Entities.Conversation", b =>
                 {
-                    b.HasOne("Tercuman.Domin.Entities.Conversation", null)
-                        .WithMany("Messages")
-                        .HasForeignKey("ConversationId");
-
-                    b.HasOne("Tercuman.Domin.Entities.User", "Receiver")
-                        .WithMany("ReceivedMessages")
-                        .HasForeignKey("ReceiverId")
+                    b.HasOne("Tercuman.Domin.Entities.User", "User1")
+                        .WithMany()
+                        .HasForeignKey("User1Id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Tercuman.Domin.Entities.User", "Sender")
-                        .WithMany("SentMessages")
-                        .HasForeignKey("SenderId")
+                    b.HasOne("Tercuman.Domin.Entities.User", "User2")
+                        .WithMany()
+                        .HasForeignKey("User2Id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Receiver");
+                    b.Navigation("User1");
 
-                    b.Navigation("Sender");
+                    b.Navigation("User2");
                 });
 
             modelBuilder.Entity("Tercuman.Domin.Entities.Favorite", b =>
@@ -1453,14 +1431,41 @@ namespace Tercuman.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Tercuman.Domin.Entities.Conversation", b =>
+            modelBuilder.Entity("Tercuman.Domin.Entities.Message", b =>
                 {
-                    b.Navigation("Messages");
+                    b.HasOne("Tercuman.Domin.Entities.Conversation", "Conversation")
+                        .WithMany("Messages")
+                        .HasForeignKey("ConversationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Tercuman.Domin.Entities.User", "Receiver")
+                        .WithMany("ReceivedMessages")
+                        .HasForeignKey("ReceiverId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Tercuman.Domin.Entities.User", "Sender")
+                        .WithMany("SentMessages")
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Conversation");
+
+                    b.Navigation("Receiver");
+
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("Tercuman.Domin.Entities.City", b =>
                 {
                     b.Navigation("Listings");
+                });
+
+            modelBuilder.Entity("Tercuman.Domin.Entities.Conversation", b =>
+                {
+                    b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("Tercuman.Domin.Entities.Listing", b =>

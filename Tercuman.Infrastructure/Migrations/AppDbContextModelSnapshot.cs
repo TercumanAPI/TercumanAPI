@@ -22,69 +22,6 @@ namespace Tercuman.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Message", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("ConversationId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("ReceiverId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("SenderId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ConversationId");
-
-                    b.HasIndex("ReceiverId");
-
-                    b.HasIndex("SenderId");
-
-                    b.ToTable("Messages");
-                });
-
-            modelBuilder.Entity("Tercuman.Domain.Entities.Conversation", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("User1Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("User2Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Conversations");
-                });
-
             modelBuilder.Entity("Tercuman.Domin.Entities.City", b =>
                 {
                     b.Property<Guid>("Id")
@@ -678,6 +615,30 @@ namespace Tercuman.Infrastructure.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Tercuman.Domin.Entities.Conversation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("User1Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("User2Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("User1Id");
+
+                    b.HasIndex("User2Id");
+
+                    b.ToTable("Conversations");
+                });
+
             modelBuilder.Entity("Tercuman.Domin.Entities.Favorite", b =>
                 {
                     b.Property<Guid>("Id")
@@ -692,10 +653,6 @@ namespace Tercuman.Infrastructure.Migrations
 
                     b.Property<Guid>("ListingId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -745,7 +702,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000001"),
                             Code = "tr",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4392),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Türkçe"
                         },
@@ -753,7 +710,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000002"),
                             Code = "ar",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4395),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Arapça"
                         },
@@ -761,7 +718,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000003"),
                             Code = "en",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4397),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "İngilizce"
                         },
@@ -769,7 +726,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000004"),
                             Code = "de",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4399),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Almanca"
                         },
@@ -777,7 +734,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000005"),
                             Code = "fr",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4401),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Fransızca"
                         },
@@ -785,7 +742,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000006"),
                             Code = "es",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4403),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "İspanyolca"
                         },
@@ -793,7 +750,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000007"),
                             Code = "it",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4405),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "İtalyanca"
                         },
@@ -801,7 +758,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000008"),
                             Code = "ru",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4407),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Rusça"
                         },
@@ -809,7 +766,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000009"),
                             Code = "zh",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4410),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Çince"
                         },
@@ -817,7 +774,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000010"),
                             Code = "ja",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4412),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Japonca"
                         },
@@ -825,7 +782,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000011"),
                             Code = "ko",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4414),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Korece"
                         },
@@ -833,7 +790,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000012"),
                             Code = "pt",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4416),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Portekizce"
                         },
@@ -841,7 +798,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000013"),
                             Code = "nl",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4418),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Hollandaca"
                         },
@@ -849,7 +806,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000014"),
                             Code = "el",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4419),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Yunanca"
                         },
@@ -857,7 +814,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000015"),
                             Code = "fa",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4421),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Farsça"
                         },
@@ -865,7 +822,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000016"),
                             Code = "hi",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4458),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Hintçe"
                         },
@@ -873,7 +830,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000017"),
                             Code = "ur",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4462),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Urduca"
                         },
@@ -881,7 +838,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000018"),
                             Code = "he",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4464),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "İbranice"
                         },
@@ -889,7 +846,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000019"),
                             Code = "sv",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4467),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "İsveççe"
                         },
@@ -897,7 +854,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000020"),
                             Code = "no",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4469),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Norveççe"
                         },
@@ -905,7 +862,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000021"),
                             Code = "da",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4470),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Danca"
                         },
@@ -913,7 +870,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000022"),
                             Code = "fi",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4472),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Fince"
                         },
@@ -921,7 +878,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000023"),
                             Code = "pl",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4474),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Lehçe"
                         },
@@ -929,7 +886,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000025"),
                             Code = "hu",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4476),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Macarca"
                         },
@@ -937,7 +894,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000026"),
                             Code = "ro",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4480),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Romence"
                         },
@@ -945,7 +902,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000027"),
                             Code = "bg",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4482),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Bulgarca"
                         },
@@ -953,7 +910,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000028"),
                             Code = "sr",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4484),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Sırpça"
                         },
@@ -961,7 +918,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000029"),
                             Code = "hr",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4486),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Hırvatça"
                         },
@@ -969,7 +926,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000030"),
                             Code = "bs",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4488),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Boşnakça"
                         },
@@ -977,7 +934,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000031"),
                             Code = "sq",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4489),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Arnavutça"
                         },
@@ -985,7 +942,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000032"),
                             Code = "uk",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4491),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Ukraynaca"
                         },
@@ -993,7 +950,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000033"),
                             Code = "ka",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4493),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Gürcüce"
                         },
@@ -1001,7 +958,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000034"),
                             Code = "hy",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4496),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Ermenice"
                         },
@@ -1009,7 +966,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000035"),
                             Code = "th",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4498),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Tayca"
                         },
@@ -1017,7 +974,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000036"),
                             Code = "vi",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4500),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Vietnamca"
                         },
@@ -1025,7 +982,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000037"),
                             Code = "ms",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4502),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Malayca"
                         },
@@ -1033,7 +990,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000038"),
                             Code = "id",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4504),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Endonezce"
                         },
@@ -1041,7 +998,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000039"),
                             Code = "sw",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4506),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Svahili"
                         },
@@ -1049,7 +1006,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000040"),
                             Code = "af",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4507),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Afrikanca"
                         },
@@ -1057,7 +1014,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000041"),
                             Code = "am",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4509),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Amharca"
                         },
@@ -1065,7 +1022,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000042"),
                             Code = "az",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4513),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Azerice"
                         },
@@ -1073,7 +1030,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000043"),
                             Code = "kk",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4514),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Kazakça"
                         },
@@ -1081,7 +1038,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000044"),
                             Code = "uz",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4516),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Özbekçe"
                         },
@@ -1089,7 +1046,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000045"),
                             Code = "tk",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4518),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Türkmence"
                         },
@@ -1097,7 +1054,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000046"),
                             Code = "ku",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4520),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Kürtçe"
                         },
@@ -1105,7 +1062,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000047"),
                             Code = "ps",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4522),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Peştuca"
                         },
@@ -1113,7 +1070,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000048"),
                             Code = "bn",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4524),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Bengalce"
                         },
@@ -1121,7 +1078,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000049"),
                             Code = "ta",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4525),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Tamilce"
                         },
@@ -1129,7 +1086,7 @@ namespace Tercuman.Infrastructure.Migrations
                         {
                             Id = new Guid("00000000-0000-0000-0000-000000000050"),
                             Code = "te",
-                            CreatedDate = new DateTime(2026, 3, 10, 11, 44, 2, 801, DateTimeKind.Utc).AddTicks(4529),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             IsDeleted = false,
                             Name = "Teluguca"
                         });
@@ -1231,10 +1188,6 @@ namespace Tercuman.Infrastructure.Migrations
                     b.Property<Guid>("ListingId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
@@ -1264,10 +1217,6 @@ namespace Tercuman.Infrastructure.Migrations
                     b.Property<Guid>("ListingId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
@@ -1281,6 +1230,48 @@ namespace Tercuman.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("ListingViews");
+                });
+
+            modelBuilder.Entity("Tercuman.Domin.Entities.Message", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ConversationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("ReceiverId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("SenderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConversationId");
+
+                    b.HasIndex("ReceiverId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("Tercuman.Domin.Entities.User", b =>
@@ -1318,10 +1309,6 @@ namespace Tercuman.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1340,27 +1327,23 @@ namespace Tercuman.Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Message", b =>
+            modelBuilder.Entity("Tercuman.Domin.Entities.Conversation", b =>
                 {
-                    b.HasOne("Tercuman.Domain.Entities.Conversation", null)
-                        .WithMany("Messages")
-                        .HasForeignKey("ConversationId");
-
-                    b.HasOne("Tercuman.Domin.Entities.User", "Receiver")
-                        .WithMany("ReceivedMessages")
-                        .HasForeignKey("ReceiverId")
+                    b.HasOne("Tercuman.Domin.Entities.User", "User1")
+                        .WithMany()
+                        .HasForeignKey("User1Id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Tercuman.Domin.Entities.User", "Sender")
-                        .WithMany("SentMessages")
-                        .HasForeignKey("SenderId")
+                    b.HasOne("Tercuman.Domin.Entities.User", "User2")
+                        .WithMany()
+                        .HasForeignKey("User2Id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Receiver");
+                    b.Navigation("User1");
 
-                    b.Navigation("Sender");
+                    b.Navigation("User2");
                 });
 
             modelBuilder.Entity("Tercuman.Domin.Entities.Favorite", b =>
@@ -1445,14 +1428,41 @@ namespace Tercuman.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Tercuman.Domain.Entities.Conversation", b =>
+            modelBuilder.Entity("Tercuman.Domin.Entities.Message", b =>
                 {
-                    b.Navigation("Messages");
+                    b.HasOne("Tercuman.Domin.Entities.Conversation", "Conversation")
+                        .WithMany("Messages")
+                        .HasForeignKey("ConversationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Tercuman.Domin.Entities.User", "Receiver")
+                        .WithMany("ReceivedMessages")
+                        .HasForeignKey("ReceiverId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Tercuman.Domin.Entities.User", "Sender")
+                        .WithMany("SentMessages")
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Conversation");
+
+                    b.Navigation("Receiver");
+
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("Tercuman.Domin.Entities.City", b =>
                 {
                     b.Navigation("Listings");
+                });
+
+            modelBuilder.Entity("Tercuman.Domin.Entities.Conversation", b =>
+                {
+                    b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("Tercuman.Domin.Entities.Listing", b =>

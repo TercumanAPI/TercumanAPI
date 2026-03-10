@@ -37,8 +37,8 @@ public class NotificationsController : ControllerBase
         {
             MessageId = x.Id,
             SenderId = x.SenderId,
-            SenderName = x.Sender.FullName,
-            Content = x.Content,
+            SenderName = x.Sender?.FullName ?? "Unknown",
+            Content = x.Text,
             SentAt = x.CreatedDate,
             IsRead = x.IsRead
         }).ToList();

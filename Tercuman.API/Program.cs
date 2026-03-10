@@ -152,6 +152,10 @@ builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 var app = builder.Build();
 
 // =========================
+// REPOSITORIES
+builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
+
+// =========================
 // MIDDLEWARE
 // =========================
 

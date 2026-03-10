@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tercuman.Domin.Entities;
 
-namespace Tercuman.Domin.Common
+namespace Tercuman.Domin.Common;
+
+public abstract class BaseEntity
 {
-    public abstract class BaseEntity
-    {
-        public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid Id { get; set; }
 
-        public string Name { get; set; } = string.Empty;
+    public DateTime CreatedDate { get; set; }
 
-        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+    public DateTime? UpdatedDate { get; set; }
 
-        public DateTime? UpdatedDate { get; set; }
+    public bool IsDeleted { get; set; }
 
-        public bool IsDeleted { get; set; } = false;
-    }
 }
+
+

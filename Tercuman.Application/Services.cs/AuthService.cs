@@ -5,7 +5,6 @@ using System.Security.Claims;
 using System.Text;
 using Tercuman.Application.DTOs.Auth;
 using Tercuman.Application.Interfaces;
-using Tercuman.Domain.Entities;
 using Tercuman.Domin.Entities;
 
 namespace Tercuman.Application.Services;
@@ -63,7 +62,6 @@ public class AuthService : IAuthService
 
         var user = new User
         {
-            Name = dto.FullName,
             FullName = dto.FullName,
             Email = dto.Email,
             Gender = dto.Gender,
@@ -76,15 +74,15 @@ public class AuthService : IAuthService
     }
 
     // LOGIN
-    public async Task<string?> LoginAsync(LoginDto dto)
+    public async Task<string> LoginAsync(LoginDto dto)
     {
         var user = await _userRepository.GetByEmailAsync(dto.Email);
 
         if (user == null)
-            return null;
+            throw new Exception("Invalid email or password");
 
         if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
-            return null;
+            throw new Exception("Invalid email or password");
 
         var jwtSettings = _configuration.GetSection("Jwt");
 
@@ -94,10 +92,10 @@ public class AuthService : IAuthService
 
         var claims = new[]
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        };
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim(ClaimTypes.Email, user.Email),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+    };
 
         var token = new JwtSecurityToken(
             issuer: jwtSettings["Issuer"],

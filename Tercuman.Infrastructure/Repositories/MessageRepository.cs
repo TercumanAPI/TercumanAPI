@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Tercuman.Application.Interfaces;
 using Tercuman.Domin.Entities;
 using Tercuman.Infrastructure.Persistence;
@@ -13,7 +8,7 @@ namespace Tercuman.Infrastructure.Repositories;
 public class MessageRepository
     : GenericRepository<Message>, IMessageRepository
 {
-    private readonly AppDbContext _context;
+    private new readonly AppDbContext _context;
 
     public MessageRepository(AppDbContext context) : base(context)
     {
@@ -27,8 +22,19 @@ public class MessageRepository
                 (m.SenderId == user1 && m.ReceiverId == user2) ||
                 (m.SenderId == user2 && m.ReceiverId == user1))
             .OrderBy(m => m.CreatedDate)
+            .AsNoTracking()
             .ToListAsync();
     }
+
+    public async Task<List<Message>> GetConversationMessages(Guid conversationId)
+    {
+        return await _context.Messages
+            .Where(x => x.ConversationId == conversationId)
+            .OrderBy(x => x.CreatedDate)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
     public async Task<List<Message>> GetUserNotificationsAsync(Guid userId)
     {
         return await _context.Messages
@@ -36,8 +42,10 @@ public class MessageRepository
             .Where(x => x.ReceiverId == userId)
             .OrderByDescending(x => x.CreatedDate)
             .Take(10)
+            .AsNoTracking()
             .ToListAsync();
     }
+
     public async Task MarkAsReadAsync(Guid messageId, Guid userId)
     {
         var message = await _context.Messages
