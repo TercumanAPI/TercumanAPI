@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Tercuman.Domin.Entities;
+﻿using Tercuman.Domin.Entities;
 
 namespace Tercuman.Domin.Entities;
 
@@ -19,6 +14,9 @@ public class Conversation
 
     public User? User2 { get; set; }
 
+    public string LastMessage { get; set; } = string.Empty;
+
+    public DateTime? LastMessageDate { get; set; }
 
     public DateTime CreatedDate { get; set; }
 

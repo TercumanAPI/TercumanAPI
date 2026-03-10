@@ -16,6 +16,6 @@ namespace Tercuman.Application.DTOs.Conversation
 
         public string LastMessage { get; set; } = string.Empty;
 
-        public DateTime LastMessageDate { get; set; }
+        public DateTime? LastMessageDate { get; set; }
     }
 }
