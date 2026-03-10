@@ -22,18 +22,35 @@ public class ListingService : IListingService
         if (string.IsNullOrWhiteSpace(dto.Title))
             throw new Exception("Title boş olamaz");
 
+        var random = new Random();
+        long listingNo;
+
+        // aynı numara varsa tekrar üret
+        do
+        {
+            listingNo = random.NextInt64(1000000000, 9999999999);
+        }
+        while (await _listingRepository.Query()
+            .AnyAsync(x => x.ListingNo == listingNo));
+
         var listing = new Listing
         {
+            ListingNo = listingNo,
+
             Name = dto.Title,
             Title = dto.Title,
             Description = dto.Description,
             Price = dto.Price,
+
             CityId = dto.CityId,
             UserId = userId,
+
             ExperienceLevel = dto.ExperienceLevel,
             ServiceType = dto.ServiceType,
+
             SourceLanguageId = dto.SourceLanguageId,
             TargetLanguageId = dto.TargetLanguageId,
+
             CreatedDate = DateTime.UtcNow
         };
 
@@ -42,7 +59,7 @@ public class ListingService : IListingService
     }
 
     // =========================
-    // PAGED + SORT
+    // PAGED
     // =========================
     public async Task<IEnumerable<ListingDto>> GetPagedAsync(int page, int pageSize, string? sort)
     {
@@ -59,7 +76,7 @@ public class ListingService : IListingService
             };
         }
 
-        return query.Select(MapToDto);
+        return query.Select(MapToDto).ToList();
     }
 
     // =========================
@@ -88,9 +105,12 @@ public class ListingService : IListingService
         return new ListingDetailDto
         {
             Id = listing.Id,
+            ListingNo = listing.ListingNo,
+
             Title = listing.Title,
             Description = listing.Description,
             Price = listing.Price,
+
             City = listing.City?.Name ?? "",
 
             ViewCount = listing.ViewCount,
@@ -108,7 +128,7 @@ public class ListingService : IListingService
             ServiceType = listing.ServiceType,
 
             SourceLanguageId = listing.SourceLanguageId,
-            TargetLanguageId = listing.TargetLanguageId,
+            TargetLanguageId = listing.TargetLanguageId
         };
     }
 
@@ -127,13 +147,12 @@ public class ListingService : IListingService
     }
 
     // =========================
-    // FILTER + PAGINATION + SORT
+    // FILTER
     // =========================
     public async Task<List<ListingDto>> FilterAsync(FilterListingDto filter)
     {
         var query = _listingRepository.Query();
 
-        //  SEARCH KEYWORD
         if (!string.IsNullOrWhiteSpace(filter.SearchKeyword))
         {
             var keyword = filter.SearchKeyword.ToLower();
@@ -142,10 +161,9 @@ public class ListingService : IListingService
                 x.Title.ToLower().Contains(keyword) ||
                 x.Description.ToLower().Contains(keyword) ||
                 x.User.FullName.ToLower().Contains(keyword) ||
-                x.Id.ToString().Contains(keyword));
+                x.ListingNo.ToString().Contains(keyword));
         }
 
-        //  CITY NAME
         if (!string.IsNullOrWhiteSpace(filter.CityName))
         {
             var city = filter.CityName.ToLower();
@@ -154,14 +172,12 @@ public class ListingService : IListingService
                 x.City.Name.ToLower().Contains(city));
         }
 
-        //  EXPERIENCE LEVEL
         if (filter.ExperienceLevel.HasValue)
         {
             query = query.Where(x =>
                 x.ExperienceLevel == filter.ExperienceLevel.Value);
         }
 
-        //  Mevcut filtreler
         if (filter.CityId.HasValue)
             query = query.Where(x => x.CityId == filter.CityId.Value);
 
@@ -180,7 +196,6 @@ public class ListingService : IListingService
         if (filter.MaxPrice.HasValue)
             query = query.Where(x => x.Price <= filter.MaxPrice.Value);
 
-        // SORT
         if (!string.IsNullOrEmpty(filter.Sort))
         {
             query = filter.Sort switch
@@ -206,13 +221,15 @@ public class ListingService : IListingService
     }
 
     // =========================
-    // PRIVATE MAPPER
+    // MAPPER
     // =========================
     private static ListingDto MapToDto(Listing x)
     {
         return new ListingDto
         {
             Id = x.Id,
+            ListingNo = x.ListingNo,
+
             Title = x.Title,
             Description = x.Description,
             Price = x.Price,

@@ -5,6 +5,7 @@ namespace Tercuman.Application.DTOs.Listing
 {
     public class ListingDto
     {
+        public long ListingNo { get; set; }
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Title { get; set; }
@@ -12,7 +13,7 @@ namespace Tercuman.Application.DTOs.Listing
         public decimal Price { get; set; }
         public Guid CityId { get; set; }
 
-        //🔥 SADECE BUNU KULLAN
+        // SADECE BUNU KULLAN
         public string City { get; set; }
 
         public string TranslatorName { get; set; }
@@ -33,7 +34,7 @@ namespace Tercuman.Application.DTOs.Listing
 
         public int ViewCount { get; set; }
 
-        public string ListingNo => Id.ToString().Substring(0, 8);
+        //public string ListingNo => Id.ToString().Substring(0, 8);
 
     }
 }

@@ -6,6 +6,7 @@ namespace Tercuman.Application.DTOs.Listing
 {
     public class ListingDetailDto
     {
+        public long ListingNo { get; set; }
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Title { get; set; } = "";
