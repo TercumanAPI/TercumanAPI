@@ -55,6 +55,16 @@ public class ListingRepository
             .Include(x => x.TargetLanguage)
             .Where(x => x.IsActive && x.IsApproved && !x.IsDeleted);
     }
+
+    public async Task<List<Listing>> SearchAsync(string keyword)
+    {
+        return await _context.Listings
+            .Include(x => x.City)
+            .Where(x =>
+                x.Title.Contains(keyword) ||
+                x.Description.Contains(keyword))
+            .ToListAsync();
+    }
     public async Task AddImagesAsync(List<ListingImage> images)
     {
         await _context.ListingImages.AddRangeAsync(images);

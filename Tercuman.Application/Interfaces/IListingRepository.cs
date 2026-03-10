@@ -16,4 +16,5 @@ public interface IListingRepository : IGenericRepository<Listing>
     IQueryable<Listing> Query();
     Task<int> CountAsync();
     Task AddImagesAsync(List<ListingImage> images);
+    Task<List<Listing>> SearchAsync(string keyword);
 }

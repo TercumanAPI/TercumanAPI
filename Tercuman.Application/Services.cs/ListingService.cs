@@ -254,4 +254,18 @@ public class ListingService : IListingService
             Phone = x.User?.PhoneNumber ?? ""
         };
     }
+    // =========================
+    // SEARCH
+    public async Task<List<ListingListDto>> SearchAsync(string keyword)
+    {
+        var listings = await _listingRepository.SearchAsync(keyword);
+
+        return listings.Select(x => new ListingListDto
+        {
+            Id = x.Id,
+            Title = x.Title,
+            Price = x.Price,
+            CityName = x.City.Name
+        }).ToList();
+    }
 }

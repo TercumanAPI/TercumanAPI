@@ -110,7 +110,7 @@ public class ListingsController : ControllerBase
     // ============================
     [Authorize]
     [HttpPost("{id}/images")]
-    public async Task<IActionResult> UploadImages(Guid id, List<IFormFile> files)
+    public async Task<IActionResult> UploadImages(Guid id, [FromForm] List<IFormFile> files)
     {
         if (files == null || files.Count == 0)
             return BadRequest("En az 1 fotoğraf yüklemelisiniz.");
@@ -147,6 +147,23 @@ public class ListingsController : ControllerBase
         {
             success = true,
             images = imageUrls
+        });
+    }
+
+    // ============================
+    // SEARCH LISTINGS
+    [HttpGet("search")]
+    public async Task<IActionResult> Search(string keyword)
+    {
+        if (string.IsNullOrWhiteSpace(keyword))
+            return BadRequest("Keyword gerekli");
+
+        var result = await _listingService.SearchAsync(keyword);
+
+        return Ok(new
+        {
+            success = true,
+            data = result
         });
     }
 }
