@@ -15,7 +15,7 @@ public class AuthController : ControllerBase
     {
         _authService = authService;
     }
-
+    //deneme1 
     // REGISTER
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterDto dto)
