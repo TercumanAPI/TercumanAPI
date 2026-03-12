@@ -90,6 +90,8 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddScoped<IListingRepository, ListingRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
+
 
 // =========================
 // SERVICES
@@ -151,9 +153,6 @@ builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 
 var app = builder.Build();
 
-// =========================
-// REPOSITORIES
-builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
 
 // =========================
 // MIDDLEWARE
