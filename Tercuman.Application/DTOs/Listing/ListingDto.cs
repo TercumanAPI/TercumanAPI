@@ -22,6 +22,8 @@ namespace Tercuman.Application.DTOs.Listing
         public string? Gender { get; set; }
         public string Phone { get; set; }
 
+        public string PhoneNumber { get; set; } = string.Empty;
+
 
         public Guid SourceLanguageId { get; set; }
         public Guid TargetLanguageId { get; set; }

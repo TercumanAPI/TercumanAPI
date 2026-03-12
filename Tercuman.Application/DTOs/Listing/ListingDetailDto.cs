@@ -13,8 +13,9 @@ namespace Tercuman.Application.DTOs.Listing
         public string Title { get; set; } = "";
         public string Description { get; set; } = "";
         public decimal Price { get; set; }
-
         public string City { get; set; } = "";
+
+        public string UserPhone { get; set; } = "";
 
         //  User bilgileri
         public string UserFullName { get; set; } = "";
@@ -24,12 +25,9 @@ namespace Tercuman.Application.DTOs.Listing
         //  Listing bilgileri
         public int ViewCount { get; set; }
         public DateTime CreatedAt { get; set; }
-
         public List<string> Images { get; set; } = new();
-
         public ExperienceLevel ExperienceLevel { get; set; }
         public ServiceType ServiceType { get; set; }
-
         public Guid SourceLanguageId { get; set; }
         public Guid TargetLanguageId { get; set; }
     }
