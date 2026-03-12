@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 using Tercuman.Application.DTOs.Listing;
 using Tercuman.Application.Interfaces;
 using Tercuman.Domin.Entities;
@@ -107,6 +108,7 @@ public class ListingService : IListingService
             Id = listing.Id,
             UserId = listing.UserId,
             ListingNo = listing.ListingNo,
+            UserPhone = listing.User?.PhoneNumber ?? "",
 
             Title = listing.Title,
             Description = listing.Description,
