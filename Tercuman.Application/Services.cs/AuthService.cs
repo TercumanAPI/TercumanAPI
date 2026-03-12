@@ -65,6 +65,7 @@ public class AuthService : IAuthService
             FullName = dto.FullName,
             Email = dto.Email,
             Gender = dto.Gender,
+            PhoneNumber = dto.PhoneNumber,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
             CreatedDate = DateTime.UtcNow
         };
