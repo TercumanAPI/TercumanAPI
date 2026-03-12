@@ -87,6 +87,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // =========================
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
 builder.Services.AddScoped<IListingRepository, ListingRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
