@@ -149,11 +149,16 @@ builder.Services.AddAuthorization();
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 
-var app = builder.Build();
-
 // =========================
 // REPOSITORIES
 builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
+
+// =========================
+// FINALIZE
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+var app = builder.Build();
+
 
 // =========================
 // MIDDLEWARE
