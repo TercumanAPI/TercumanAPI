@@ -105,6 +105,7 @@ public class ListingService : IListingService
         return new ListingDetailDto
         {
             Id = listing.Id,
+            UserId = listing.UserId,
             ListingNo = listing.ListingNo,
 
             Title = listing.Title,
@@ -228,6 +229,7 @@ public class ListingService : IListingService
         return new ListingDto
         {
             Id = x.Id,
+            UserId = x.UserId,
             ListingNo = x.ListingNo,
 
             Title = x.Title,
