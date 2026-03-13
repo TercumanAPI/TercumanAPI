@@ -97,6 +97,7 @@ builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IListingService, ListingService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
 
 // =========================
 // AUTHENTICATION
@@ -149,7 +150,6 @@ builder.Services.AddAuthorization();
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 
-var app = builder.Build();
 
 // =========================
 // REPOSITORIES
@@ -158,6 +158,9 @@ builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
 // =========================
 // MIDDLEWARE
 // =========================
+
+var app = builder.Build();
+
 
 if (app.Environment.IsDevelopment())
 {
