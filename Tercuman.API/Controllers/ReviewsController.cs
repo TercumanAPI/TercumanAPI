@@ -17,37 +17,31 @@ public class ReviewsController : ControllerBase
         _reviewService = reviewService;
     }
 
-    /// <summary>
-    /// Yeni bir yorum ve puan ekler (POST /api/reviews)
-    /// </summary>
-    [Authorize] // Sadece giriş yapmış kullanıcılar yorum yapabilir
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> AddReview(CreateReviewDto dto)
     {
-        // 1. ADIM: Token içindeki NameIdentifier (UserId) bilgisini güvenli bir şekilde alıyoruz
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        if (string.IsNullOrEmpty(userId))
+        if (string.IsNullOrEmpty(userIdClaim))
         {
             return Unauthorized("Kullanıcı bilgisi doğrulanamadı.");
         }
 
+        Guid userId = Guid.Parse(userIdClaim);
+
         try
         {
-            // 2. ADIM: Servisi çağırıp işlemi yapıyoruz
             var result = await _reviewService.AddReviewAsync(userId, dto);
+
             return Ok(new { message = "Değerlendirmeniz başarıyla eklendi." });
         }
         catch (Exception ex)
         {
-            // Servis katmanında fırlattığımız "Zaten yorum yaptınız" hatası buraya düşer
             return BadRequest(new { message = ex.Message });
         }
     }
 
-    /// <summary>
-    /// Bir çevirmene ait tüm yorumları ve ortalama puanı getirir (GET /api/reviews/{translatorId})
-    /// </summary>
     [HttpGet("{translatorId}")]
     public async Task<IActionResult> GetTranslatorReviews(Guid translatorId)
     {
