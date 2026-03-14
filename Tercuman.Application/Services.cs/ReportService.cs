@@ -2,6 +2,7 @@
 using Tercuman.Application.DTOs.Report; // DTO'lar için bu şart!
 using Tercuman.Domin.Entities;
 using Microsoft.EntityFrameworkCore;
+//eski sürümü geri yükledim
 
 namespace Tercuman.Application.Services // .cs kısmını sildik, namespace'te dosya adı olmaz
 {
