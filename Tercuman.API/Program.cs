@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
 using Tercuman.API.Hubs;
+using Tercuman.API.Middlewares;
 using Tercuman.Application.Interfaces;
 using Tercuman.Application.Services;
 using Tercuman.Application.Validators;
@@ -169,6 +170,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
