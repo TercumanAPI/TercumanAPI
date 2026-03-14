@@ -90,4 +90,47 @@ public class UsersController : ControllerBase
 
         return Ok("Şifre güncellendi");
     }
+    [Authorize]
+    [HttpPost("profile/image")]
+    public async Task<IActionResult> UploadProfileImage(IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+            return BadRequest("Dosya seçilmedi.");
+
+        var extension = Path.GetExtension(file.FileName).ToLower();
+
+        if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
+            return BadRequest("Sadece JPG veya PNG yüklenebilir.");
+
+        var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
+
+        if (!Directory.Exists(uploadPath))
+            Directory.CreateDirectory(uploadPath);
+
+        var fileName = Guid.NewGuid().ToString() + extension;
+
+        var filePath = Path.Combine(uploadPath, fileName);
+
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await file.CopyToAsync(stream);
+        }
+
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+        var user = await _userRepository.GetByIdAsync(userId);
+
+        if (user == null)
+            return NotFound();
+
+        user.ProfileImageUrl = "/images/" + fileName;
+
+        await _userRepository.SaveChangesAsync();
+
+        return Ok(new
+        {
+            success = true,
+            imageUrl = user.ProfileImageUrl
+        });
+    }
 }
