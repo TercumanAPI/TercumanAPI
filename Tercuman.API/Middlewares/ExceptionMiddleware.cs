@@ -33,9 +33,16 @@ namespace Tercuman.API.Middlewares
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-                var response = _env.IsDevelopment()
-                    ? new { StatusCode = context.Response.StatusCode, Message = ex.Message, Details = ex.StackTrace?.ToString() }
-                    : new { StatusCode = context.Response.StatusCode, Message = "Sunucu tarafında beklenmeyen bir hata oluştu." };
+                // Hata mesajını önce değişkene alıyoruz ki tip karmaşası olmasın
+                var message = ex.Message;
+                var details = _env.IsDevelopment() ? ex.StackTrace?.ToString() : null;
+
+                var response = new
+                {
+                    StatusCode = context.Response.StatusCode,
+                    Message = _env.IsDevelopment() ? message : "Sunucu tarafında bir hata oluştu.",
+                    Details = details
+                };
 
                 var json = JsonSerializer.Serialize(response);
                 await context.Response.WriteAsync(json);
