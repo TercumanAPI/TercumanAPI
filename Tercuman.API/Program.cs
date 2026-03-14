@@ -31,10 +31,9 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateListingValidator>();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        // Enum'ları Frontend'e sayı(0,1) yerine metin(Male,Female) olarak gönderir/alır
+        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
     });
-
-builder.Services.AddEndpointsApiExplorer();
 
 // =========================
 // SWAGGER + JWT
