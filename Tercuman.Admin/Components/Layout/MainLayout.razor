@@ -1,0 +1,28 @@
+﻿@inherits LayoutComponentBase
+@using MudBlazor
+
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+
+    <MudAppBar Elevation="1">
+        Tercuman Admin
+    </MudAppBar>
+
+    <MudDrawer Open="true" Elevation="1">
+        <NavMenu />
+    </MudDrawer>
+
+    <MudMainContent>
+
+        <MudContainer MaxWidth="MaxWidth.False" Class="mt-4">
+
+            @Body
+
+        </MudContainer>
+
+    </MudMainContent>
+
+</MudLayout>

@@ -1,0 +1,50 @@
+﻿@page "/users"
+@using MudBlazor
+@inject AdminService AdminService
+@using Tercuman.Admin.DTOS
+@using Tercuman.Admin.Services
+
+
+<MudText Typo="Typo.h4" Class="mb-4">
+    Kullanıcılar
+</MudText>
+
+<MudTable T="UserDto" Items="@users">
+
+    <HeaderContent>
+        <MudTh>Ad</MudTh>
+        <MudTh>Email</MudTh>
+        <MudTh>Durum</MudTh>
+    </HeaderContent>
+
+    <RowTemplate Context="user">
+
+        <MudTd>@user.FullName</MudTd>
+
+        <MudTd>@user.Email</MudTd>
+
+        <MudTd>
+            @if (user.IsActive)
+            {
+                <MudChip T="string" Color="Color.Success">Aktif</MudChip>
+            }
+            else
+            {
+                <MudChip T="string" Color="Color.Error">Pasif</MudChip>
+            }
+        </MudTd>
+
+    </RowTemplate>
+
+</MudTable>
+
+@code {
+
+    List<UserDto> users = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await AdminService.GetUsers();
+    }
+
+}

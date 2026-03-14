@@ -1,0 +1,83 @@
+﻿@page "/"
+@using MudBlazor
+@using Tercuman.Admin.Services
+@inject AdminService AdminService
+
+<MudText Typo="Typo.h4" Class="mb-4">
+    Kontrol Paneli
+</MudText>
+
+<MudGrid>
+
+    <!-- Kullanıcılar -->
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Elevation="6" Class="pa-4 d-flex align-center">
+            <MudIcon Icon="@Icons.Material.Filled.Person"
+                     Size="Size.Large"
+                     Color="Color.Primary"
+                     Class="mr-4" />
+
+            <div>
+                <MudText Typo="Typo.subtitle2">Kullanıcılar</MudText>
+                <MudText Typo="Typo.h4">@dashboard.Users</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+
+    <!-- İlanlar -->
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Elevation="6" Class="pa-4 d-flex align-center">
+            <MudIcon Icon="@Icons.Material.Filled.Description"
+                     Size="Size.Large"
+                     Color="Color.Success"
+                     Class="mr-4" />
+
+            <div>
+                <MudText Typo="Typo.subtitle2">İlanlar</MudText>
+                <MudText Typo="Typo.h4">@dashboard.Listings</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+
+    <!-- Mesajlar -->
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Elevation="6" Class="pa-4 d-flex align-center">
+            <MudIcon Icon="@Icons.Material.Filled.Message"
+                     Size="Size.Large"
+                     Color="Color.Warning"
+                     Class="mr-4" />
+
+            <div>
+                <MudText Typo="Typo.subtitle2">Mesajlar</MudText>
+                <MudText Typo="Typo.h4">@dashboard.Messages</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+
+    <!-- Raporlar -->
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Elevation="6" Class="pa-4 d-flex align-center">
+            <MudIcon Icon="@Icons.Material.Filled.BarChart"
+                     Size="Size.Large"
+                     Color="Color.Error"
+                     Class="mr-4" />
+
+            <div>
+                <MudText Typo="Typo.subtitle2">Raporlar</MudText>
+                <MudText Typo="Typo.h4">@dashboard.Reports</MudText>
+            </div>
+        </MudPaper>
+    </MudItem>
+
+</MudGrid>
+
+@code {
+
+    DashboardDto dashboard = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        dashboard = await AdminService.GetDashboard();
+    }
+
+}
