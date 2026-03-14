@@ -44,6 +44,7 @@ namespace Tercuman.Infrastructure.Repositories
         {
             return await _context.Favorites
                 .Include(f => f.Listing)
+                    .ThenInclude(l => l.User) // Frontend'in beklediği Tercüman bilgisi için bu satırı ekledik
                 .Where(f => f.UserId == userId)
                 .ToListAsync();
         }
