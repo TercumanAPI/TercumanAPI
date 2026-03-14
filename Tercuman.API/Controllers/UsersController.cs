@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Tercuman.Application.DTOs.User;
 using Tercuman.Application.Interfaces;
 
 [ApiController]
-[Route("api/translator")]
+[Route("api/users")]
 public class UsersController : ControllerBase
 {
     private readonly IUserRepository _userRepository;
@@ -14,7 +15,7 @@ public class UsersController : ControllerBase
         _userRepository = userRepository;
     }
 
-    // GET api/translator/profile
+    // GET api/users/profile
     [Authorize]
     [HttpGet("profile")]
     public async Task<IActionResult> GetProfile()
@@ -40,7 +41,7 @@ public class UsersController : ControllerBase
         });
     }
 
-    // PUT api/translator/profile
+    // PUT api/users/profile
     [Authorize]
     [HttpPut("profile")]
     public async Task<IActionResult> UpdateProfile(UpdateProfileDto dto)
@@ -62,5 +63,31 @@ public class UsersController : ControllerBase
         await _userRepository.SaveChangesAsync();
 
         return Ok();
+    }
+
+    // POST api/users/change-password
+    [Authorize]
+    [HttpPost("change-password")]
+    public async Task<IActionResult> ChangePassword(ChangePasswordDto dto)
+    {
+        var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+
+        var user = await _userRepository.GetByIdAsync(userId);
+
+        if (user == null)
+            return NotFound();
+
+        // eski şifre kontrolü
+        var validPassword = BCrypt.Net.BCrypt.Verify(dto.CurrentPassword, user.PasswordHash);
+
+        if (!validPassword)
+            return BadRequest("Mevcut şifre yanlış");
+
+        // yeni şifreyi hashle
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
+
+        await _userRepository.SaveChangesAsync();
+
+        return Ok("Şifre güncellendi");
     }
 }
