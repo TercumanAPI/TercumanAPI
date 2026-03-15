@@ -132,5 +132,24 @@ public class UsersController : ControllerBase
             success = true,
             imageUrl = user.ProfileImageUrl
         });
+
+        [HttpPut("{id}/toggle-status")]
+        public async Task<IActionResult> ToggleUserStatus(Guid id)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+
+            if (user == null)
+                return NotFound();
+
+            user.IsActive = !user.IsActive;
+
+            await _userRepository.SaveChangesAsync();
+
+            return Ok(new
+            {
+                success = true,
+                status = user.IsActive
+            });
+        }
     }
 }
