@@ -26,5 +26,6 @@ namespace Tercuman.Application.DTOs.Listing
         public string? SearchKeyword { get; set; }
         public string? CityName { get; set; }
         public ExperienceLevel? ExperienceLevel { get; set; }
+        public Gender? Gender { get; set; }
     }
 }

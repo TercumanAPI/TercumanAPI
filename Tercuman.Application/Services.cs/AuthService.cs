@@ -14,20 +14,99 @@ public class AuthService : IAuthService
     private readonly IUserRepository _userRepository;
     private readonly IConfiguration _configuration;
 
-    public AuthService(IUserRepository userRepository,
-                       IConfiguration configuration)
+    public AuthService(IUserRepository userRepository, IConfiguration configuration)
     {
         _userRepository = userRepository;
         _configuration = configuration;
     }
 
-    // REFRESH TOKEN (şimdilik basit)
-    public async Task<string> RefreshTokenAsync(string refreshToken)
+    // REGISTER
+    public async Task RegisterAsync(RegisterDto dto)
     {
-        // gerçek refresh sistemi sonra yazılacak
+        var existing = await _userRepository.GetByEmailAsync(dto.Email);
+
+        if (existing != null)
+            throw new Exception("Email already exists");
+
+        var user = new User
+        {
+            Id = Guid.NewGuid(),
+            FullName = dto.FullName,
+            Email = dto.Email,
+            Gender = dto.Gender,
+            PhoneNumber = dto.PhoneNumber,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+            CreatedDate = DateTime.UtcNow
+        };
+
+        await _userRepository.AddAsync(user);
+        await _userRepository.SaveChangesAsync();
+    }
+
+    // LOGIN
+    public async Task<TokenDto> LoginAsync(LoginDto dto)
+    {
+        var user = await _userRepository.GetByEmailAsync(dto.Email);
+
+        if (user == null)
+            throw new Exception("Invalid email or password");
+
+        if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
+            throw new Exception("Invalid email or password");
+
+        var jwtSettings = _configuration.GetSection("Jwt");
+
+        var key = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(jwtSettings["Key"]!)
+        );
+
+        var claims = new[]
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+        };
+
+        var token = new JwtSecurityToken(
+            issuer: jwtSettings["Issuer"],
+            audience: jwtSettings["Audience"],
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(
+                int.Parse(jwtSettings["ExpiryMinutes"]!)
+            ),
+            signingCredentials:
+                new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
+        );
+
+        var accessToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+        // Refresh token üret
+        var refreshToken = Convert.ToBase64String(
+            System.Security.Cryptography.RandomNumberGenerator.GetBytes(64)
+        );
+
+        user.RefreshToken = refreshToken;
+        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+
+        await _userRepository.SaveChangesAsync();
+
+        return new TokenDto
+        {
+            AccessToken = accessToken,
+            RefreshToken = refreshToken
+        };
+    }
+
+    // REFRESH TOKEN
+    public async Task<TokenDto> RefreshTokenAsync(string refreshToken)
+    {
         await Task.CompletedTask;
 
-        return GenerateJwtToken();
+        return new TokenDto
+        {
+            AccessToken = GenerateJwtToken(),
+            RefreshToken = refreshToken
+        };
     }
 
     // JWT üretme
@@ -52,65 +131,6 @@ public class AuthService : IAuthService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    // REGISTER
-    public async Task RegisterAsync(RegisterDto dto)
-    {
-        var existing = await _userRepository.GetByEmailAsync(dto.Email);
-
-        if (existing != null)
-            throw new Exception("Email already exists");
-
-        var user = new User
-        {
-            FullName = dto.FullName,
-            Email = dto.Email,
-            Gender = dto.Gender,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-            CreatedDate = DateTime.UtcNow
-        };
-
-        await _userRepository.AddAsync(user);
-        await _userRepository.SaveChangesAsync();
-    }
-
-    // LOGIN
-    public async Task<string> LoginAsync(LoginDto dto)
-    {
-        var user = await _userRepository.GetByEmailAsync(dto.Email);
-
-        if (user == null)
-            throw new Exception("Invalid email or password");
-
-        if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
-            throw new Exception("Invalid email or password");
-
-        var jwtSettings = _configuration.GetSection("Jwt");
-
-        var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(jwtSettings["Key"]!)
-        );
-
-        var claims = new[]
-        {
-        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-        new Claim(ClaimTypes.Email, user.Email),
-        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-    };
-
-        var token = new JwtSecurityToken(
-            issuer: jwtSettings["Issuer"],
-            audience: jwtSettings["Audience"],
-            claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(
-                int.Parse(jwtSettings["ExpiryMinutes"]!)
-            ),
-            signingCredentials:
-                new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
-        );
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
-    }
-
     // FORGOT PASSWORD
     public async Task ForgotPasswordAsync(string email)
     {
@@ -119,6 +139,6 @@ public class AuthService : IAuthService
         if (user == null)
             throw new Exception("User not found");
 
-        // burada ileride mail gönderilecek
+        // ileride mail gönderilecek
     }
 }

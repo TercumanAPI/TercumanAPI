@@ -7,6 +7,7 @@ namespace Tercuman.Application.DTOs.Listing
     {
         public long ListingNo { get; set; }
         public Guid Id { get; set; }
+        public Guid UserId { get; set; }
         public string Name { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
@@ -21,6 +22,8 @@ namespace Tercuman.Application.DTOs.Listing
         public string? Gender { get; set; }
         public string Phone { get; set; }
 
+        public string PhoneNumber { get; set; } = string.Empty;
+
 
         public Guid SourceLanguageId { get; set; }
         public Guid TargetLanguageId { get; set; }
@@ -33,6 +36,7 @@ namespace Tercuman.Application.DTOs.Listing
         public ExperienceLevel ExperienceLevel { get; set; }
 
         public int ViewCount { get; set; }
+        public string? TranslatorPhotoUrl { get; set; }
 
         //public string ListingNo => Id.ToString().Substring(0, 8);
 

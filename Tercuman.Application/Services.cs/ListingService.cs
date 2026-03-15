@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 using Tercuman.Application.DTOs.Listing;
 using Tercuman.Application.Interfaces;
 using Tercuman.Domin.Entities;
@@ -105,7 +106,9 @@ public class ListingService : IListingService
         return new ListingDetailDto
         {
             Id = listing.Id,
+            UserId = listing.UserId,
             ListingNo = listing.ListingNo,
+            UserPhone = listing.User?.PhoneNumber ?? "",
 
             Title = listing.Title,
             Description = listing.Description,
@@ -217,6 +220,17 @@ public class ListingService : IListingService
             .Take(pageSize)
             .ToListAsync();
 
+        if (filter.Gender.HasValue)
+        {
+            query = query.Where(x => x.User.Gender == filter.Gender.Value);
+        }
+
+        // Veya parametrenin adı "filter" ise böyle yap:
+        if (filter.Gender.HasValue)
+        {
+            query = query.Where(x => x.User.Gender == filter.Gender.Value);
+        }
+
         return listings.Select(MapToDto).ToList();
     }
 
@@ -228,6 +242,7 @@ public class ListingService : IListingService
         return new ListingDto
         {
             Id = x.Id,
+            UserId = x.UserId,
             ListingNo = x.ListingNo,
 
             Title = x.Title,
@@ -251,7 +266,8 @@ public class ListingService : IListingService
 
             TranslatorName = x.User?.FullName ?? "",
             Gender = x.User?.Gender.ToString() ?? "",
-            Phone = x.User?.PhoneNumber ?? ""
+            Phone = x.User?.PhoneNumber ?? "",
+            TranslatorPhotoUrl = x.User != null ? x.User.ProfileImageUrl : null
         };
     }
     // =========================
