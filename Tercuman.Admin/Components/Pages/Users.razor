@@ -1,0 +1,30 @@
+﻿@page "/users"
+@using Tercuman.Application.DTOs.User
+@using Tercuman.Admin.Services
+@inject ApiService ApiService
+
+<h3>Users</h3>
+
+@if (users == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <ul>
+        @foreach (var user in users)
+        {
+            <li>@user.FullName</li>
+        }
+    </ul>
+}
+
+@code {
+
+    List<UserProfileDto> users;
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await ApiService.GetUsers();
+    }
+}
