@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tercuman.Domin", "Tercuman.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tercuman.Application", "Tercuman.Application\Tercuman.Application.csproj", "{93872A92-2AA9-487A-A09E-820CB8C82F26}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tercuman.Admin", "Tercuman.Admin\Tercuman.Admin.csproj", "{5A34DBDE-5F9D-8F4C-1BE6-26CC4D624CCF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{93872A92-2AA9-487A-A09E-820CB8C82F26}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93872A92-2AA9-487A-A09E-820CB8C82F26}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93872A92-2AA9-487A-A09E-820CB8C82F26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A34DBDE-5F9D-8F4C-1BE6-26CC4D624CCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A34DBDE-5F9D-8F4C-1BE6-26CC4D624CCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A34DBDE-5F9D-8F4C-1BE6-26CC4D624CCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A34DBDE-5F9D-8F4C-1BE6-26CC4D624CCF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
