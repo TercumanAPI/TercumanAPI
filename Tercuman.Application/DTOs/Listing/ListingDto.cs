@@ -36,6 +36,7 @@ namespace Tercuman.Application.DTOs.Listing
         public ExperienceLevel ExperienceLevel { get; set; }
 
         public int ViewCount { get; set; }
+        public string? TranslatorPhotoUrl { get; set; }
 
         //public string ListingNo => Id.ToString().Substring(0, 8);
 

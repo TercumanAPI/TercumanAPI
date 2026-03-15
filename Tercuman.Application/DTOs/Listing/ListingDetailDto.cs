@@ -30,6 +30,7 @@ namespace Tercuman.Application.DTOs.Listing
         public ServiceType ServiceType { get; set; }
         public Guid SourceLanguageId { get; set; }
         public Guid TargetLanguageId { get; set; }
+        public string? TranslatorPhotoUrl { get; set; }
     }
 
 }

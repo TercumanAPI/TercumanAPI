@@ -220,6 +220,17 @@ public class ListingService : IListingService
             .Take(pageSize)
             .ToListAsync();
 
+        if (filter.Gender.HasValue)
+        {
+            query = query.Where(x => x.User.Gender == filter.Gender.Value);
+        }
+
+        // Veya parametrenin adı "filter" ise böyle yap:
+        if (filter.Gender.HasValue)
+        {
+            query = query.Where(x => x.User.Gender == filter.Gender.Value);
+        }
+
         return listings.Select(MapToDto).ToList();
     }
 
@@ -255,7 +266,8 @@ public class ListingService : IListingService
 
             TranslatorName = x.User?.FullName ?? "",
             Gender = x.User?.Gender.ToString() ?? "",
-            Phone = x.User?.PhoneNumber ?? ""
+            Phone = x.User?.PhoneNumber ?? "",
+            TranslatorPhotoUrl = x.User != null ? x.User.ProfileImageUrl : null
         };
     }
     // =========================
