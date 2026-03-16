@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Tercuman.API.Models;
+using Tercuman.Domain.Entities;
 using Tercuman.Infrastructure.Persistence;
 
 namespace Tercuman.API.Controllers
@@ -17,7 +19,8 @@ namespace Tercuman.API.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_context.Cities.ToList());
+            var cities = _context.Cities.ToList();
+            return Ok(ApiResponse<List<City>>.Ok(cities));
         }
     }
 }
