@@ -69,8 +69,12 @@ public class ListingService : IListingService
     // =========================
     public async Task<IEnumerable<ListingDto>> GetPagedAsync(int page, int pageSize, string? sort)
     {
-        var listings = await _listingRepository.GetPagedAsync(page, pageSize);
-        var query = listings.AsQueryable();
+        var currentPage = page <= 0 ? 1 : page;
+        var currentPageSize = pageSize <= 0 ? 10 : pageSize;
+        if (currentPageSize > 50)
+            currentPageSize = 50;
+
+        var query = _listingRepository.Query();
 
         if (!string.IsNullOrEmpty(sort))
         {
@@ -81,8 +85,17 @@ public class ListingService : IListingService
                 _ => query
             };
         }
+        else
+        {
+            query = query.OrderByDescending(x => x.CreatedDate);
+        }
 
-        return query.Select(MapToDto).ToList();
+        var listings = await query
+            .Skip((currentPage - 1) * currentPageSize)
+            .Take(currentPageSize)
+            .ToListAsync();
+
+        return listings.Select(MapToDto).ToList();
     }
 
     // =========================
@@ -177,7 +190,7 @@ public class ListingService : IListingService
             var city = filter.CityName.ToLower();
 
             query = query.Where(x =>
-                x.City.Name.ToLower().Contains(city));
+                (x.City != null ? x.City.Name : string.Empty).ToLower().Contains(city));
         }
 
         if (filter.ExperienceLevel.HasValue)
@@ -221,7 +234,7 @@ public class ListingService : IListingService
             pageSize = 50;
 
         if (filter.Gender.HasValue)
-            query = query.Where(x => x.User.Gender == filter.Gender.Value);
+            query = query.Where(x => x.User != null && x.User.Gender == filter.Gender.Value);
 
         var listings = await query
             .Skip((page - 1) * pageSize)
@@ -319,14 +332,19 @@ public class ListingService : IListingService
                 .ToList();
         }
 
-        return listings.Select(x => new ListingListDto
+        return listings.Select(MapToListDto).ToList();
+    }
+
+
+    private static ListingListDto MapToListDto(Listing x)
+    {
+        return new ListingListDto
         {
             Id = x.Id,
-            Name = x.Name,
             Title = x.Title,
             Price = x.Price,
-            CityName = x.City.Name
-        }).ToList();
+            CityName = x.City?.Name ?? string.Empty
+        };
     }
 
     public async Task IncrementViewAsync(Guid listingId, Guid? userId, string? ipAddress)
