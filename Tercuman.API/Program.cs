@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 using Tercuman.API.Hubs;
 using Tercuman.API.Middlewares;
 using Tercuman.Application.Interfaces;
@@ -14,8 +15,10 @@ using Tercuman.Application.Services;
 using Tercuman.Application.Validators;
 using Tercuman.Infrastructure.Persistence;
 using Tercuman.Infrastructure.Repositories;
+using Tercuman.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.AddConsole();
 
 // =========================
 // VALIDATION
@@ -36,6 +39,21 @@ builder.Services.AddControllers()
     });
 
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "anonymous",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 100,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0,
+                AutoReplenishment = true
+            }));
+});
 
 builder.Services.AddCors(options =>
 {
@@ -122,6 +140,7 @@ builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<ITranslatorService, TranslatorService>();
 builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
 builder.Services.AddScoped<FavoriteService>();
+builder.Services.AddScoped<IEmailService, SmtpEmailService>();
 
 // =========================
 // AUTHENTICATION
@@ -195,6 +214,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseCors("FrontendCors");
+app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();

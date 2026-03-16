@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+using Tercuman.API.Models;
 using Tercuman.Application.DTOs.Listing;
 using Tercuman.Application.Interfaces;
 
@@ -21,60 +21,32 @@ public class ListingsController : ControllerBase
         _configuration = configuration;
     }
 
-    // ============================
-    // CREATE LISTING
-    // ============================
-    [Authorize] //  Sadece login yeterli
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateListingDto dto)
     {
-
         var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
 
-
         if (userIdClaim == null)
-            return Unauthorized(new
-            {
-                success = false,
-                message = "UserId claim bulunamadı"
-            });
+            return Unauthorized(ApiResponse<object>.Fail("UserId claim bulunamadı"));
 
         var userId = Guid.Parse(userIdClaim.Value);
-
         await _listingService.CreateAsync(dto, userId);
 
-        return Ok(new
-        {
-            success = true,
-            message = "Listing created successfully"
-        });
+        return Ok(ApiResponse<object>.Ok(null, "Listing created successfully"));
     }
 
-    // ============================
-    // GET DETAIL
-    // ============================
     [HttpGet("{id}")]
     public async Task<IActionResult> GetDetail(Guid id)
     {
         var result = await _listingService.GetDetailAsync(id);
 
         if (result == null)
-            return NotFound(new
-            {
-                success = false,
-                message = "Listing bulunamadı"
-            });
+            return NotFound(ApiResponse<object>.Fail("Listing bulunamadı"));
 
-        return Ok(new
-        {
-            success = true,
-            data = result
-        });
+        return Ok(ApiResponse<ListingDetailDto>.Ok(result));
     }
 
-    // ============================
-    // GET PAGED
-    // ============================
     [HttpGet]
     public async Task<IActionResult> GetPaged(
         [FromQuery] int page = 1,
@@ -84,43 +56,25 @@ public class ListingsController : ControllerBase
         var listings = await _listingService.GetPagedAsync(page, pageSize, sort);
         var totalCount = await _listingService.CountAsync();
 
-        return Ok(new
-        {
-            success = true,
-            data = listings,
-            totalCount,
-            page,
-            pageSize
-        });
+        return Ok(ApiResponse<object>.Ok(new { items = listings, totalCount, page, pageSize }));
     }
 
-    // ============================
-    // FILTER LISTINGS
-    // ============================
     [HttpGet("filter")]
     public async Task<IActionResult> Filter([FromQuery] FilterListingDto filter)
     {
         var result = await _listingService.FilterAsync(filter);
-
-        return Ok(new
-        {
-            success = true,
-            data = result
-        });
+        return Ok(ApiResponse<List<ListingDto>>.Ok(result));
     }
 
-    // ============================
-    // UPLOAD IMAGES
-    // ============================
     [Authorize]
     [HttpPost("{id}/images")]
     public async Task<IActionResult> UploadImages(Guid id, [FromForm] List<IFormFile> files)
     {
         if (files == null || files.Count == 0)
-            return BadRequest("En az 1 fotoğraf yüklemelisiniz.");
+            return BadRequest(ApiResponse<object>.Fail("En az 1 fotoğraf yüklemelisiniz."));
 
         if (files.Count > 10)
-            return BadRequest("En fazla 10 fotoğraf yüklenebilir.");
+            return BadRequest(ApiResponse<object>.Fail("En fazla 10 fotoğraf yüklenebilir."));
 
         var imageFolder = _configuration["FileStorage:ImagesFolder"] ?? "images";
         var webRootPath = _webHostEnvironment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
@@ -136,12 +90,12 @@ public class ListingsController : ControllerBase
             var extension = Path.GetExtension(file.FileName).ToLower();
 
             if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
-                return BadRequest("Sadece JPG/PNG yüklenebilir.");
+                return BadRequest(ApiResponse<object>.Fail("Sadece JPG/PNG yüklenebilir."));
 
             var fileName = Guid.NewGuid() + extension;
             var filePath = Path.Combine(uploadPath, fileName);
 
-            using var stream = new FileStream(filePath, FileMode.Create);
+            await using var stream = new FileStream(filePath, FileMode.Create);
             await file.CopyToAsync(stream);
 
             imageUrls.Add($"/{imageFolder}/{fileName}");
@@ -149,29 +103,47 @@ public class ListingsController : ControllerBase
 
         await _listingService.AddImagesAsync(id, imageUrls);
 
-        return Ok(new
-        {
-            success = true,
-            images = imageUrls
-        });
+        return Ok(ApiResponse<List<string>>.Ok(imageUrls, "Images uploaded successfully"));
     }
 
-    // ============================
-    // SEARCH LISTINGS
-    [HttpGet("search")]
-    public async Task<IActionResult> Search(string keyword)
+    [Authorize]
+    [HttpPost("upload-image")]
+    public async Task<IActionResult> UploadImageAlias([FromForm] Guid listingId, [FromForm] List<IFormFile> files)
     {
-        if (string.IsNullOrWhiteSpace(keyword))
-            return BadRequest("Keyword gerekli");
+        return await UploadImages(listingId, files);
+    }
 
-        var result = await _listingService.SearchAsync(keyword);
-
-        return Ok(new
+    [HttpGet("search")]
+    public async Task<IActionResult> Search([FromQuery] SearchListingDto search)
+    {
+        if (string.IsNullOrWhiteSpace(search.Keyword)
+            && !search.CityId.HasValue
+            && !search.LanguageId.HasValue
+            && !search.ExperienceLevel.HasValue
+            && !search.ServiceType.HasValue
+            && !search.MinPrice.HasValue
+            && !search.MaxPrice.HasValue
+            && !search.MinRating.HasValue)
         {
-            success = true,
-            data = result
-        });
+            return BadRequest(ApiResponse<object>.Fail("En az bir arama filtresi gerekli"));
+        }
 
+        var result = await _listingService.SearchAsync(search);
+        return Ok(ApiResponse<List<ListingListDto>>.Ok(result));
+    }
 
+    [HttpPost("{id}/view")]
+    public async Task<IActionResult> AddView(Guid id)
+    {
+        var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+        Guid? userId = null;
+
+        if (userIdClaim != null && Guid.TryParse(userIdClaim.Value, out var parsedUserId))
+            userId = parsedUserId;
+
+        var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+        await _listingService.IncrementViewAsync(id, userId, ipAddress);
+
+        return Ok(ApiResponse<object>.Ok(null, "View count updated"));
     }
 }

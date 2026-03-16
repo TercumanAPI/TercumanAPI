@@ -13,11 +13,13 @@ public class AuthService : IAuthService
 {
     private readonly IUserRepository _userRepository;
     private readonly IConfiguration _configuration;
+    private readonly IEmailService _emailService;
 
-    public AuthService(IUserRepository userRepository, IConfiguration configuration)
+    public AuthService(IUserRepository userRepository, IConfiguration configuration, IEmailService emailService)
     {
         _userRepository = userRepository;
         _configuration = configuration;
+        _emailService = emailService;
     }
 
     // REGISTER
@@ -139,6 +141,6 @@ public class AuthService : IAuthService
         if (user == null)
             throw new Exception("User not found");
 
-        // ileride mail gönderilecek
+        await _emailService.SendAsync(user.Email, "Tercuman - Password Reset", "Şifre sıfırlama talebiniz alınmıştır. Lütfen panelden şifre yenileme adımlarını takip edin.");
     }
 }

@@ -3,16 +3,21 @@ using Tercuman.Application.DTOs.Listing;
 using Tercuman.Application.Exceptions;
 using Tercuman.Application.Interfaces;
 using Tercuman.Domain.Entities;
+using Tercuman.Domain.Enums;
 
 namespace Tercuman.Application.Services;
 
 public class ListingService : IListingService
 {
     private readonly IListingRepository _listingRepository;
+    private readonly IGenericRepository<ListingView> _listingViewRepository;
+    private readonly IGenericRepository<Review> _reviewRepository;
 
-    public ListingService(IListingRepository listingRepository)
+    public ListingService(IListingRepository listingRepository, IGenericRepository<ListingView> listingViewRepository, IGenericRepository<Review> reviewRepository)
     {
         _listingRepository = listingRepository;
+        _listingViewRepository = listingViewRepository;
+        _reviewRepository = reviewRepository;
     }
 
     // =========================
@@ -267,7 +272,52 @@ public class ListingService : IListingService
     // SEARCH
     public async Task<List<ListingListDto>> SearchAsync(string keyword)
     {
-        var listings = await _listingRepository.SearchAsync(keyword);
+        return await SearchAsync(new SearchListingDto { Keyword = keyword });
+    }
+
+    public async Task<List<ListingListDto>> SearchAsync(SearchListingDto search)
+    {
+        var query = _listingRepository.Query();
+
+        if (!string.IsNullOrWhiteSpace(search.Keyword))
+        {
+            var keyword = search.Keyword.ToLower();
+            query = query.Where(x => x.Title.ToLower().Contains(keyword) || x.Description.ToLower().Contains(keyword));
+        }
+
+        if (search.CityId.HasValue)
+            query = query.Where(x => x.CityId == search.CityId.Value);
+
+        if (search.LanguageId.HasValue)
+            query = query.Where(x => x.SourceLanguageId == search.LanguageId.Value || x.TargetLanguageId == search.LanguageId.Value);
+
+        if (search.ExperienceLevel.HasValue)
+            query = query.Where(x => x.ExperienceLevel == search.ExperienceLevel.Value);
+
+        if (search.ServiceType.HasValue)
+            query = query.Where(x => x.ServiceType == search.ServiceType.Value);
+
+        if (search.MinPrice.HasValue)
+            query = query.Where(x => x.Price >= search.MinPrice.Value);
+
+        if (search.MaxPrice.HasValue)
+            query = query.Where(x => x.Price <= search.MaxPrice.Value);
+
+        var listings = await query
+            .OrderByDescending(x => x.CreatedDate)
+            .ToListAsync();
+
+        if (search.MinRating.HasValue)
+        {
+            var reviews = await _reviewRepository.GetAllAsync();
+            var avgRatingsByListing = reviews
+                .GroupBy(r => r.ListingId)
+                .ToDictionary(g => g.Key, g => g.Average(r => r.Rating));
+
+            listings = listings
+                .Where(x => avgRatingsByListing.TryGetValue(x.Id, out var avgRating) && avgRating >= search.MinRating.Value)
+                .ToList();
+        }
 
         return listings.Select(x => new ListingListDto
         {
@@ -277,5 +327,27 @@ public class ListingService : IListingService
             Price = x.Price,
             CityName = x.City.Name
         }).ToList();
+    }
+
+    public async Task IncrementViewAsync(Guid listingId, Guid? userId, string? ipAddress)
+    {
+        var listing = await _listingRepository.GetByIdAsync(listingId);
+
+        if (listing == null || listing.IsDeleted)
+            throw new ValidationException("Listing bulunamadı");
+
+        listing.ViewCount++;
+        _listingRepository.Update(listing);
+
+        var view = new ListingView
+        {
+            ListingId = listingId,
+            UserId = userId,
+            IpAddress = ipAddress ?? string.Empty,
+            CreatedDate = DateTime.UtcNow
+        };
+
+        await _listingViewRepository.AddAsync(view);
+        await _listingRepository.SaveChangesAsync();
     }
 }
