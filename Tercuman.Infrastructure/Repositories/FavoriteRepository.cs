@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Tercuman.Application.Interfaces; // Bu satır eksikti
+using Tercuman.Application.Interfaces; 
 using Tercuman.Domain.Entities;
 using Tercuman.Infrastructure.Persistence;
 
