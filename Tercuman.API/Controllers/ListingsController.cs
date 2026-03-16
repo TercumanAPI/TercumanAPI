@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tercuman.API.Models;
+using Tercuman.Application.DTOs.Common;
 using Tercuman.Application.DTOs.Listing;
 using Tercuman.Application.Interfaces;
 
@@ -56,14 +57,22 @@ public class ListingsController : ControllerBase
         var listings = await _listingService.GetPagedAsync(page, pageSize, sort);
         var totalCount = await _listingService.CountAsync();
 
-        return Ok(ApiResponse<object>.Ok(new { items = listings, totalCount, page, pageSize }));
+        var result = new PagedResultDto<ListingDto>
+        {
+            Items = listings.ToList(),
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize
+        };
+
+        return Ok(ApiResponse<PagedResultDto<ListingDto>>.Ok(result));
     }
 
     [HttpGet("filter")]
     public async Task<IActionResult> Filter([FromQuery] FilterListingDto filter)
     {
         var result = await _listingService.FilterAsync(filter);
-        return Ok(ApiResponse<object>.Ok(result));
+        return Ok(ApiResponse<PagedResultDto<ListingDto>>.Ok(result));
     }
 
     [Authorize]

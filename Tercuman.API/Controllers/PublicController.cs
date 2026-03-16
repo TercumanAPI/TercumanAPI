@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Tercuman.API.Models;
 using Tercuman.Application.DTOs.Public;
 using Tercuman.Application.Interfaces;
 
@@ -19,14 +20,14 @@ namespace Tercuman.API.Controllers
         public async Task<IActionResult> GetTranslators()
         {
             var result = await _publicService.GetTranslatorsAsync();
-            return Ok(result);
+            return Ok(ApiResponse<object>.Ok(result));
         }
 
         [HttpPost("contact")]
         public async Task<IActionResult> SendContact([FromBody] ContactFormDto dto)
         {
             await _publicService.SendContactAsync(dto);
-            return Ok(new { message = "Mesaj başarıyla alındı." });
+            return Ok(ApiResponse<object>.Ok(null, "Mesaj başarıyla alındı."));
         }
     }
 }

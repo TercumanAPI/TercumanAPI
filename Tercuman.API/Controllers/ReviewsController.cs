@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Tercuman.API.Models;
 using Tercuman.Application.DTOs.Review;
 using Tercuman.Application.Interfaces;
 
@@ -24,21 +25,18 @@ public class ReviewsController : ControllerBase
         var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (string.IsNullOrEmpty(userIdClaim))
-        {
-            return Unauthorized("Kullanıcı bilgisi doğrulanamadı.");
-        }
+            return Unauthorized(ApiResponse<object>.Fail("Kullanıcı bilgisi doğrulanamadı."));
 
-        Guid userId = Guid.Parse(userIdClaim);
+        var userId = Guid.Parse(userIdClaim);
 
         try
         {
-            var result = await _reviewService.AddReviewAsync(userId, dto);
-
-            return Ok(new { message = "Değerlendirmeniz başarıyla eklendi." });
+            await _reviewService.AddReviewAsync(userId, dto);
+            return Ok(ApiResponse<object>.Ok(null, "Değerlendirmeniz başarıyla eklendi."));
         }
         catch (Exception ex)
         {
-            return BadRequest(new { message = ex.Message });
+            return BadRequest(ApiResponse<object>.Fail(ex.Message));
         }
     }
 
@@ -46,6 +44,6 @@ public class ReviewsController : ControllerBase
     public async Task<IActionResult> GetTranslatorReviews(Guid translatorId)
     {
         var result = await _reviewService.GetTranslatorReviewsAsync(translatorId);
-        return Ok(result);
+        return Ok(ApiResponse<object>.Ok(result));
     }
 }
