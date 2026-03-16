@@ -28,7 +28,20 @@ namespace Tercuman.API.Controllers
         {
             var userId = GetUserId();
             var result = await _translatorService.GetDashboardAsync(userId);
-            return Ok(result);
+            return Ok(new
+            {
+                success = true,
+                data = new
+                {
+                    totalMessages = result.TotalMessages,
+                    unreadMessages = result.UnreadMessages,
+                    totalFavorites = result.TotalFavorites,
+                    totalViews = result.TotalViews,
+                    totalListings = result.TotalListings
+                },
+                message = "Operation successful",
+                errors = (object?)null
+            });
         }
 
         [HttpPut("profile/toggle")]

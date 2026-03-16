@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Tercuman.Domin.Entities;
+using Tercuman.Domain.Entities;
 
 namespace Tercuman.Infrastructure.Persistence
 {
@@ -27,6 +28,7 @@ namespace Tercuman.Infrastructure.Persistence
         public DbSet<Message> Messages { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Report> Reports { get; set; }
+        public DbSet<ContactMessage> ContactMessages { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

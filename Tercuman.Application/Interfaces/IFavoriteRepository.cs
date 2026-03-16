@@ -11,6 +11,6 @@ namespace Tercuman.Application.Interfaces
         Task RemoveFavoriteAsync(Favorite favorite);
         Task<bool> ExistsAsync(Guid userId, Guid listingId);
         Task<IEnumerable<Favorite>> GetUserFavoritesAsync(Guid userId);
-        Task<Favorite> GetFavoriteAsync(Guid userId, Guid listingId);
+        Task<Favorite?> GetFavoriteAsync(Guid userId, Guid listingId);
     }
 }

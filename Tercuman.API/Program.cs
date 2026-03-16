@@ -35,6 +35,8 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
     });
 
+builder.Services.AddEndpointsApiExplorer();
+
 // =========================
 // SWAGGER + JWT
 // =========================
@@ -91,6 +93,7 @@ builder.Services.AddScoped<IListingRepository, ListingRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
+builder.Services.AddScoped<IContactMessageRepository, ContactMessageRepository>();
 
 
 // =========================
@@ -100,6 +103,9 @@ builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IListingService, ListingService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<IPublicService, PublicService>();
+builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<ITranslatorService, TranslatorService>();
 builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
 builder.Services.AddScoped<FavoriteService>();
 

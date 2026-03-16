@@ -2,7 +2,6 @@
 using Tercuman.Application.DTOs.Public;
 using Tercuman.Application.Interfaces;
 using Tercuman.Domain.Entities;
-using Tercuman.Domin.Entities;
 
 namespace Tercuman.Application.Services
 {
@@ -29,8 +28,8 @@ namespace Tercuman.Application.Services
                     FullName = x.FullName,
                     City = x.City,
                     Bio = x.Bio,
-                    ProfileImage = x.ProfileImage,
-                    IsAvailable = x.IsAvailable
+                    ProfileImage = x.ProfileImageUrl,
+                    IsAvailable = x.IsActive
                 })
                 .ToListAsync();
 
