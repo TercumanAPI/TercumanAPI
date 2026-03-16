@@ -1,4 +1,4 @@
-﻿using Tercuman.Domin.Enums;
+﻿using Tercuman.Domain.Enums;
 
 public class UserProfileDto
 {

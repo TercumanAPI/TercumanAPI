@@ -37,6 +37,20 @@ builder.Services.AddControllers()
 
 builder.Services.AddEndpointsApiExplorer();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("FrontendCors", policy =>
+    {
+        var origins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
+            ?? new[] { "http://localhost:3000", "http://localhost:5173" };
+
+        policy.WithOrigins(origins)
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
+
 // =========================
 // SWAGGER + JWT
 // =========================
@@ -169,7 +183,7 @@ builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 var app = builder.Build();
 
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -180,7 +194,7 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseRouting();
-
+app.UseCors("FrontendCors");
 
 app.UseAuthentication();
 app.UseAuthorization();

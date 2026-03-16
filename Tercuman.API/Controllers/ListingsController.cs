@@ -11,10 +11,14 @@ namespace Tercuman.API.Controllers;
 public class ListingsController : ControllerBase
 {
     private readonly IListingService _listingService;
+    private readonly IWebHostEnvironment _webHostEnvironment;
+    private readonly IConfiguration _configuration;
 
-    public ListingsController(IListingService listingService)
+    public ListingsController(IListingService listingService, IWebHostEnvironment webHostEnvironment, IConfiguration configuration)
     {
         _listingService = listingService;
+        _webHostEnvironment = webHostEnvironment;
+        _configuration = configuration;
     }
 
     // ============================
@@ -118,7 +122,9 @@ public class ListingsController : ControllerBase
         if (files.Count > 10)
             return BadRequest("En fazla 10 fotoğraf yüklenebilir.");
 
-        var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
+        var imageFolder = _configuration["FileStorage:ImagesFolder"] ?? "images";
+        var webRootPath = _webHostEnvironment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+        var uploadPath = Path.Combine(webRootPath, imageFolder);
 
         if (!Directory.Exists(uploadPath))
             Directory.CreateDirectory(uploadPath);
@@ -138,7 +144,7 @@ public class ListingsController : ControllerBase
             using var stream = new FileStream(filePath, FileMode.Create);
             await file.CopyToAsync(stream);
 
-            imageUrls.Add("/images/" + fileName);
+            imageUrls.Add($"/{imageFolder}/{fileName}");
         }
 
         await _listingService.AddImagesAsync(id, imageUrls);

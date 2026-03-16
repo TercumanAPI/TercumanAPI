@@ -1,5 +1,5 @@
 ﻿using System;
-using Tercuman.Domin.Enums;
+using Tercuman.Domain.Enums;
 
 namespace Tercuman.Application.DTOs.Listing
 {
@@ -20,8 +20,6 @@ namespace Tercuman.Application.DTOs.Listing
         public string TranslatorName { get; set; }
         public DateTime CreatedAt { get; set; }
         public string? Gender { get; set; }
-        public string Phone { get; set; }
-
         public string PhoneNumber { get; set; } = string.Empty;
 
 

@@ -25,7 +25,7 @@ namespace Tercuman.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Tercuman.Domin.Entities.City", b =>
+            modelBuilder.Entity("Tercuman.Domain.Entities.City", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -618,7 +618,7 @@ namespace Tercuman.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Tercuman.Domin.Entities.Conversation", b =>
+            modelBuilder.Entity("Tercuman.Domain.Entities.Conversation", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -649,7 +649,7 @@ namespace Tercuman.Infrastructure.Migrations
                     b.ToTable("Conversations");
                 });
 
-            modelBuilder.Entity("Tercuman.Domin.Entities.Favorite", b =>
+            modelBuilder.Entity("Tercuman.Domain.Entities.Favorite", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -680,7 +680,7 @@ namespace Tercuman.Infrastructure.Migrations
                     b.ToTable("Favorites");
                 });
 
-            modelBuilder.Entity("Tercuman.Domin.Entities.Language", b =>
+            modelBuilder.Entity("Tercuman.Domain.Entities.Language", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1102,7 +1102,7 @@ namespace Tercuman.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Tercuman.Domin.Entities.Listing", b =>
+            modelBuilder.Entity("Tercuman.Domain.Entities.Listing", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1176,7 +1176,7 @@ namespace Tercuman.Infrastructure.Migrations
                     b.ToTable("Listings");
                 });
 
-            modelBuilder.Entity("Tercuman.Domin.Entities.ListingImage", b =>
+            modelBuilder.Entity("Tercuman.Domain.Entities.ListingImage", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1208,7 +1208,7 @@ namespace Tercuman.Infrastructure.Migrations
                     b.ToTable("ListingImages");
                 });
 
-            modelBuilder.Entity("Tercuman.Domin.Entities.ListingView", b =>
+            modelBuilder.Entity("Tercuman.Domain.Entities.ListingView", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1242,7 +1242,7 @@ namespace Tercuman.Infrastructure.Migrations
                     b.ToTable("ListingViews");
                 });
 
-            modelBuilder.Entity("Tercuman.Domin.Entities.Message", b =>
+            modelBuilder.Entity("Tercuman.Domain.Entities.Message", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1284,7 +1284,7 @@ namespace Tercuman.Infrastructure.Migrations
                     b.ToTable("Messages");
                 });
 
-            modelBuilder.Entity("Tercuman.Domin.Entities.Report", b =>
+            modelBuilder.Entity("Tercuman.Domain.Entities.Report", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1322,7 +1322,7 @@ namespace Tercuman.Infrastructure.Migrations
                     b.ToTable("Reports");
                 });
 
-            modelBuilder.Entity("Tercuman.Domin.Entities.Review", b =>
+            modelBuilder.Entity("Tercuman.Domain.Entities.Review", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1358,7 +1358,7 @@ namespace Tercuman.Infrastructure.Migrations
                     b.ToTable("Reviews");
                 });
 
-            modelBuilder.Entity("Tercuman.Domin.Entities.User", b =>
+            modelBuilder.Entity("Tercuman.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1408,15 +1408,15 @@ namespace Tercuman.Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Tercuman.Domin.Entities.Conversation", b =>
+            modelBuilder.Entity("Tercuman.Domain.Entities.Conversation", b =>
                 {
-                    b.HasOne("Tercuman.Domin.Entities.User", "User1")
+                    b.HasOne("Tercuman.Domain.Entities.User", "User1")
                         .WithMany()
                         .HasForeignKey("User1Id")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Tercuman.Domin.Entities.User", "User2")
+                    b.HasOne("Tercuman.Domain.Entities.User", "User2")
                         .WithMany()
                         .HasForeignKey("User2Id")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1427,15 +1427,15 @@ namespace Tercuman.Infrastructure.Migrations
                     b.Navigation("User2");
                 });
 
-            modelBuilder.Entity("Tercuman.Domin.Entities.Favorite", b =>
+            modelBuilder.Entity("Tercuman.Domain.Entities.Favorite", b =>
                 {
-                    b.HasOne("Tercuman.Domin.Entities.Listing", "Listing")
+                    b.HasOne("Tercuman.Domain.Entities.Listing", "Listing")
                         .WithMany("Favorites")
                         .HasForeignKey("ListingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Tercuman.Domin.Entities.User", "User")
+                    b.HasOne("Tercuman.Domain.Entities.User", "User")
                         .WithMany("Favorites")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1446,27 +1446,27 @@ namespace Tercuman.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Tercuman.Domin.Entities.Listing", b =>
+            modelBuilder.Entity("Tercuman.Domain.Entities.Listing", b =>
                 {
-                    b.HasOne("Tercuman.Domin.Entities.City", "City")
+                    b.HasOne("Tercuman.Domain.Entities.City", "City")
                         .WithMany("Listings")
                         .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Tercuman.Domin.Entities.Language", "SourceLanguage")
+                    b.HasOne("Tercuman.Domain.Entities.Language", "SourceLanguage")
                         .WithMany()
                         .HasForeignKey("SourceLanguageId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Tercuman.Domin.Entities.Language", "TargetLanguage")
+                    b.HasOne("Tercuman.Domain.Entities.Language", "TargetLanguage")
                         .WithMany()
                         .HasForeignKey("TargetLanguageId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Tercuman.Domin.Entities.User", "User")
+                    b.HasOne("Tercuman.Domain.Entities.User", "User")
                         .WithMany("Listings")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1481,9 +1481,9 @@ namespace Tercuman.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Tercuman.Domin.Entities.ListingImage", b =>
+            modelBuilder.Entity("Tercuman.Domain.Entities.ListingImage", b =>
                 {
-                    b.HasOne("Tercuman.Domin.Entities.Listing", "Listing")
+                    b.HasOne("Tercuman.Domain.Entities.Listing", "Listing")
                         .WithMany("Images")
                         .HasForeignKey("ListingId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1492,15 +1492,15 @@ namespace Tercuman.Infrastructure.Migrations
                     b.Navigation("Listing");
                 });
 
-            modelBuilder.Entity("Tercuman.Domin.Entities.ListingView", b =>
+            modelBuilder.Entity("Tercuman.Domain.Entities.ListingView", b =>
                 {
-                    b.HasOne("Tercuman.Domin.Entities.Listing", "Listing")
+                    b.HasOne("Tercuman.Domain.Entities.Listing", "Listing")
                         .WithMany("Views")
                         .HasForeignKey("ListingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Tercuman.Domin.Entities.User", "User")
+                    b.HasOne("Tercuman.Domain.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
 
@@ -1509,21 +1509,21 @@ namespace Tercuman.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Tercuman.Domin.Entities.Message", b =>
+            modelBuilder.Entity("Tercuman.Domain.Entities.Message", b =>
                 {
-                    b.HasOne("Tercuman.Domin.Entities.Conversation", "Conversation")
+                    b.HasOne("Tercuman.Domain.Entities.Conversation", "Conversation")
                         .WithMany("Messages")
                         .HasForeignKey("ConversationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Tercuman.Domin.Entities.User", "Receiver")
+                    b.HasOne("Tercuman.Domain.Entities.User", "Receiver")
                         .WithMany("ReceivedMessages")
                         .HasForeignKey("ReceiverId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Tercuman.Domin.Entities.User", "Sender")
+                    b.HasOne("Tercuman.Domain.Entities.User", "Sender")
                         .WithMany("SentMessages")
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1536,17 +1536,17 @@ namespace Tercuman.Infrastructure.Migrations
                     b.Navigation("Sender");
                 });
 
-            modelBuilder.Entity("Tercuman.Domin.Entities.City", b =>
+            modelBuilder.Entity("Tercuman.Domain.Entities.City", b =>
                 {
                     b.Navigation("Listings");
                 });
 
-            modelBuilder.Entity("Tercuman.Domin.Entities.Conversation", b =>
+            modelBuilder.Entity("Tercuman.Domain.Entities.Conversation", b =>
                 {
                     b.Navigation("Messages");
                 });
 
-            modelBuilder.Entity("Tercuman.Domin.Entities.Listing", b =>
+            modelBuilder.Entity("Tercuman.Domain.Entities.Listing", b =>
                 {
                     b.Navigation("Favorites");
 
@@ -1555,7 +1555,7 @@ namespace Tercuman.Infrastructure.Migrations
                     b.Navigation("Views");
                 });
 
-            modelBuilder.Entity("Tercuman.Domin.Entities.User", b =>
+            modelBuilder.Entity("Tercuman.Domain.Entities.User", b =>
                 {
                     b.Navigation("Favorites");
 

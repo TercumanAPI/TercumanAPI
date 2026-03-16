@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tercuman.Domin.Enums;
+namespace Tercuman.Domain.Enums;
 
 public enum ExperienceLevel
 {

@@ -1,6 +1,6 @@
-﻿using Tercuman.Domin.Entities;
+﻿using Tercuman.Domain.Entities;
 
-namespace Tercuman.Domin.Entities;
+namespace Tercuman.Domain.Entities;
 
 public class Conversation
 {

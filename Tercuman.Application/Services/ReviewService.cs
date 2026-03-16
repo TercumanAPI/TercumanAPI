@@ -1,6 +1,6 @@
 ﻿using Tercuman.Application.Interfaces;
 using Tercuman.Application.DTOs.Review;
-using Tercuman.Domin.Entities;
+using Tercuman.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Tercuman.Application.Services;

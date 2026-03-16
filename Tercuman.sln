@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tercuman.API", "Tercuman.AP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tercuman.Infrastructure", "Tercuman.Infrastructure\Tercuman.Infrastructure.csproj", "{E28532D9-4654-451C-8147-AE955B7379D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tercuman.Domin", "Tercuman.Domin\Tercuman.Domin.csproj", "{CD77C0AA-1AE0-4F20-85CD-B6C80ADFFE9F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tercuman.Domain", "Tercuman.Domain\Tercuman.Domain.csproj", "{CD77C0AA-1AE0-4F20-85CD-B6C80ADFFE9F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tercuman.Application", "Tercuman.Application\Tercuman.Application.csproj", "{93872A92-2AA9-487A-A09E-820CB8C82F26}"
 EndProject

@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Tercuman.Application\Tercuman.Application.csproj" />
-    <ProjectReference Include="..\Tercuman.Domin\Tercuman.Domin.csproj" />
+    <ProjectReference Include="..\Tercuman.Domain\Tercuman.Domain.csproj" />
   </ItemGroup>
 
 </Project>

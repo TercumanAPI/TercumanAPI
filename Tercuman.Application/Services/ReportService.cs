@@ -1,6 +1,6 @@
 ﻿using Tercuman.Application.Interfaces;
 using Tercuman.Application.DTOs.Report; // DTO'lar için bu şart!
-using Tercuman.Domin.Entities;
+using Tercuman.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 //eski sürümü geri yükledim
 

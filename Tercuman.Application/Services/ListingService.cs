@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 using Tercuman.Application.DTOs.Listing;
+using Tercuman.Application.Exceptions;
 using Tercuman.Application.Interfaces;
-using Tercuman.Domin.Entities;
+using Tercuman.Domain.Entities;
 
 namespace Tercuman.Application.Services;
 
@@ -21,7 +21,7 @@ public class ListingService : IListingService
     public async Task CreateAsync(CreateListingDto dto, Guid userId)
     {
         if (string.IsNullOrWhiteSpace(dto.Title))
-            throw new Exception("Title boş olamaz");
+            throw new ValidationException("Title boş olamaz");
 
         var random = new Random();
         long listingNo;
@@ -38,7 +38,7 @@ public class ListingService : IListingService
         {
             ListingNo = listingNo,
 
-            Name = dto.Title,
+            Name = string.IsNullOrWhiteSpace(dto.Name) ? dto.Title : dto.Name,
             Title = dto.Title,
             Description = dto.Description,
             Price = dto.Price,
@@ -215,21 +215,13 @@ public class ListingService : IListingService
         if (pageSize > 50)
             pageSize = 50;
 
+        if (filter.Gender.HasValue)
+            query = query.Where(x => x.User.Gender == filter.Gender.Value);
+
         var listings = await query
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
-
-        if (filter.Gender.HasValue)
-        {
-            query = query.Where(x => x.User.Gender == filter.Gender.Value);
-        }
-
-        // Veya parametrenin adı "filter" ise böyle yap:
-        if (filter.Gender.HasValue)
-        {
-            query = query.Where(x => x.User.Gender == filter.Gender.Value);
-        }
 
         return listings.Select(MapToDto).ToList();
     }
@@ -245,6 +237,7 @@ public class ListingService : IListingService
             UserId = x.UserId,
             ListingNo = x.ListingNo,
 
+            Name = x.Name,
             Title = x.Title,
             Description = x.Description,
             Price = x.Price,
@@ -266,7 +259,7 @@ public class ListingService : IListingService
 
             TranslatorName = x.User?.FullName ?? "",
             Gender = x.User?.Gender.ToString() ?? "",
-            Phone = x.User?.PhoneNumber ?? "",
+            PhoneNumber = x.User?.PhoneNumber ?? "",
             TranslatorPhotoUrl = x.User != null ? x.User.ProfileImageUrl : null
         };
     }
@@ -279,6 +272,7 @@ public class ListingService : IListingService
         return listings.Select(x => new ListingListDto
         {
             Id = x.Id,
+            Name = x.Name,
             Title = x.Title,
             Price = x.Price,
             CityName = x.City.Name
