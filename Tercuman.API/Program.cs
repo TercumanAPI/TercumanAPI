@@ -28,15 +28,10 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateListingValidator>();
 
 // =========================
-// CONTROLLERS + ENUM FIX
+// CONTROLLERS
 // =========================
 
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        // Enum'ları Frontend'e sayı(0,1) yerine metin(Male,Female) olarak gönderir/alır
-        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
-    });
+builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -60,7 +55,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("FrontendCors", policy =>
     {
         var origins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
-            ?? new[] { "http://localhost:3000", "http://localhost:5173" };
+            ?? new[] { "http://localhost:3000", "http://localhost:5173", "http://localhost:5174" };
 
         policy.WithOrigins(origins)
             .AllowAnyHeader()
@@ -192,10 +187,6 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
-
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 // =========================
 // MIDDLEWARE
 // =========================

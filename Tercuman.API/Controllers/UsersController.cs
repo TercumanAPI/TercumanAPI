@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Tercuman.API.Models;
 using Tercuman.Application.DTOs.User;
 using Tercuman.Application.Interfaces;
 
@@ -24,9 +25,9 @@ public class UsersController : ControllerBase
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         var user = await _userRepository.GetByIdAsync(userId);
 
-        if (user == null) return NotFound();
+        if (user == null) return NotFound(ApiResponse<object>.Fail("User not found"));
 
-        return Ok(new UserProfileDto
+        var dto = new UserProfileDto
         {
             Id = user.Id,
             FullName = user.FullName,
@@ -37,7 +38,9 @@ public class UsersController : ControllerBase
             ProfileImageUrl = user.ProfileImageUrl,
             Gender = user.Gender,
             IsActive = user.IsActive
-        });
+        };
+
+        return Ok(ApiResponse<UserProfileDto>.Ok(dto));
     }
 
     [Authorize]
@@ -47,7 +50,7 @@ public class UsersController : ControllerBase
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         var user = await _userRepository.GetByIdAsync(userId);
 
-        if (user == null) return NotFound();
+        if (user == null) return NotFound(ApiResponse<object>.Fail("User not found"));
 
         user.FullName = dto.FullName;
         user.Email = dto.Email;
@@ -57,7 +60,7 @@ public class UsersController : ControllerBase
         user.Gender = dto.Gender;
 
         await _userRepository.SaveChangesAsync();
-        return Ok();
+        return Ok(ApiResponse<object>.Ok(null, "Profile updated"));
     }
 
     [Authorize]
@@ -67,15 +70,15 @@ public class UsersController : ControllerBase
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         var user = await _userRepository.GetByIdAsync(userId);
 
-        if (user == null) return NotFound();
+        if (user == null) return NotFound(ApiResponse<object>.Fail("User not found"));
 
         if (!BCrypt.Net.BCrypt.Verify(dto.CurrentPassword, user.PasswordHash))
-            return BadRequest("Mevcut şifre yanlış");
+            return BadRequest(ApiResponse<object>.Fail("Mevcut şifre yanlış"));
 
         user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.NewPassword);
         await _userRepository.SaveChangesAsync();
 
-        return Ok("Şifre güncellendi");
+        return Ok(ApiResponse<object>.Ok(null, "Şifre güncellendi"));
     }
 
     [Authorize]
@@ -83,11 +86,11 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> UploadProfileImage(IFormFile file)
     {
         if (file == null || file.Length == 0)
-            return BadRequest("Dosya seçilmedi.");
+            return BadRequest(ApiResponse<object>.Fail("Dosya seçilmedi."));
 
         var extension = Path.GetExtension(file.FileName).ToLower();
         if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
-            return BadRequest("Sadece JPG veya PNG yüklenebilir.");
+            return BadRequest(ApiResponse<object>.Fail("Sadece JPG veya PNG yüklenebilir."));
 
         var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images");
         if (!Directory.Exists(uploadPath)) Directory.CreateDirectory(uploadPath);
@@ -95,17 +98,17 @@ public class UsersController : ControllerBase
         var fileName = Guid.NewGuid() + extension;
         var filePath = Path.Combine(uploadPath, fileName);
 
-        using var stream = new FileStream(filePath, FileMode.Create);
+        await using var stream = new FileStream(filePath, FileMode.Create);
         await file.CopyToAsync(stream);
 
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         var user = await _userRepository.GetByIdAsync(userId);
-        if (user == null) return NotFound();
+        if (user == null) return NotFound(ApiResponse<object>.Fail("User not found"));
 
         user.ProfileImageUrl = "/images/" + fileName;
         await _userRepository.SaveChangesAsync();
 
-        return Ok(new { success = true, imageUrl = user.ProfileImageUrl });
+        return Ok(ApiResponse<object>.Ok(new { imageUrl = user.ProfileImageUrl }));
     }
 
     [Authorize(Roles = "Admin")]
@@ -113,11 +116,11 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> ToggleUserStatus(Guid id)
     {
         var user = await _userRepository.GetByIdAsync(id);
-        if (user == null) return NotFound();
+        if (user == null) return NotFound(ApiResponse<object>.Fail("User not found"));
 
         user.IsActive = !user.IsActive;
         await _userRepository.SaveChangesAsync();
 
-        return Ok(new { success = true, status = user.IsActive });
+        return Ok(ApiResponse<object>.Ok(new { status = user.IsActive }));
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Tercuman.API.Models;
 using Tercuman.Application.DTOs.Notification;
 using Tercuman.Application.Interfaces;
 
@@ -18,19 +19,14 @@ public class NotificationsController : ControllerBase
         _messageRepository = messageRepository;
     }
 
-    // =========================
-    // GET NOTIFICATIONS
-    // =========================
     [HttpGet]
     public async Task<IActionResult> GetNotifications()
     {
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-
         if (userIdClaim == null)
-            return Unauthorized();
+            return Unauthorized(ApiResponse<object>.Fail("Unauthorized"));
 
         var userId = Guid.Parse(userIdClaim.Value);
-
         var messages = await _messageRepository.GetUserNotificationsAsync(userId);
 
         var result = messages.Select(x => new NotificationDto
@@ -43,33 +39,23 @@ public class NotificationsController : ControllerBase
             IsRead = x.IsRead
         }).ToList();
 
-        return Ok(new
+        return Ok(ApiResponse<object>.Ok(new
         {
-            success = true,
             unreadCount = result.Count(x => !x.IsRead),
-            data = result
-        });
+            items = result
+        }));
     }
 
-    // =========================
-    // MARK AS READ
-    // =========================
     [HttpPut("{messageId}/read")]
     public async Task<IActionResult> MarkAsRead(Guid messageId)
     {
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-
         if (userIdClaim == null)
-            return Unauthorized();
+            return Unauthorized(ApiResponse<object>.Fail("Unauthorized"));
 
         var userId = Guid.Parse(userIdClaim.Value);
-
         await _messageRepository.MarkAsReadAsync(messageId, userId);
 
-        return Ok(new
-        {
-            success = true,
-            message = "Notification marked as read"
-        });
+        return Ok(ApiResponse<object>.Ok(null, "Notification marked as read"));
     }
 }

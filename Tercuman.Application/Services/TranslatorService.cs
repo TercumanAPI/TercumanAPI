@@ -38,8 +38,7 @@ public class TranslatorService : ITranslatorService
             TotalMessages = totalMessages,
             UnreadMessages = unreadMessages,
             TotalFavorites = totalFavorites,
-            TotalViews = totalViews,
-            TotalListings = listings.Count
+            TotalViews = totalViews
         };
     }
 

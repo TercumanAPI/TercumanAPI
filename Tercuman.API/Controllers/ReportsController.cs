@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
-using Tercuman.Application.Interfaces;
+using Tercuman.API.Models;
 using Tercuman.Application.DTOs.Report;
+using Tercuman.Application.Interfaces;
 
 namespace Tercuman.API.Controllers
 {
@@ -19,19 +20,20 @@ namespace Tercuman.API.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             await _reportService.CreateReportAsync(userId!, dto);
-            return Ok(new { message = "Şikayetiniz alındı, admin tarafından incelenecektir." });
+            return Ok(ApiResponse<object>.Ok(null, "Şikayetiniz alındı, admin tarafından incelenecektir."));
         }
 
-        [Authorize(Roles = "Admin")] // Sadece Adminler görebilir
+        [Authorize(Roles = "Admin")]
         [HttpGet("admin/all")]
-        public async Task<IActionResult> GetAll() => Ok(await _reportService.GetReportsAsync());
+        public async Task<IActionResult> GetAll()
+            => Ok(ApiResponse<object>.Ok(await _reportService.GetReportsAsync()));
 
         [Authorize(Roles = "Admin")]
         [HttpPut("admin/{id}/resolve")]
         public async Task<IActionResult> Resolve(Guid id)
         {
             await _reportService.ResolveReportAsync(id);
-            return Ok(new { message = "Şikayet çözüldü olarak işaretlendi." });
+            return Ok(ApiResponse<object>.Ok(null, "Şikayet çözüldü olarak işaretlendi."));
         }
     }
 }

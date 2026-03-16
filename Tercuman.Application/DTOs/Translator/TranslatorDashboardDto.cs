@@ -6,6 +6,5 @@
         public int UnreadMessages { get; set; }
         public int TotalFavorites { get; set; }
         public int TotalViews { get; set; }
-        public int TotalListings { get; set; }
     }
 }

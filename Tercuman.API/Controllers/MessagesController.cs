@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Tercuman.API.Models;
 using Tercuman.Application.Interfaces;
 
 namespace Tercuman.API.Controllers;
@@ -20,7 +21,6 @@ public class MessagesController : ControllerBase
     public async Task<IActionResult> GetMessages(Guid conversationId)
     {
         var messages = await _messageRepository.GetConversationMessages(conversationId);
-
-        return Ok(messages);
+        return Ok(ApiResponse<object>.Ok(messages));
     }
 }

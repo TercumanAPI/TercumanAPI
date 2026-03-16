@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Tercuman.API.Models;
 using Tercuman.Application.Interfaces;
 
 namespace Tercuman.API.Controllers
@@ -28,20 +29,13 @@ namespace Tercuman.API.Controllers
         {
             var userId = GetUserId();
             var result = await _translatorService.GetDashboardAsync(userId);
-            return Ok(new
+            return Ok(ApiResponse<object>.Ok(new
             {
-                success = true,
-                data = new
-                {
-                    totalMessages = result.TotalMessages,
-                    unreadMessages = result.UnreadMessages,
-                    totalFavorites = result.TotalFavorites,
-                    totalViews = result.TotalViews,
-                    totalListings = result.TotalListings
-                },
-                message = "Operation successful",
-                errors = (object?)null
-            });
+                totalMessages = result.TotalMessages,
+                unreadMessages = result.UnreadMessages,
+                totalFavorites = result.TotalFavorites,
+                totalViews = result.TotalViews
+            }));
         }
 
         [HttpPut("profile/toggle")]
@@ -49,7 +43,7 @@ namespace Tercuman.API.Controllers
         {
             var userId = GetUserId();
             await _translatorService.ToggleProfileStatusAsync(userId);
-            return Ok(new { message = "Durum güncellendi." });
+            return Ok(ApiResponse<object>.Ok(null, "Durum güncellendi."));
         }
 
         [HttpGet("languages")]
@@ -57,7 +51,7 @@ namespace Tercuman.API.Controllers
         {
             var userId = GetUserId();
             var result = await _translatorService.GetLanguagesAsync(userId);
-            return Ok(result);
+            return Ok(ApiResponse<object>.Ok(result));
         }
     }
 }
