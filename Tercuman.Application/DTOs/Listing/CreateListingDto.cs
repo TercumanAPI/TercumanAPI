@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tercuman.Domin.Enums;
+using Tercuman.Domain.Enums;
 
 namespace Tercuman.Application.DTOs.Listing;
 
@@ -20,6 +20,8 @@ namespace Tercuman.Application.DTOs.Listing;
 
         public ServiceType ServiceType { get; set; }
 
+        public string Name { get; set; } = string.Empty;
+        public string PhoneNumber { get; set; } = string.Empty;
         public string Description { get; set; }
         public string Title { get; set; } = string.Empty;
 }

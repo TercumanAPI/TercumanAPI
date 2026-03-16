@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Tercuman.Domin.Enums;
+using Tercuman.Domain.Enums;
 
 namespace Tercuman.Application.DTOs.Listing
 {

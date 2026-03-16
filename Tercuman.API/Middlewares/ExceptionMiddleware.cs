@@ -1,10 +1,6 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Text.Json;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Tercuman.Application.Exceptions;
 
 namespace Tercuman.API.Middlewares
 {
@@ -31,21 +27,26 @@ namespace Tercuman.API.Middlewares
             {
                 _logger.LogError(ex, ex.Message);
                 context.Response.ContentType = "application/json";
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-                // Hata mesajını önce değişkene alıyoruz ki tip karmaşası olmasın
-                var message = ex.Message;
-                var details = _env.IsDevelopment() ? ex.StackTrace?.ToString() : null;
+                var statusCode = ex switch
+                {
+                    ValidationException => HttpStatusCode.BadRequest,
+                    UnauthorizedAccessException => HttpStatusCode.Unauthorized,
+                    _ => HttpStatusCode.InternalServerError
+                };
+
+                context.Response.StatusCode = (int)statusCode;
+
+                var details = _env.IsDevelopment() ? ex.StackTrace : null;
 
                 var response = new
                 {
                     StatusCode = context.Response.StatusCode,
-                    Message = _env.IsDevelopment() ? message : "Sunucu tarafında bir hata oluştu.",
+                    Message = _env.IsDevelopment() ? ex.Message : "Sunucu tarafında bir hata oluştu.",
                     Details = details
                 };
 
-                var json = JsonSerializer.Serialize(response);
-                await context.Response.WriteAsync(json);
+                await context.Response.WriteAsync(JsonSerializer.Serialize(response));
             }
         }
     }

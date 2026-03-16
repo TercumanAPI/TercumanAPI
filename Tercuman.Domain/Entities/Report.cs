@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Tercuman.Domin.Common;
+using Tercuman.Domain.Common;
 
-namespace Tercuman.Domin.Entities;
+namespace Tercuman.Domain.Entities;
 
 public enum ReportStatus { Pending, Resolved, Rejected }
 

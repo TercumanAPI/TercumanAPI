@@ -4,11 +4,11 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Tercuman.Domin.Common;
-using Tercuman.Domin.Enums;
+using Tercuman.Domain.Common;
+using Tercuman.Domain.Enums;
 
 
-namespace Tercuman.Domin.Entities
+namespace Tercuman.Domain.Entities
 {
     public class User : BaseEntity
     {

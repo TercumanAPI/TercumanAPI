@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using Tercuman.Application.DTOs.Auth;
 using Tercuman.Application.Interfaces;
-using Tercuman.Domin.Entities;
+using Tercuman.Domain.Entities;
 
 namespace Tercuman.Application.Services;
 

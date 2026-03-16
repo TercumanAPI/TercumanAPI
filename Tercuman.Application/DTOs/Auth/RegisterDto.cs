@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tercuman.Domin.Enums;
+using Tercuman.Domain.Enums;
 
 namespace Tercuman.Application.DTOs.Auth
 {
