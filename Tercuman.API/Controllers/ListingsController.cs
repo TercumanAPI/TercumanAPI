@@ -63,7 +63,7 @@ public class ListingsController : ControllerBase
     public async Task<IActionResult> Filter([FromQuery] FilterListingDto filter)
     {
         var result = await _listingService.FilterAsync(filter);
-        return Ok(ApiResponse<List<ListingDto>>.Ok(result));
+        return Ok(ApiResponse<object>.Ok(result));
     }
 
     [Authorize]

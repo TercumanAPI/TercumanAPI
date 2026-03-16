@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Tercuman.API.Models;
 using Tercuman.Application.Services;
 
 namespace Tercuman.API.Controllers
@@ -26,11 +27,11 @@ namespace Tercuman.API.Controllers
             {
                 var userId = GetUserId();
                 await _favoriteService.AddFavoriteAsync(userId, listingId);
-                return Ok(new { message = "İlan favorilere eklendi." });
+                return Ok(ApiResponse<object>.Ok(null, "İlan favorilere eklendi."));
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(ApiResponse<object>.Fail(ex.Message));
             }
         }
 
@@ -41,11 +42,11 @@ namespace Tercuman.API.Controllers
             {
                 var userId = GetUserId();
                 await _favoriteService.RemoveFavoriteAsync(userId, listingId);
-                return Ok(new { message = "İlan favorilerden çıkarıldı." });
+                return Ok(ApiResponse<object>.Ok(null, "İlan favorilerden çıkarıldı."));
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(ApiResponse<object>.Fail(ex.Message));
             }
         }
 
@@ -54,7 +55,15 @@ namespace Tercuman.API.Controllers
         {
             var userId = GetUserId();
             var favorites = await _favoriteService.GetUserFavoritesAsync(userId);
-            return Ok(favorites);
+            return Ok(ApiResponse<object>.Ok(favorites));
+        }
+
+        [HttpGet("customer")]
+        public async Task<IActionResult> GetCustomerFavorites()
+        {
+            var userId = GetUserId();
+            var favorites = await _favoriteService.GetUserFavoritesAsync(userId);
+            return Ok(ApiResponse<object>.Ok(favorites));
         }
 
         // Token'dan UserId'yi güvenli şekilde çıkaran yardımcı metot

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Tercuman.Application.DTOs.Common;
 using Tercuman.Application.DTOs.Listing;
 using Tercuman.Application.Exceptions;
 using Tercuman.Application.Interfaces;
@@ -170,7 +171,7 @@ public class ListingService : IListingService
     // =========================
     // FILTER
     // =========================
-    public async Task<List<ListingDto>> FilterAsync(FilterListingDto filter)
+    public async Task<PagedResultDto<ListingDto>> FilterAsync(FilterListingDto filter)
     {
         var query = _listingRepository.Query();
 
@@ -236,12 +237,20 @@ public class ListingService : IListingService
         if (filter.Gender.HasValue)
             query = query.Where(x => x.User != null && x.User.Gender == filter.Gender.Value);
 
+        var totalCount = await query.CountAsync();
+
         var listings = await query
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
 
-        return listings.Select(MapToDto).ToList();
+        return new PagedResultDto<ListingDto>
+        {
+            Items = listings.Select(MapToDto).ToList(),
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize
+        };
     }
 
     // =========================
