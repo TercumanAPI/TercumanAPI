@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tercuman.Domin.Entities;
-using Tercuman.Domain.Entities;
 
 namespace Tercuman.Application.Interfaces
 {

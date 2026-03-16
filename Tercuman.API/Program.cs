@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using System.Text.Json.Serialization;
 using Tercuman.API.Hubs;
 using Tercuman.API.Middlewares;
 using Tercuman.Application.Interfaces;
@@ -28,12 +27,23 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateListingValidator>();
 // CONTROLLERS + ENUM FIX
 // =========================
 
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
+builder.Services.AddControllers();
+
+// =========================
+// CORS
+// =========================
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AdminAndClient", policy =>
     {
-        // Enum'ları Frontend'e sayı(0,1) yerine metin(Male,Female) olarak gönderir/alır
-        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+        policy
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials()
+            .SetIsOriginAllowed(_ => true);
     });
+});
 
 // =========================
 // SWAGGER + JWT
@@ -102,6 +112,8 @@ builder.Services.AddScoped<IListingService, ListingService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
 builder.Services.AddScoped<FavoriteService>();
+builder.Services.AddScoped<ITranslatorService, TranslatorService>();
+builder.Services.AddScoped<IReportService, ReportService>();
 
 // =========================
 // AUTHENTICATION
@@ -174,7 +186,7 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseRouting();
-
+app.UseCors("AdminAndClient");
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Tercuman.Application.Interfaces;
+using Tercuman.API.Models;
 
 namespace Tercuman.API.Controllers
 {
@@ -28,7 +29,7 @@ namespace Tercuman.API.Controllers
         {
             var userId = GetUserId();
             var result = await _translatorService.GetDashboardAsync(userId);
-            return Ok(result);
+            return Ok(ApiResponse.Ok(result));
         }
 
         [HttpPut("profile/toggle")]
@@ -36,7 +37,7 @@ namespace Tercuman.API.Controllers
         {
             var userId = GetUserId();
             await _translatorService.ToggleProfileStatusAsync(userId);
-            return Ok(new { message = "Durum güncellendi." });
+            return Ok(ApiResponse.Ok(message: "Durum güncellendi."));
         }
 
         [HttpGet("languages")]
@@ -44,7 +45,7 @@ namespace Tercuman.API.Controllers
         {
             var userId = GetUserId();
             var result = await _translatorService.GetLanguagesAsync(userId);
-            return Ok(result);
+            return Ok(ApiResponse.Ok(result));
         }
     }
 }
