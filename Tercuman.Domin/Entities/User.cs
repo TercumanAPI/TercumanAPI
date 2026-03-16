@@ -16,6 +16,7 @@ namespace Tercuman.Domin.Entities
         public string FullName { get; set; }
         public string Email { get; set; }
         public string PasswordHash { get; set; }
+
         // Profile
         public string? Bio { get; set; }
         public string? PhoneNumber { get; set; }
@@ -23,12 +24,13 @@ namespace Tercuman.Domin.Entities
         public string? ProfileImageUrl { get; set; }
         public bool IsActive { get; set; } = true;
         public Gender Gender { get; set; } = Gender.NotSpecified;
-        public DateTime CreatedAt { get; set; }
+
         // Navigation
         public ICollection<Listing> Listings { get; set; }
         public ICollection<Message> SentMessages { get; set; }
         public ICollection<Message> ReceivedMessages { get; set; }
         public ICollection<Favorite> Favorites { get; set; }
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 =======
         public string? RefreshToken { get; set; }
@@ -36,5 +38,12 @@ namespace Tercuman.Domin.Entities
         public bool IsApproved { get; set; } = false; // Çevirmen varsayılan olarak onaysız başlar
         public string Role { get; set; } = "User";
 >>>>>>> Stashed changes
+=======
+
+       
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpiryTime { get; set; }
+        public bool IsApproved { get; set; } = false; // Çevirmen varsayılan olarak onaysız başlar
+>>>>>>> efcc83481aea69abe64d12c29ca2bc3db00f783e
     }
 }

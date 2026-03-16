@@ -32,11 +32,7 @@ public class AuthController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(new
-            {
-                success = false,
-                message = ex.Message
-            });
+            return BadRequest(new { success = false, message = ex.Message });
         }
     }
 
@@ -46,30 +42,23 @@ public class AuthController : ControllerBase
     {
         try
         {
-            var token = await _authService.LoginAsync(dto);
+            // Artık sadece accessToken string'i değil, tam bir paket (TokenDto) dönüyoruz
+            var tokenDto = await _authService.LoginAsync(dto);
 
-            if (token == null)
+            if (tokenDto == null)
             {
-                return Unauthorized(new
-                {
-                    success = false,
-                    message = "Invalid email or password"
-                });
+                return Unauthorized(new { success = false, message = "Invalid email or password" });
             }
 
             return Ok(new
             {
                 success = true,
-                accessToken = token
+                data = tokenDto // Frontend buradan AccessToken ve RefreshToken'ı alacak
             });
         }
         catch (Exception ex)
         {
-            return BadRequest(new
-            {
-                success = false,
-                message = ex.Message
-            });
+            return BadRequest(new { success = false, message = ex.Message });
         }
     }
 
@@ -79,21 +68,23 @@ public class AuthController : ControllerBase
     {
         try
         {
-            var newToken = await _authService.RefreshTokenAsync(dto.RefreshToken);
+            // Yeni token paketimizi (TokenDto) alıyoruz
+            var newTokenDto = await _authService.RefreshTokenAsync(dto.RefreshToken);
+
+            if (newTokenDto == null)
+            {
+                return Unauthorized(new { success = false, message = "Geçersiz veya süresi dolmuş Refresh Token." });
+            }
 
             return Ok(new
             {
                 success = true,
-                accessToken = newToken
+                data = newTokenDto
             });
         }
         catch (Exception ex)
         {
-            return BadRequest(new
-            {
-                success = false,
-                message = ex.Message
-            });
+            return BadRequest(new { success = false, message = ex.Message });
         }
     }
 
@@ -105,19 +96,11 @@ public class AuthController : ControllerBase
         {
             await _authService.ForgotPasswordAsync(dto.Email);
 
-            return Ok(new
-            {
-                success = true,
-                message = "Password reset link sent"
-            });
+            return Ok(new { success = true, message = "Password reset link sent" });
         }
         catch (Exception ex)
         {
-            return BadRequest(new
-            {
-                success = false,
-                message = ex.Message
-            });
+            return BadRequest(new { success = false, message = ex.Message });
         }
     }
 }

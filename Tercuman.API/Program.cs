@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
 using Tercuman.API.Hubs;
+using Tercuman.API.Middlewares;
 using Tercuman.Application.Interfaces;
 using Tercuman.Application.Services;
 using Tercuman.Application.Validators;
@@ -30,11 +31,9 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateListingValidator>();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        options.JsonSerializerOptions.Converters
-            .Add(new JsonStringEnumConverter());
+        // Enum'ları Frontend'e sayı(0,1) yerine metin(Male,Female) olarak gönderir/alır
+        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
     });
-
-builder.Services.AddEndpointsApiExplorer();
 
 // =========================
 // SWAGGER + JWT
@@ -87,9 +86,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // =========================
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
 builder.Services.AddScoped<IListingRepository, ListingRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
+
 
 // =========================
 // SERVICES
@@ -97,6 +99,9 @@ builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IListingService, ListingService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
+builder.Services.AddScoped<FavoriteService>();
 
 // =========================
 // AUTHENTICATION
@@ -149,15 +154,14 @@ builder.Services.AddAuthorization();
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 
-var app = builder.Build();
 
-// =========================
-// REPOSITORIES
-builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
 
 // =========================
 // MIDDLEWARE
 // =========================
+
+var app = builder.Build();
+
 
 if (app.Environment.IsDevelopment())
 {
@@ -165,8 +169,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
+app.UseRouting();
+
 
 app.UseAuthentication();
 app.UseAuthorization();
