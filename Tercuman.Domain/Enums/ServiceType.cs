@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tercuman.Domin.Enums
-{
-    public enum Gender
+
+    namespace Tercuman.Domain.Enums;
+
+    public enum ServiceType
     {
-        NotSpecified = 0,
-        Male = 1,
-        Female = 2
+        Online = 1,
+        FaceToFace = 2,
+        Both = 3
     }
-}
+

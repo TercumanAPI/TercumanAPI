@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tercuman.Application.Interfaces; // Bu satır eksikti, IFavoriteRepository'i bulmasını sağlar
-using Tercuman.Domin.Entities;
+using Tercuman.Domain.Entities;
 
 namespace Tercuman.Application.Services
 {

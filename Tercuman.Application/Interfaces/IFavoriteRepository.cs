@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Tercuman.Domin.Entities; // Entity katmanının doğru namespace'i
+using Tercuman.Domain.Entities; // Entity katmanının doğru namespace'i
 
 namespace Tercuman.Application.Interfaces
 {

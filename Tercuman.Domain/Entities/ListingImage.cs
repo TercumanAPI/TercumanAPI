@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tercuman.Domin.Common;
+using Tercuman.Domain.Common;
 
-namespace Tercuman.Domin.Entities
+namespace Tercuman.Domain.Entities
 {
-    public class Favorite : BaseEntity
+    public class ListingImage : BaseEntity
     {
-        public Guid UserId { get; set; }
-        public User User { get; set; }
+        public string ImageUrl { get; set; }
+        public bool IsMain { get; set; }
 
         public Guid ListingId { get; set; }
         public Listing Listing { get; set; }

@@ -16,5 +16,7 @@ namespace Tercuman.Application.Interfaces
         Task AddImagesAsync(Guid listingId, List<string> imageUrls);
         Task<List<ListingDto>> FilterAsync(FilterListingDto filter);
         Task<List<ListingListDto>> SearchAsync(string keyword);
+        Task<List<ListingListDto>> SearchAsync(SearchListingDto search);
+        Task IncrementViewAsync(Guid listingId, Guid? userId, string? ipAddress);
     }
 }

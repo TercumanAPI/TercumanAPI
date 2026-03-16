@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Tercuman.Application.DTOs.Conversation;
 using Tercuman.Application.Interfaces;
-using Tercuman.Domin.Entities;
+using Tercuman.Domain.Entities;
 using Tercuman.Infrastructure.Persistence;
 
 namespace Tercuman.Infrastructure.Repositories;

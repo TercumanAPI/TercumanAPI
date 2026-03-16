@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tercuman.Domin.Entities;
+using Tercuman.Domain.Entities;
 
-namespace Tercuman.Domin.Common;
+namespace Tercuman.Domain.Common;
 
 public abstract class BaseEntity
 {

@@ -1,6 +1,6 @@
-﻿using Tercuman.Domin.Common;
+﻿using Tercuman.Domain.Common;
 
-namespace Tercuman.Domin.Entities;
+namespace Tercuman.Domain.Entities;
 
 public class City : BaseEntity
 {

@@ -1,18 +1,23 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 using Tercuman.Application.DTOs.Listing;
+using Tercuman.Application.Exceptions;
 using Tercuman.Application.Interfaces;
-using Tercuman.Domin.Entities;
+using Tercuman.Domain.Entities;
+using Tercuman.Domain.Enums;
 
 namespace Tercuman.Application.Services;
 
 public class ListingService : IListingService
 {
     private readonly IListingRepository _listingRepository;
+    private readonly IGenericRepository<ListingView> _listingViewRepository;
+    private readonly IGenericRepository<Review> _reviewRepository;
 
-    public ListingService(IListingRepository listingRepository)
+    public ListingService(IListingRepository listingRepository, IGenericRepository<ListingView> listingViewRepository, IGenericRepository<Review> reviewRepository)
     {
         _listingRepository = listingRepository;
+        _listingViewRepository = listingViewRepository;
+        _reviewRepository = reviewRepository;
     }
 
     // =========================
@@ -21,7 +26,7 @@ public class ListingService : IListingService
     public async Task CreateAsync(CreateListingDto dto, Guid userId)
     {
         if (string.IsNullOrWhiteSpace(dto.Title))
-            throw new Exception("Title boş olamaz");
+            throw new ValidationException("Title boş olamaz");
 
         var random = new Random();
         long listingNo;
@@ -38,7 +43,7 @@ public class ListingService : IListingService
         {
             ListingNo = listingNo,
 
-            Name = dto.Title,
+            Name = string.IsNullOrWhiteSpace(dto.Name) ? dto.Title : dto.Name,
             Title = dto.Title,
             Description = dto.Description,
             Price = dto.Price,
@@ -64,8 +69,12 @@ public class ListingService : IListingService
     // =========================
     public async Task<IEnumerable<ListingDto>> GetPagedAsync(int page, int pageSize, string? sort)
     {
-        var listings = await _listingRepository.GetPagedAsync(page, pageSize);
-        var query = listings.AsQueryable();
+        var currentPage = page <= 0 ? 1 : page;
+        var currentPageSize = pageSize <= 0 ? 10 : pageSize;
+        if (currentPageSize > 50)
+            currentPageSize = 50;
+
+        var query = _listingRepository.Query();
 
         if (!string.IsNullOrEmpty(sort))
         {
@@ -76,8 +85,17 @@ public class ListingService : IListingService
                 _ => query
             };
         }
+        else
+        {
+            query = query.OrderByDescending(x => x.CreatedDate);
+        }
 
-        return query.Select(MapToDto).ToList();
+        var listings = await query
+            .Skip((currentPage - 1) * currentPageSize)
+            .Take(currentPageSize)
+            .ToListAsync();
+
+        return listings.Select(MapToDto).ToList();
     }
 
     // =========================
@@ -172,7 +190,7 @@ public class ListingService : IListingService
             var city = filter.CityName.ToLower();
 
             query = query.Where(x =>
-                x.City.Name.ToLower().Contains(city));
+                (x.City != null ? x.City.Name : string.Empty).ToLower().Contains(city));
         }
 
         if (filter.ExperienceLevel.HasValue)
@@ -215,21 +233,13 @@ public class ListingService : IListingService
         if (pageSize > 50)
             pageSize = 50;
 
+        if (filter.Gender.HasValue)
+            query = query.Where(x => x.User != null && x.User.Gender == filter.Gender.Value);
+
         var listings = await query
             .Skip((page - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
-
-        if (filter.Gender.HasValue)
-        {
-            query = query.Where(x => x.User.Gender == filter.Gender.Value);
-        }
-
-        // Veya parametrenin adı "filter" ise böyle yap:
-        if (filter.Gender.HasValue)
-        {
-            query = query.Where(x => x.User.Gender == filter.Gender.Value);
-        }
 
         return listings.Select(MapToDto).ToList();
     }
@@ -245,6 +255,7 @@ public class ListingService : IListingService
             UserId = x.UserId,
             ListingNo = x.ListingNo,
 
+            Name = x.Name,
             Title = x.Title,
             Description = x.Description,
             Price = x.Price,
@@ -266,7 +277,7 @@ public class ListingService : IListingService
 
             TranslatorName = x.User?.FullName ?? "",
             Gender = x.User?.Gender.ToString() ?? "",
-            Phone = x.User?.PhoneNumber ?? "",
+            PhoneNumber = x.User?.PhoneNumber ?? "",
             TranslatorPhotoUrl = x.User != null ? x.User.ProfileImageUrl : null
         };
     }
@@ -274,14 +285,87 @@ public class ListingService : IListingService
     // SEARCH
     public async Task<List<ListingListDto>> SearchAsync(string keyword)
     {
-        var listings = await _listingRepository.SearchAsync(keyword);
+        return await SearchAsync(new SearchListingDto { Keyword = keyword });
+    }
 
-        return listings.Select(x => new ListingListDto
+    public async Task<List<ListingListDto>> SearchAsync(SearchListingDto search)
+    {
+        var query = _listingRepository.Query();
+
+        if (!string.IsNullOrWhiteSpace(search.Keyword))
+        {
+            var keyword = search.Keyword.ToLower();
+            query = query.Where(x => x.Title.ToLower().Contains(keyword) || x.Description.ToLower().Contains(keyword));
+        }
+
+        if (search.CityId.HasValue)
+            query = query.Where(x => x.CityId == search.CityId.Value);
+
+        if (search.LanguageId.HasValue)
+            query = query.Where(x => x.SourceLanguageId == search.LanguageId.Value || x.TargetLanguageId == search.LanguageId.Value);
+
+        if (search.ExperienceLevel.HasValue)
+            query = query.Where(x => x.ExperienceLevel == search.ExperienceLevel.Value);
+
+        if (search.ServiceType.HasValue)
+            query = query.Where(x => x.ServiceType == search.ServiceType.Value);
+
+        if (search.MinPrice.HasValue)
+            query = query.Where(x => x.Price >= search.MinPrice.Value);
+
+        if (search.MaxPrice.HasValue)
+            query = query.Where(x => x.Price <= search.MaxPrice.Value);
+
+        var listings = await query
+            .OrderByDescending(x => x.CreatedDate)
+            .ToListAsync();
+
+        if (search.MinRating.HasValue)
+        {
+            var reviews = await _reviewRepository.GetAllAsync();
+            var avgRatingsByListing = reviews
+                .GroupBy(r => r.ListingId)
+                .ToDictionary(g => g.Key, g => g.Average(r => r.Rating));
+
+            listings = listings
+                .Where(x => avgRatingsByListing.TryGetValue(x.Id, out var avgRating) && avgRating >= search.MinRating.Value)
+                .ToList();
+        }
+
+        return listings.Select(MapToListDto).ToList();
+    }
+
+
+    private static ListingListDto MapToListDto(Listing x)
+    {
+        return new ListingListDto
         {
             Id = x.Id,
             Title = x.Title,
             Price = x.Price,
-            CityName = x.City.Name
-        }).ToList();
+            CityName = x.City?.Name ?? string.Empty
+        };
+    }
+
+    public async Task IncrementViewAsync(Guid listingId, Guid? userId, string? ipAddress)
+    {
+        var listing = await _listingRepository.GetByIdAsync(listingId);
+
+        if (listing == null || listing.IsDeleted)
+            throw new ValidationException("Listing bulunamadı");
+
+        listing.ViewCount++;
+        _listingRepository.Update(listing);
+
+        var view = new ListingView
+        {
+            ListingId = listingId,
+            UserId = userId,
+            IpAddress = ipAddress ?? string.Empty,
+            CreatedDate = DateTime.UtcNow
+        };
+
+        await _listingViewRepository.AddAsync(view);
+        await _listingRepository.SaveChangesAsync();
     }
 }
