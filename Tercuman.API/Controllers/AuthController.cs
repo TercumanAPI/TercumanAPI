@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Tercuman.API.Models;
 using Tercuman.Application.DTOs.Auth;
 using Tercuman.Application.Interfaces;
 
@@ -19,43 +20,27 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Register([FromBody] RegisterDto dto)
     {
         await _authService.RegisterAsync(dto);
-
-        return Ok(new
-        {
-            success = true,
-            message = "User registered successfully"
-        });
+        return Ok(ApiResponse<object>.Ok(null, "User registered successfully"));
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto dto)
     {
         var tokenDto = await _authService.LoginAsync(dto);
-
-        return Ok(new
-        {
-            success = true,
-            data = tokenDto
-        });
+        return Ok(ApiResponse<TokenDto>.Ok(tokenDto));
     }
 
     [HttpPost("refresh")]
     public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest dto)
     {
         var newTokenDto = await _authService.RefreshTokenAsync(dto.RefreshToken);
-
-        return Ok(new
-        {
-            success = true,
-            data = newTokenDto
-        });
+        return Ok(ApiResponse<TokenDto>.Ok(newTokenDto));
     }
 
     [HttpPost("forgot-password")]
     public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto dto)
     {
         await _authService.ForgotPasswordAsync(dto.Email);
-
-        return Ok(new { success = true, message = "Password reset link sent" });
+        return Ok(ApiResponse<object>.Ok(null, "Password reset email sent"));
     }
 }

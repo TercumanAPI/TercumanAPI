@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Text.Json;
+using Tercuman.API.Models;
 using Tercuman.Application.Exceptions;
 
 namespace Tercuman.API.Middlewares
@@ -37,16 +38,11 @@ namespace Tercuman.API.Middlewares
 
                 context.Response.StatusCode = (int)statusCode;
 
-                var details = _env.IsDevelopment() ? ex.StackTrace : null;
+                var payload = ApiResponse<object>.Fail(
+                    _env.IsDevelopment() ? ex.Message : "Sunucu tarafında bir hata oluştu.",
+                    _env.IsDevelopment() ? new { stackTrace = ex.StackTrace } : null);
 
-                var response = new
-                {
-                    StatusCode = context.Response.StatusCode,
-                    Message = _env.IsDevelopment() ? ex.Message : "Sunucu tarafında bir hata oluştu.",
-                    Details = details
-                };
-
-                await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+                await context.Response.WriteAsync(JsonSerializer.Serialize(payload));
             }
         }
     }
