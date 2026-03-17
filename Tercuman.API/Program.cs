@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using Tercuman.API.Hubs;
 using Tercuman.API.Middlewares;
@@ -16,6 +15,7 @@ using Tercuman.Application.Validators;
 using Tercuman.Infrastructure.Persistence;
 using Tercuman.Infrastructure.Repositories;
 using Tercuman.Infrastructure.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.AddConsole();
@@ -211,7 +211,22 @@ app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
 app.MapHub<ChatHub>("/chatHub");
+
+app.MapControllers();
+
+// Apply pending migrations on startup
+using (var scope = app.Services.CreateScope())
+{
+    try
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        db.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Migration error: {ex.Message}");
+    }
+}
 
 app.Run();
