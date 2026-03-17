@@ -1,4 +1,4 @@
-﻿using Tercuman.Application.DTOs.Translator;
+﻿using Tercuman.Contracts.DTOs.Translator;
 
 namespace Tercuman.Application.Interfaces
 {

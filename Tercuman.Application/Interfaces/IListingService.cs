@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tercuman.Application.DTOs.Common;
-using Tercuman.Application.DTOs.Listing;
+using Tercuman.Contracts.DTOs.Common;
+using Tercuman.Contracts.DTOs.Listing;
 
 namespace Tercuman.Application.Interfaces
 {

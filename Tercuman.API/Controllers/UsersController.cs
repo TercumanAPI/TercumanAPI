@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Tercuman.API.Models;
-using Tercuman.Application.DTOs.User;
+using Tercuman.Contracts.DTOs.User;
 using Tercuman.Application.Interfaces;
 
 namespace Tercuman.API.Controllers;

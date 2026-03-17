@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Tercuman.Application.DTOs.Public;
 using Tercuman.Application.Interfaces;
+using Tercuman.Contracts.DTOs.Public;
 using Tercuman.Domain.Entities;
+
 
 namespace Tercuman.Application.Services
 {

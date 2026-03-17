@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Tercuman.Application\Tercuman.Application.csproj" />
+    <ProjectReference Include="..\Tercuman.Contracts\Tercuman.Contracts.csproj" />
     <ProjectReference Include="..\Tercuman.Domain\Tercuman.Domain.csproj" />
     <ProjectReference Include="..\Tercuman.Infrastructure\Tercuman.Infrastructure.csproj" />
   </ItemGroup>

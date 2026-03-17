@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Tercuman.Application.DTOs.Common;
-using Tercuman.Application.DTOs.Listing;
 using Tercuman.Application.Exceptions;
 using Tercuman.Application.Interfaces;
+using Tercuman.Contracts.DTOs.Common;
+using Tercuman.Contracts.DTOs.Listing;
 using Tercuman.Domain.Entities;
 using Tercuman.Domain.Enums;
 

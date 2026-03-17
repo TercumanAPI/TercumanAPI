@@ -1,5 +1,5 @@
-﻿using Tercuman.Application.DTOs.Translator;
-using Tercuman.Application.Interfaces;
+﻿using Tercuman.Application.Interfaces;
+using Tercuman.Contracts.DTOs.Translator;
 using Tercuman.Domain.Entities;
 
 namespace Tercuman.Application.Services;

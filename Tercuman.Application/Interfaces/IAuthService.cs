@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Tercuman.Application.DTOs.Auth;
+using Tercuman.Contracts.DTOs.Auth;
 
 namespace Tercuman.Application.Interfaces
 {
