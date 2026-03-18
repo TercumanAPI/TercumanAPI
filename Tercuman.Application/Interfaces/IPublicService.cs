@@ -1,4 +1,5 @@
-﻿using Tercuman.Application.DTOs.Public;
+﻿
+using Tercuman.Contracts.DTOs.Public;
 
 namespace Tercuman.Application.Interfaces
 {

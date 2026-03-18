@@ -3,8 +3,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Tercuman.Application.DTOs.Auth;
 using Tercuman.Application.Interfaces;
+using Tercuman.Contracts.DTOs.Auth;
 using Tercuman.Domain.Entities;
 
 namespace Tercuman.Application.Services;

@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tercuman.Admin.API", "Tercu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tercuman.Domain", "Tercuman.Domain\Tercuman.Domain.csproj", "{FB106818-6D7D-2AE9-00C0-9C4F3427686D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tercuman.Mobile", "Tercuman.Mobile\Tercuman.Mobile.csproj", "{1BDCF669-7C4E-42F9-9C59-5ED5E49742A9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tercuman.Contracts", "Tercuman.Contracts\Tercuman.Contracts.csproj", "{BB81EA24-E9BF-456D-A1FC-4D955C028BD5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,16 @@ Global
 		{FB106818-6D7D-2AE9-00C0-9C4F3427686D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB106818-6D7D-2AE9-00C0-9C4F3427686D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB106818-6D7D-2AE9-00C0-9C4F3427686D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BDCF669-7C4E-42F9-9C59-5ED5E49742A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BDCF669-7C4E-42F9-9C59-5ED5E49742A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BDCF669-7C4E-42F9-9C59-5ED5E49742A9}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{1BDCF669-7C4E-42F9-9C59-5ED5E49742A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BDCF669-7C4E-42F9-9C59-5ED5E49742A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BDCF669-7C4E-42F9-9C59-5ED5E49742A9}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{BB81EA24-E9BF-456D-A1FC-4D955C028BD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB81EA24-E9BF-456D-A1FC-4D955C028BD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB81EA24-E9BF-456D-A1FC-4D955C028BD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB81EA24-E9BF-456D-A1FC-4D955C028BD5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

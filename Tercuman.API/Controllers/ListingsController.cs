@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tercuman.API.Models;
-using Tercuman.Application.DTOs.Common;
-using Tercuman.Application.DTOs.Listing;
+using Tercuman.Contracts.DTOs.Common;
+using Tercuman.Contracts.DTOs.Listing;
 using Tercuman.Application.Interfaces;
 
 namespace Tercuman.API.Controllers;

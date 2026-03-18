@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Tercuman.Contracts\Tercuman.Contracts.csproj" />
     <ProjectReference Include="..\Tercuman.Domain\Tercuman.Domain.csproj" />
   </ItemGroup>
 
