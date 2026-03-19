@@ -1,10 +1,22 @@
-﻿namespace Tercuman.Mobile
+﻿using Tercuman.Mobile.Services;
+
+namespace Tercuman.Mobile;
+
+public partial class AppShell : Shell
 {
-    public partial class AppShell : Shell
+    private readonly AuthService _authService;
+
+    public AppShell(AuthService authService)
     {
-        public AppShell()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+        _authService = authService;
+
+        InitializeApp();
+    }
+
+    private async void InitializeApp()
+    {
+        // 🔥 Direkt listings
+        await GoToAsync("//listings");
     }
 }
