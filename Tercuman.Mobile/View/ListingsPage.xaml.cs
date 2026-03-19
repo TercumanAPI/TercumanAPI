@@ -7,9 +7,8 @@ public partial class ListingsPage : ContentPage
     public ListingsPage(ListingsViewModel vm)
     {
         InitializeComponent();
-        BindingContext = App.Services.GetService<ListingsViewModel>();
+        BindingContext = vm;
     }
-    
 
     protected override async void OnAppearing()
     {

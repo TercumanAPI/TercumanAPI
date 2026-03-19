@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Tercuman.Contracts.DTOs.Auth;
 using Tercuman.Mobile.Services;
@@ -10,14 +10,8 @@ public partial class LoginViewModel : ObservableObject
 {
     private readonly IApiService _apiService;
     private readonly TokenStorageService _tokenStorage;
-
-    [ObservableProperty]
     private string? email;
-
-    [ObservableProperty]
     private string? password;
-
-    [ObservableProperty]
     private bool isBusy;
 
     public LoginViewModel(IApiService apiService, TokenStorageService tokenStorage)
@@ -26,13 +20,33 @@ public partial class LoginViewModel : ObservableObject
         _tokenStorage = tokenStorage;
     }
 
+    public string? Email
+    {
+        get => email;
+        set => SetProperty(ref email, value);
+    }
+
+    public string? Password
+    {
+        get => password;
+        set => SetProperty(ref password, value);
+    }
+
+    public bool IsBusy
+    {
+        get => isBusy;
+        set => SetProperty(ref isBusy, value);
+    }
+
     [RelayCommand]
     private async Task Login()
     {
         System.Diagnostics.Debug.WriteLine("1- Login başladı");
 
         if (IsBusy)
+        {
             return;
+        }
 
         try
         {

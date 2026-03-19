@@ -3,11 +3,8 @@
     x:Class="Tercuman.Mobile.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:Tercuman.Mobile.View">
-
-    <!--  Direkt listings aç -->
+    xmlns:views="clr-namespace:Tercuman.Mobile.View">
     <ShellContent
         Route="listings"
-        ContentTemplate="{DataTemplate local:ListingsPage}" />
-
+        ContentTemplate="{DataTemplate views:ListingsPage}" />
 </Shell>

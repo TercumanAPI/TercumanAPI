@@ -1,8 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Tercuman.Contracts.DTOs.Listing;
 using Tercuman.Mobile.Services;
-using Tercuman.Mobile.Storage;
 
 namespace Tercuman.Mobile.ViewModels;
 
@@ -10,7 +8,7 @@ public partial class ListingsViewModel : BaseViewModel
 {
     private readonly IApiService _apiService;
 
-    public ListingsViewModel(IApiService apiService, TokenStorageService tokenStorage)
+    public ListingsViewModel(IApiService apiService)
     {
         _apiService = apiService;
     }
@@ -18,7 +16,10 @@ public partial class ListingsViewModel : BaseViewModel
     [RelayCommand]
     private async Task LoadListings()
     {
-        if (IsLoading) return;
+        if (IsLoading)
+        {
+            return;
+        }
 
         try
         {

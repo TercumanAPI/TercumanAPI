@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<!-- Platforms -->
@@ -54,6 +54,15 @@
 
 		<MauiAsset Include="Resources\Raw\**"
 				   LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<MauiXaml Update="App.xaml" />
+		<MauiXaml Update="AppShell.xaml" />
+		<MauiXaml Update="View\LoginPage.xaml" />
+		<MauiXaml Update="View\ListingsPage.xaml" />
+		<MauiXaml Update="Resources\Styles\Colors.xaml" />
+		<MauiXaml Update="Resources\Styles\Styles.xaml" />
 	</ItemGroup>
 
 	<!-- Packages -->

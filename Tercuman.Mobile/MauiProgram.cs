@@ -1,12 +1,10 @@
-﻿using CommunityToolkit.Maui;
+using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 using Refit;
 using Tercuman.Mobile.Services;
 using Tercuman.Mobile.Storage;
 using Tercuman.Mobile.View;
 using Tercuman.Mobile.ViewModels;
-
-
 
 
 namespace Tercuman.Mobile
@@ -30,6 +28,7 @@ namespace Tercuman.Mobile
                });
 
             builder.Services.AddTransient<LoginViewModel>();
+            builder.Services.AddTransient<ListingsViewModel>();
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddSingleton<AuthService>();
             builder.Services.AddSingleton<TokenStorageService>();
