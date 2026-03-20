@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Tercuman.Application.Interfaces;
-using Tercuman.Domin.Entities;
+using Tercuman.Domain.Entities;
 using Tercuman.Infrastructure.Persistence;
 
 namespace Tercuman.API.Hubs;

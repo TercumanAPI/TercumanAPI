@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Tercuman.Application.Interfaces;
-using Tercuman.Domin.Entities;
+using Tercuman.Domain.Entities;
 using Tercuman.Infrastructure.Persistence;
+
+namespace Tercuman.Infrastructure.Repositories;
 
 public class UserRepository : IUserRepository
 {
@@ -16,6 +18,22 @@ public class UserRepository : IUserRepository
     {
         return await _context.Users
             .FirstOrDefaultAsync(x => x.Email == email);
+    }
+
+    public async Task<User?> GetByIdAsync(Guid id)
+    {
+        return await _context.Users
+            .FirstOrDefaultAsync(x => x.Id == id);
+    }
+
+    public async Task<List<User>> GetAllAsync()
+    {
+        return await _context.Users.ToListAsync();
+    }
+
+    public IQueryable<User> Query()
+    {
+        return _context.Users.AsQueryable();
     }
 
     public async Task AddAsync(User user)

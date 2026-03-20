@@ -1,5 +1,5 @@
 ﻿using Tercuman.Application.DTOs.Conversation;
-using Tercuman.Domin.Entities;
+using Tercuman.Domain.Entities;
 
 namespace Tercuman.Application.Interfaces;
 

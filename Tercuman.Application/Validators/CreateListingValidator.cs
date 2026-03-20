@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentValidation;
-using global::Tercuman.Application.DTOs.Listing;
-   
+using Tercuman.Contracts.DTOs.Listing;
 
-    namespace Tercuman.Application.Validators
+
+namespace Tercuman.Application.Validators
     {
         public class CreateListingValidator : AbstractValidator<CreateListingDto>
         {

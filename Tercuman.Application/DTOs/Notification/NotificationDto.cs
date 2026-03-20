@@ -13,4 +13,5 @@ public class NotificationDto
     public DateTime SentAt { get; set; }
 
     public bool IsRead { get; set; }
+    public Guid? ConversationId { get; set; }
 }
