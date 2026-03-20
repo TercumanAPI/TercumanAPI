@@ -30,21 +30,16 @@ namespace Tercuman.Domain.Entities
         public ICollection<Message> SentMessages { get; set; }
         public ICollection<Message> ReceivedMessages { get; set; }
         public ICollection<Favorite> Favorites { get; set; }
-<<<<<<< HEAD:Tercuman.Domin/Entities/User.cs
-<<<<<<< Updated upstream
-=======
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
         public bool IsApproved { get; set; } = false; // Çevirmen varsayılan olarak onaysız başlar
         public string Role { get; set; } = "User";
->>>>>>> Stashed changes
 =======
 
        
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
         public bool IsApproved { get; set; } = false; // Çevirmen varsayılan olarak onaysız başlar
-        public string Role { get; set; }
->>>>>>> 0426f3014207cc9f149fd2f8b942c2cdddd16ba2:Tercuman.Domain/Entities/User.cs
+
     }
 }
