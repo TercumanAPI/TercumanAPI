@@ -1,6 +1,7 @@
 using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 using Refit;
+using Tercuman.Mobile.Handlers;
 using Tercuman.Mobile.Services;
 using Tercuman.Mobile.Storage;
 using Tercuman.Mobile.View;

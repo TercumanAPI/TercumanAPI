@@ -1,4 +1,6 @@
 using Tercuman.Mobile.ViewModels;
+using Tercuman.Contracts.DTOs.Listing;
+
 
 namespace Tercuman.Mobile.View;
 
@@ -18,5 +20,17 @@ public partial class ListingsPage : ContentPage
         {
             await vm.LoadListingsCommand.ExecuteAsync(null);
         }
+    }
+    private async void OnItemSelected(object sender, SelectionChangedEventArgs e)
+    {
+        var item = e.CurrentSelection.FirstOrDefault() as ListingDto;
+
+        if (item == null)
+            return;
+
+        await Shell.Current.GoToAsync("detail", new Dictionary<string, object>
+        {
+            { "listing", item }
+        });
     }
 }

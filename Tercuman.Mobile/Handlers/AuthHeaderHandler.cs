@@ -1,7 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using Tercuman.Mobile.Storage;
 
-namespace Tercuman.Mobile.Services;
+namespace Tercuman.Mobile.Handlers;
 
 public class AuthHeaderHandler : DelegatingHandler
 {
