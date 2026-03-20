@@ -5,8 +5,11 @@ namespace Tercuman.Mobile.Handlers;
 
 public class AuthHeaderHandler : DelegatingHandler
 {
+    // TokenStorageService, token'ı güvenli bir şekilde saklamak ve almak için kullanılan bir servis.
+
     private readonly TokenStorageService _tokenService;
 
+    // Bu handler, her HTTP isteği gönderilmeden önce çalışır ve token'ı alarak Authorization header'ına ekler.
     public AuthHeaderHandler(TokenStorageService tokenService)
     {
         _tokenService = tokenService;
