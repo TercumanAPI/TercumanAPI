@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Text;
 using System.Security.Claims;
+using System.Text;
 using Tercuman.Application.Interfaces;
 using Tercuman.Application.Services;
 using Tercuman.Infrastructure.Persistence;
@@ -11,11 +11,21 @@ using Tercuman.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// =========================
+// CONTROLLERS + SWAGGER
+// =========================
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "Tercuman Admin API", Version = "v1" });
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Tercuman Admin API",
+        Version = "v1"
+    });
+
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -24,31 +34,50 @@ builder.Services.AddSwaggerGen(options =>
         BearerFormat = "JWT",
         In = ParameterLocation.Header
     });
+
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
             },
             Array.Empty<string>()
         }
     });
 });
 
+// =========================
+// DATABASE
+// =========================
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.ConfigureTercumanDatabase(builder.Configuration));
+
+// =========================
+// REPOSITORIES
+// =========================
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IReportService, ReportService>();
 
+// =========================
+// AUTHENTICATION
+// =========================
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         var jwtSettings = builder.Configuration.GetSection("Jwt");
-        var key = Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? throw new Exception("JWT Key not found"));
+        var key = Encoding.UTF8.GetBytes(
+            jwtSettings["Key"] ?? throw new Exception("JWT Key not found")
+        );
 
         options.TokenValidationParameters = new TokenValidationParameters
         {
@@ -56,9 +85,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
+
             ValidIssuer = jwtSettings["Issuer"],
             ValidAudience = jwtSettings["Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(key),
+
             NameClaimType = ClaimTypes.NameIdentifier,
             RoleClaimType = ClaimTypes.Role
         };
@@ -66,7 +97,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
+// =========================
+// APP BUILD
+// =========================
+
 var app = builder.Build();
+
+// =========================
+// SWAGGER (DEV)
+// =========================
 
 if (app.Environment.IsDevelopment())
 {
@@ -74,16 +113,26 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// =========================
+// MIDDLEWARE
+// =========================
+
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
+
+// =========================
+// DATABASE MIGRATION
+// =========================
 
 using (var scope = app.Services.CreateScope())
 {
     try
     {
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
         if (db.Database.IsSqlite())
         {
             db.Database.EnsureCreated();
@@ -98,6 +147,10 @@ using (var scope = app.Services.CreateScope())
         Console.WriteLine($"Migration error: {ex.Message}");
     }
 }
+
+// =========================
+// ADMIN SEED (ONLY YOU)
+// =========================
 
 await app.Services.SeedInitialAdminAsync(builder.Configuration);
 
