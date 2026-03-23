@@ -11,16 +11,18 @@ namespace Tercuman.Infrastructure.Persistence
         {
             var basePath = Path.Combine(Directory.GetCurrentDirectory(), "../Tercuman.API");
 
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(basePath)
-                .AddJsonFile("appsettings.json")
+                .AddJsonFile("appsettings.json", optional: false)
+                .AddJsonFile($"appsettings.{environment}.json", optional: true)
+                .AddEnvironmentVariables()
                 .Build();
 
             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
 
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
-
-            optionsBuilder.UseSqlServer(connectionString);
+            optionsBuilder.ConfigureTercumanDatabase(configuration);
 
             return new AppDbContext(optionsBuilder.Options);
         }
