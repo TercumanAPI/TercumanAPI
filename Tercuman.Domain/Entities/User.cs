@@ -35,6 +35,6 @@ namespace Tercuman.Domain.Entities
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
         public bool IsApproved { get; set; } = false; // Çevirmen varsayılan olarak onaysız başlar
-        public string Role { get; set; }
+        public string? Role { get; set; }
     }
 }

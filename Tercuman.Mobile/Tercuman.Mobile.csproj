@@ -18,7 +18,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 
-		<!-- 🔥 CRITICAL (Refit + Android fix) -->
+		<!-- 🔥 CRITICAL -->
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
 		<!-- App Info -->
