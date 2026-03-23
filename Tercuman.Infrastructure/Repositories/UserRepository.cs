@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Tercuman.Application.Interfaces;
 using Tercuman.Domain.Entities;
 using Tercuman.Infrastructure.Persistence;
@@ -24,6 +24,12 @@ public class UserRepository : IUserRepository
     {
         return await _context.Users
             .FirstOrDefaultAsync(x => x.Id == id);
+    }
+
+    public async Task<User?> GetByRefreshTokenAsync(string refreshToken)
+    {
+        return await _context.Users
+            .FirstOrDefaultAsync(x => x.RefreshToken == refreshToken);
     }
 
     public async Task<List<User>> GetAllAsync()

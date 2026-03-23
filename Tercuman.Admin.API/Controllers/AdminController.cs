@@ -72,6 +72,20 @@ public class AdminController : ControllerBase
         return Ok(ApiResponse<object>.Ok(new { user.Id, user.Role }));
     }
 
+    [HttpPost("make-admin/{userId:guid}")]
+    public async Task<IActionResult> MakeAdmin(Guid userId)
+    {
+        var user = await _userRepository.GetByIdAsync(userId);
+        if (user == null)
+        {
+            return NotFound(ApiResponse<object>.Fail("User not found", new[] { "USER_NOT_FOUND" }));
+        }
+
+        user.Role = "Admin";
+        await _userRepository.SaveChangesAsync();
+        return Ok(ApiResponse<object>.Ok(new { user.Id, user.Role }));
+    }
+
     [HttpPut("users/{id:guid}/toggle-status")]
     public async Task<IActionResult> ToggleStatus(Guid id)
     {

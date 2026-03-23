@@ -72,8 +72,8 @@ public class ListingService : IListingService
     {
         var currentPage = page <= 0 ? 1 : page;
         var currentPageSize = pageSize <= 0 ? 10 : pageSize;
-        if (currentPageSize > 50)
-            currentPageSize = 50;
+        if (currentPageSize > 100)
+            currentPageSize = 100;
 
         var query = _listingRepository.Query();
 
@@ -117,10 +117,6 @@ public class ListingService : IListingService
         if (listing == null)
             return null;
 
-        listing.ViewCount++;
-
-        _listingRepository.Update(listing);
-        await _listingRepository.SaveChangesAsync();
 
         return new ListingDetailDto
         {
@@ -231,8 +227,8 @@ public class ListingService : IListingService
         var page = filter.Page <= 0 ? 1 : filter.Page;
         var pageSize = filter.PageSize <= 0 ? 10 : filter.PageSize;
 
-        if (pageSize > 50)
-            pageSize = 50;
+        if (pageSize > 100)
+            pageSize = 100;
 
         if (filter.Gender.HasValue)
             query = query.Where(x => x.User != null && x.User.Gender == filter.Gender.Value);

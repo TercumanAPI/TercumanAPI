@@ -1,21 +1,19 @@
-﻿using System;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tercuman.API.Models;
-using Tercuman.Application.Services;
+using Tercuman.Application.Interfaces;
 
 namespace Tercuman.API.Controllers
 {
-    [Authorize] // Kullanıcı login olmak zorunda
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class FavoritesController : ControllerBase
     {
-        private readonly FavoriteService _favoriteService;
+        private readonly IFavoriteService _favoriteService;
 
-        public FavoritesController(FavoriteService favoriteService)
+        public FavoritesController(IFavoriteService favoriteService)
         {
             _favoriteService = favoriteService;
         }
@@ -59,21 +57,19 @@ namespace Tercuman.API.Controllers
         }
 
         [HttpGet("customer")]
-        public async Task<IActionResult> GetCustomerFavorites()
+        public Task<IActionResult> GetCustomerFavorites()
         {
-            var userId = GetUserId();
-            var favorites = await _favoriteService.GetUserFavoritesAsync(userId);
-            return Ok(ApiResponse<object>.Ok(favorites));
+            return GetMyFavorites();
         }
 
-        // Token'dan UserId'yi güvenli şekilde çıkaran yardımcı metot
         private Guid GetUserId()
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out Guid userId))
+            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
             {
                 throw new UnauthorizedAccessException("Geçersiz veya eksik kullanıcı kimliği.");
             }
+
             return userId;
         }
     }
