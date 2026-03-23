@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Tercuman.API.Models;
-using Tercuman.Contracts.DTOs.User;
 using Tercuman.Application.Interfaces;
+using Tercuman.Contracts.DTOs.User;
 
 namespace Tercuman.API.Controllers;
 
@@ -45,7 +45,7 @@ public class UsersController : ControllerBase
 
     [Authorize]
     [HttpPut("profile")]
-    public async Task<IActionResult> UpdateProfile(UpdateProfileDto dto)
+    public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDto dto)
     {
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         var user = await _userRepository.GetByIdAsync(userId);
@@ -65,7 +65,7 @@ public class UsersController : ControllerBase
 
     [Authorize]
     [HttpPost("change-password")]
-    public async Task<IActionResult> ChangePassword(ChangePasswordDto dto)
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
     {
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         var user = await _userRepository.GetByIdAsync(userId);
