@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -6,6 +6,8 @@ using System.Text;
 using Tercuman.Application.Interfaces;
 using Tercuman.Contracts.DTOs.Auth;
 using Tercuman.Domain.Entities;
+
+namespace Tercuman.Application.Services;
 
 public class AuthService : IAuthService
 {
@@ -20,7 +22,6 @@ public class AuthService : IAuthService
         _emailService = emailService;
     }
 
-    // REGISTER
     public async Task RegisterAsync(RegisterDto dto)
     {
         try
@@ -38,6 +39,7 @@ public class AuthService : IAuthService
                 Gender = dto.Gender,
                 PhoneNumber = dto.PhoneNumber,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+                Role = "Customer",
                 CreatedDate = DateTime.UtcNow
             };
 
@@ -50,7 +52,6 @@ public class AuthService : IAuthService
         }
     }
 
-    // LOGIN
     public async Task<TokenDto> LoginAsync(LoginDto dto)
     {
         try
@@ -69,32 +70,7 @@ public class AuthService : IAuthService
             if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
                 throw new Exception("Invalid password");
 
-            var jwtSettings = _configuration.GetSection("Jwt");
-
-            var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(jwtSettings["Key"]!)
-            );
-
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
-
-            var token = new JwtSecurityToken(
-                issuer: jwtSettings["Issuer"],
-                audience: jwtSettings["Audience"],
-                claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(
-                    int.Parse(jwtSettings["ExpiryMinutes"]!)
-                ),
-                signingCredentials:
-                    new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
-            );
-
-            var accessToken = new JwtSecurityTokenHandler().WriteToken(token);
-
+            var accessToken = GenerateJwtToken(user);
             var refreshToken = Convert.ToBase64String(
                 System.Security.Cryptography.RandomNumberGenerator.GetBytes(64)
             );
@@ -116,17 +92,28 @@ public class AuthService : IAuthService
         }
     }
 
-    // REFRESH TOKEN
     public async Task<TokenDto> RefreshTokenAsync(string refreshToken)
     {
         try
         {
-            await Task.CompletedTask;
+            var user = await _userRepository.GetByRefreshTokenAsync(refreshToken);
+
+            if (user == null || user.RefreshTokenExpiryTime == null || user.RefreshTokenExpiryTime < DateTime.UtcNow)
+                throw new Exception("Invalid token");
+
+            var newRefreshToken = Convert.ToBase64String(
+                System.Security.Cryptography.RandomNumberGenerator.GetBytes(64)
+            );
+
+            user.RefreshToken = newRefreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+
+            await _userRepository.SaveChangesAsync();
 
             return new TokenDto
             {
-                AccessToken = GenerateJwtToken(),
-                RefreshToken = refreshToken
+                AccessToken = GenerateJwtToken(user),
+                RefreshToken = newRefreshToken
             };
         }
         catch (Exception ex)
@@ -135,8 +122,7 @@ public class AuthService : IAuthService
         }
     }
 
-    // JWT üretme
-    private string GenerateJwtToken()
+    private string GenerateJwtToken(User user)
     {
         var jwtSettings = _configuration.GetSection("Jwt");
 
@@ -144,9 +130,22 @@ public class AuthService : IAuthService
             Encoding.UTF8.GetBytes(jwtSettings["Key"]!)
         );
 
+        var claimList = new List<Claim>
+        {
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.Email, user.Email),
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+        };
+
+        if (!string.IsNullOrEmpty(user.Role))
+        {
+            claimList.Add(new Claim(ClaimTypes.Role, user.Role));
+        }
+
         var token = new JwtSecurityToken(
             issuer: jwtSettings["Issuer"],
             audience: jwtSettings["Audience"],
+            claims: claimList.ToArray(),
             expires: DateTime.UtcNow.AddMinutes(
                 int.Parse(jwtSettings["ExpiryMinutes"]!)
             ),
@@ -157,7 +156,6 @@ public class AuthService : IAuthService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    // FORGOT PASSWORD
     public async Task ForgotPasswordAsync(string email)
     {
         try

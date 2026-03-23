@@ -56,22 +56,6 @@ public class AdminController : ControllerBase
         return Ok(ApiResponse<object>.Ok(data));
     }
 
-    public record UpdateRoleRequest(Guid UserId, string Role);
-
-    [HttpPut("users/role")]
-    public async Task<IActionResult> UpdateRole([FromBody] UpdateRoleRequest request)
-    {
-        var user = await _userRepository.GetByIdAsync(request.UserId);
-        if (user == null)
-        {
-            return NotFound(ApiResponse<object>.Fail("User not found", new[] { "USER_NOT_FOUND" }));
-        }
-
-        user.Role = request.Role;
-        await _userRepository.SaveChangesAsync();
-        return Ok(ApiResponse<object>.Ok(new { user.Id, user.Role }));
-    }
-
     [HttpPut("users/{id:guid}/toggle-status")]
     public async Task<IActionResult> ToggleStatus(Guid id)
     {

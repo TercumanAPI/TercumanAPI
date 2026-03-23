@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Tercuman.API.Models;
-using Tercuman.Contracts.DTOs.User;
 using Tercuman.Application.Interfaces;
+using Tercuman.Contracts.DTOs.User;
 
 namespace Tercuman.API.Controllers;
 
@@ -45,7 +45,7 @@ public class UsersController : ControllerBase
 
     [Authorize]
     [HttpPut("profile")]
-    public async Task<IActionResult> UpdateProfile(UpdateProfileDto dto)
+    public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDto dto)
     {
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         var user = await _userRepository.GetByIdAsync(userId);
@@ -65,7 +65,7 @@ public class UsersController : ControllerBase
 
     [Authorize]
     [HttpPost("change-password")]
-    public async Task<IActionResult> ChangePassword(ChangePasswordDto dto)
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
     {
         var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         var user = await _userRepository.GetByIdAsync(userId);
@@ -111,16 +111,4 @@ public class UsersController : ControllerBase
         return Ok(ApiResponse<object>.Ok(new { imageUrl = user.ProfileImageUrl }));
     }
 
-    [Authorize(Roles = "Admin")]
-    [HttpPut("{id}/toggle-status")]
-    public async Task<IActionResult> ToggleUserStatus(Guid id)
-    {
-        var user = await _userRepository.GetByIdAsync(id);
-        if (user == null) return NotFound(ApiResponse<object>.Fail("User not found"));
-
-        user.IsActive = !user.IsActive;
-        await _userRepository.SaveChangesAsync();
-
-        return Ok(ApiResponse<object>.Ok(new { status = user.IsActive }));
-    }
 }
