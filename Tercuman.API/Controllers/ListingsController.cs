@@ -54,15 +54,18 @@ public class ListingsController : ControllerBase
         [FromQuery] int pageSize = 10,
         [FromQuery] string? sort = null)
     {
-        var listings = await _listingService.GetPagedAsync(page, pageSize, sort);
+        var normalizedPage = page <= 0 ? 1 : page;
+        var normalizedPageSize = pageSize <= 0 ? 10 : Math.Min(pageSize, 100);
+
+        var listings = await _listingService.GetPagedAsync(normalizedPage, normalizedPageSize, sort);
         var totalCount = await _listingService.CountAsync();
 
         var result = new PagedResultDto<ListingDto>
         {
             Items = listings.ToList(),
             TotalCount = totalCount,
-            Page = page,
-            PageSize = pageSize
+            Page = normalizedPage,
+            PageSize = normalizedPageSize
         };
 
         return Ok(ApiResponse<PagedResultDto<ListingDto>>.Ok(result));

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Tercuman.Application.Interfaces; // Bu satır eksikti, IFavoriteRepository'i bulmasını sağlar
+using Tercuman.Application.Interfaces;
 using Tercuman.Domain.Entities;
 
 namespace Tercuman.Application.Services
 {
-    public class FavoriteService
+    public class FavoriteService : IFavoriteService
     {
         private readonly IFavoriteRepository _favoriteRepository;
         private readonly IListingRepository _listingRepository;
