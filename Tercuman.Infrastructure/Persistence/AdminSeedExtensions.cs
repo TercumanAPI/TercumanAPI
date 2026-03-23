@@ -42,6 +42,7 @@ public static class AdminSeedExtensions
             user.UpdatedDate = DateTime.UtcNow;
         }
 
+        // 🔥 HER ZAMAN TEK ADMIN
         var otherUsers = await db.Users
             .Where(x => x.Email != adminEmail && x.Role == "Admin")
             .ToListAsync();

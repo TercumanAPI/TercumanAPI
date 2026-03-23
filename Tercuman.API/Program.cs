@@ -223,6 +223,7 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
         if (db.Database.IsSqlite())
         {
             db.Database.EnsureCreated();
@@ -238,6 +239,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-await app.Services.SeedInitialAdminAsync();
+// 🔥 ADMIN SEED (ONLY YOU)
+await app.Services.SeedInitialAdminAsync(builder.Configuration);
 
 app.Run();
