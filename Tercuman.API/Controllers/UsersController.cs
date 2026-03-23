@@ -111,16 +111,4 @@ public class UsersController : ControllerBase
         return Ok(ApiResponse<object>.Ok(new { imageUrl = user.ProfileImageUrl }));
     }
 
-    [Authorize(Roles = "Admin")]
-    [HttpPut("{id}/toggle-status")]
-    public async Task<IActionResult> ToggleUserStatus(Guid id)
-    {
-        var user = await _userRepository.GetByIdAsync(id);
-        if (user == null) return NotFound(ApiResponse<object>.Fail("User not found"));
-
-        user.IsActive = !user.IsActive;
-        await _userRepository.SaveChangesAsync();
-
-        return Ok(ApiResponse<object>.Ok(new { status = user.IsActive }));
-    }
 }
