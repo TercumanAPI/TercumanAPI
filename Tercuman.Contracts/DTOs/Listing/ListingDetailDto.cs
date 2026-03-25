@@ -9,11 +9,11 @@ namespace Tercuman.Contracts.DTOs.Listing
         public long ListingNo { get; set; }
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
-        public string Name { get; set; }
-        public string Title { get; set; } = "";
-        public string Description { get; set; } = "";
+        public string Name { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
         public decimal Price { get; set; }
-        public string City { get; set; } = "";
+        public string City { get; set; } = string.Empty;
 
         public string UserPhone { get; set; } = "";
 

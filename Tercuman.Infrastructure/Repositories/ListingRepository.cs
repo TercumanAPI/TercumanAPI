@@ -8,7 +8,7 @@ namespace Tercuman.Infrastructure.Repositories;
 public class ListingRepository
     : GenericRepository<Listing>, IListingRepository
 {
-    private readonly AppDbContext _context;
+    private new readonly AppDbContext _context;
 
     public ListingRepository(AppDbContext context) : base(context)
     {

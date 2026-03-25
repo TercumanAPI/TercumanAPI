@@ -8,16 +8,16 @@ namespace Tercuman.Contracts.DTOs.Listing
         public long ListingNo { get; set; }
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
-        public string Name { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
         public decimal Price { get; set; }
         public Guid CityId { get; set; }
 
         // SADECE BUNU KULLAN
-        public string City { get; set; }
+        public string City { get; set; } = string.Empty;
 
-        public string TranslatorName { get; set; }
+        public string TranslatorName { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
         public string? Gender { get; set; }
         public string PhoneNumber { get; set; } = string.Empty;

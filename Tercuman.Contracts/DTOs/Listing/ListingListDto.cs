@@ -10,9 +10,9 @@ public class ListingListDto
 {
     public Guid Id { get; set; }
 
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
 
     public decimal Price { get; set; }
 
-    public string CityName { get; set; }
+    public string CityName { get; set; } = string.Empty;
 }

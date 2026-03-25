@@ -20,13 +20,6 @@ namespace Tercuman.Mobile
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             }).UseMauiCommunityToolkit();
 
-            builder.Services
-                     .AddRefitClient<IApiService>()
-                     .ConfigureHttpClient(c =>
-               {
-                   c.BaseAddress = new Uri("https://10.0.2.2:5001/");
-               });
-
             builder.Services.AddTransient<LoginViewModel>();
             builder.Services.AddTransient<ListingsViewModel>();
             builder.Services.AddTransient<LoginPage>();

@@ -6,7 +6,7 @@ namespace Tercuman.Infrastructure.Repositories;
 
 public class ContactMessageRepository : GenericRepository<ContactMessage>, IContactMessageRepository
 {
-    private readonly AppDbContext _context;
+    private new readonly AppDbContext _context;
 
     public ContactMessageRepository(AppDbContext context) : base(context)
     {
