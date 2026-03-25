@@ -1,26 +1,56 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage 
-
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Class="Tercuman.Mobile.View.LoginPage">
-    
-    <VerticalStackLayout Padding="30" Spacing="15">
+    x:Class="Tercuman.Mobile.View.LoginPage"
+    BackgroundColor="{StaticResource Background}">
 
-        <Label Text="Tercuman Login"
-               FontSize="24"
-               HorizontalOptions="Center" />
+    <ScrollView>
 
-        <Entry Placeholder="Email"
-               Text="{Binding Email}" />
+        <VerticalStackLayout Padding="24" Spacing="20">
 
-        <Entry Placeholder="Password"
-               IsPassword="True"
-               Text="{Binding Password}" />
+            <!-- TITLE -->
+            <VerticalStackLayout Spacing="6">
+                <Label Text="MiftahTEA"
+                       FontSize="28"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource Primary}" />
 
-        <Button Text="Login"
-                Command="{Binding LoginCommand}" />
+                <Label Text="Hesabınıza giriş yapın"
+                       FontSize="14"
+                       TextColor="{StaticResource TextSecondary}" />
+            </VerticalStackLayout>
 
-    </VerticalStackLayout>
+            <!-- CARD -->
+            <Frame>
+
+                <VerticalStackLayout Spacing="16">
+
+                    <!-- Email -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="E-mail" FontSize="13"/>
+                        <Entry Placeholder="E-mail girin"
+                               Text="{Binding Email}" />
+                    </VerticalStackLayout>
+
+                    <!-- Password -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Şifre" FontSize="13"/>
+                        <Entry Placeholder="Şifre girin"
+                               IsPassword="True"
+                               Text="{Binding Password}" />
+                    </VerticalStackLayout>
+
+                    <!-- BUTTON -->
+                    <Button Text="Giriş Yap"
+                            Command="{Binding LoginCommand}" />
+
+                </VerticalStackLayout>
+
+            </Frame>
+
+        </VerticalStackLayout>
+
+    </ScrollView>
 
 </ContentPage>

@@ -10,8 +10,12 @@ public partial class AppShell : Shell
     public AppShell(AuthService authService)
     {
         InitializeComponent();
+
         _authService = authService;
 
+        // 🔥 ROUTES
+        Routing.RegisterRoute("login", typeof(LoginPage));
+        Routing.RegisterRoute("listings", typeof(ListingsPage));
         Routing.RegisterRoute("detail", typeof(ListingDetailPage));
 
         InitializeApp();
@@ -19,7 +23,15 @@ public partial class AppShell : Shell
 
     private async void InitializeApp()
     {
-        //  Direkt listings açılıyor, eğer kullanıcı giriş yapmamışsa Login sayfasına yönlendiriliyor.
-        await GoToAsync("//listings");
+        var isLoggedIn = await _authService.IsLoggedInAsync();
+
+        if (isLoggedIn)
+        {
+            await GoToAsync("//listings");
+        }
+        else
+        {
+            await GoToAsync("//login");
+        }
     }
 }
