@@ -1,27 +1,33 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net8.0-android</TargetFrameworks>
+		<!-- SADECE ANDROID (stabil başla) -->
+		<TargetFramework>net8.0-android</TargetFramework>
 
 		<OutputType>Exe</OutputType>
 		<RootNamespace>Tercuman.Mobile</RootNamespace>
+
 		<UseMaui>true</UseMaui>
 		<SingleProject>true</SingleProject>
 
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 
+		<!-- Debug stabil -->
 		<DebugType>portable</DebugType>
 		<DebugSymbols>false</DebugSymbols>
 
+		<!-- App -->
 		<ApplicationTitle>Tercuman</ApplicationTitle>
 		<ApplicationId>com.tercuman.mobile</ApplicationId>
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
 
+		<!-- Android min -->
 		<SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
+	<!-- MAUI RESOURCES -->
 	<ItemGroup>
 		<MauiIcon Include="Resources\AppIcon\appicon.svg"
 				  ForegroundFile="Resources\AppIcon\appiconfg.svg"
@@ -32,22 +38,23 @@
 						  BaseSize="128,128" />
 
 		<MauiImage Include="Resources\Images\*" />
-		<MauiImage Update="Resources\Images\dotnet_bot.png"
-				   Resize="True"
-				   BaseSize="300,185" />
-
 		<MauiFont Include="Resources\Fonts\*" />
 		<MauiAsset Include="Resources\Raw\**"
 				   LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 
+	<!-- .NET 8 MAUI için ZORUNLU paketler -->
 	<ItemGroup>
+		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.100" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.100" />
+
 		<PackageReference Include="CommunityToolkit.Maui" Version="8.0.1" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
+
 		<PackageReference Include="Refit" Version="8.0.0" />
 		<PackageReference Include="Refit.HttpClientFactory" Version="8.0.0" />
-		<PackageReference Include="System.Text.Json" Version="8.0.6" />
 	</ItemGroup>
 
 	<ItemGroup>
