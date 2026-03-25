@@ -28,6 +28,7 @@ namespace Tercuman.Mobile
             builder.Services.AddSingleton<TokenStorageService>();
             builder.Services.AddSingleton<AuthService>();
             builder.Services.AddTransient<AuthHeaderHandler>();
+            builder.Services.AddTransient<ApiExceptionHandler>();
 
             // 🔥 API (TEK TANIM)
             builder.Services
@@ -37,7 +38,8 @@ namespace Tercuman.Mobile
                     c.BaseAddress = new Uri("https://10.0.2.2:5001");
                     c.Timeout = TimeSpan.FromSeconds(30);
                 })
-                .AddHttpMessageHandler<AuthHeaderHandler>();
+                .AddHttpMessageHandler<AuthHeaderHandler>()
+                .AddHttpMessageHandler<ApiExceptionHandler>();
 
             // 🔥 ViewModels
             builder.Services.AddTransient<LoginViewModel>();

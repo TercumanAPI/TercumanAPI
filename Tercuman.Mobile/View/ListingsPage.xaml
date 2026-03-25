@@ -4,9 +4,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="Tercuman.Mobile.View.ListingsPage">
 
-    <Grid>
+    <Grid RowDefinitions="Auto,*" Padding="12">
+        <Button
+            Grid.Row="0"
+            HorizontalOptions="End"
+            Text="Çıkış"
+            Command="{Binding LogoutCommand}" />
 
-        <CollectionView 
+        <CollectionView
+            Grid.Row="1"
             ItemsSource="{Binding Listings}"
             SelectionMode="Single"
             SelectionChanged="OnItemSelected">
@@ -15,18 +21,14 @@
                 <DataTemplate>
                     <Frame Margin="10" Padding="10">
                         <VerticalStackLayout>
-
                             <Label Text="{Binding Title}" />
                             <Label Text="{Binding Price}" />
                             <Label Text="{Binding City}" />
-                            <!-- 🔥 DÜZELTİLDİ -->
-
                         </VerticalStackLayout>
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
 
         </CollectionView>
-
     </Grid>
 </ContentPage>

@@ -7,10 +7,12 @@ namespace Tercuman.Mobile.ViewModels;
 public partial class ListingsViewModel : BaseViewModel
 {
     private readonly IApiService _apiService;
+    private readonly AuthService _authService;
 
-    public ListingsViewModel(IApiService apiService)
+    public ListingsViewModel(IApiService apiService, AuthService authService)
     {
         _apiService = apiService;
+        _authService = authService;
     }
 
     [RelayCommand]
@@ -28,15 +30,14 @@ public partial class ListingsViewModel : BaseViewModel
 
             var response = await _apiService.GetListings();
 
-            if (response.IsSuccessStatusCode && response.Content != null)
+            if (!response.Success)
             {
-                Listings = response.Content;
-            }
-            else
-            {
-                ErrorMessage = "Veriler alınamadı";
+                ErrorMessage = response.Message;
                 Listings = new List<ListingDto>();
+                return;
             }
+
+            Listings = response.Data?.Items ?? new List<ListingDto>();
         }
         catch (Exception ex)
         {
@@ -47,5 +48,12 @@ public partial class ListingsViewModel : BaseViewModel
         {
             IsLoading = false;
         }
+    }
+
+    [RelayCommand]
+    private async Task Logout()
+    {
+        await _authService.LogoutAsync();
+        await Shell.Current.GoToAsync("//login");
     }
 }

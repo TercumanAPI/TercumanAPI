@@ -8,8 +8,8 @@ namespace Tercuman.Mobile.Services;
 public interface IApiService
 {
     [Post("/api/auth/login")]
-    Task<ApiResponse<LoginResponseDto>> Login([Body] LoginDto dto);
+    Task<ApiResponse<TokenDto>> Login([Body] LoginDto request);
 
     [Get("/api/listings")]
-    Task<ApiResponse<List<ListingDto>>> GetListings();
+    Task<ApiResponse<PagedResultDto<ListingDto>>> GetListings();
 }

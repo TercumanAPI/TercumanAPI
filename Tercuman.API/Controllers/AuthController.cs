@@ -27,14 +27,14 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Login([FromBody] LoginDto dto)
     {
         var tokenDto = await _authService.LoginAsync(dto);
-        return Ok(ApiResponse<TokenDto>.Ok(tokenDto));
+        return Ok(ApiResponse<TokenDto>.Ok(tokenDto, "Login başarılı"));
     }
 
     [HttpPost("refresh")]
     public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest dto)
     {
         var newTokenDto = await _authService.RefreshTokenAsync(dto.RefreshToken);
-        return Ok(ApiResponse<TokenDto>.Ok(newTokenDto));
+        return Ok(ApiResponse<TokenDto>.Ok(newTokenDto, "Token yenilendi"));
     }
 
     [HttpPost("forgot-password")]

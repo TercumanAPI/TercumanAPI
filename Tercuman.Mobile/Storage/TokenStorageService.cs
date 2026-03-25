@@ -16,8 +16,9 @@ public class TokenStorageService
         return await SecureStorage.GetAsync(TokenKey);
     }
 
-    public void RemoveToken()
+    public Task ClearTokenAsync()
     {
         SecureStorage.Remove(TokenKey);
+        return Task.CompletedTask;
     }
 }

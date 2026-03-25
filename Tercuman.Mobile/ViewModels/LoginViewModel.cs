@@ -68,23 +68,21 @@ public partial class LoginViewModel : ObservableObject
                 return;
             }
 
-            // 🔥 BURASI SENİN MODELİNE GÖRE
-            if (!response.IsSuccessful)
+            if (!response.Success)
             {
-                await Shell.Current.DisplayAlert("Hata", response.Error ?? "Login başarısız", "OK");
+                await Shell.Current.DisplayAlert("Hata", response.Message, "OK");
                 return;
             }
 
-            var token = response.Value?.Token;
+            var token = response.Data?.AccessToken;
 
-            if (string.IsNullOrEmpty(token))
+            if (string.IsNullOrWhiteSpace(token))
             {
                 await Shell.Current.DisplayAlert("Hata", "Token alınamadı", "OK");
                 return;
             }
 
             await _tokenStorage.SaveTokenAsync(token);
-
             await Shell.Current.GoToAsync("//listings");
         }
         catch (Exception ex)

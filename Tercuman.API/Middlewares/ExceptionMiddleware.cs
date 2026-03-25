@@ -40,7 +40,7 @@ namespace Tercuman.API.Middlewares
 
                 var payload = ApiResponse<object>.Fail(
                     _env.IsDevelopment() ? ex.Message : "Sunucu tarafında bir hata oluştu.",
-                    _env.IsDevelopment() ? new { stackTrace = ex.StackTrace } : null);
+                    _env.IsDevelopment() ? new[] { ex.StackTrace ?? ex.Message } : null);
 
                 await context.Response.WriteAsync(JsonSerializer.Serialize(payload));
             }
