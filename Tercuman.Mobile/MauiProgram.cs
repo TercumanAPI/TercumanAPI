@@ -7,56 +7,57 @@ using Tercuman.Mobile.Storage;
 using Tercuman.Mobile.View;
 using Tercuman.Mobile.ViewModels;
 
-namespace Tercuman.Mobile
+namespace Tercuman.Mobile;
+
+public static class MauiProgram
 {
-    public static class MauiProgram
+    public static MauiApp CreateMauiApp()
     {
-        public static MauiApp CreateMauiApp()
-        {
-            var builder = MauiApp.CreateBuilder();
+        var builder = MauiApp.CreateBuilder();
 
-            builder
-                .UseMauiApp<App>()
-                .ConfigureFonts(fonts =>
-                {
-                    fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                    fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-                })
-                .UseMauiCommunityToolkit();
+        builder
+            .UseMauiApp<App>()
+            .UseMauiCommunityToolkit()
+            .ConfigureFonts(fonts =>
+            {
+                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+            });
 
-            // 🔥 Services
-            builder.Services.AddSingleton<TokenStorageService>();
-            builder.Services.AddSingleton<AuthService>();
-            builder.Services.AddTransient<AuthHeaderHandler>();
-            builder.Services.AddTransient<ApiExceptionHandler>();
+        // 🔥 STORAGE
+        builder.Services.AddSingleton<TokenStorageService>();
 
-            // 🔥 API (TEK TANIM)
-            builder.Services
-                .AddRefitClient<IApiService>()
-                .ConfigureHttpClient(c =>
-                {
-                    c.BaseAddress = new Uri("https://10.0.2.2:5001");
-                    c.Timeout = TimeSpan.FromSeconds(30);
-                })
-                .AddHttpMessageHandler<AuthHeaderHandler>()
-                .AddHttpMessageHandler<ApiExceptionHandler>();
+        // 🔥 SERVICES
+        builder.Services.AddSingleton<AuthService>();
+        builder.Services.AddTransient<AuthHeaderHandler>();
+        builder.Services.AddTransient<ApiExceptionHandler>();
 
-            // 🔥 ViewModels
-            builder.Services.AddTransient<LoginViewModel>();
-            builder.Services.AddTransient<ListingsViewModel>();
+        // 🔥 API
+        builder.Services
+            .AddRefitClient<IApiService>()
+            .ConfigureHttpClient(c =>
+            {
+                c.BaseAddress = new Uri("https://10.0.2.2:5001");
+                c.Timeout = TimeSpan.FromSeconds(30);
+            })
+            .AddHttpMessageHandler<AuthHeaderHandler>()
+            .AddHttpMessageHandler<ApiExceptionHandler>();
 
-            // 🔥 Pages
-            builder.Services.AddTransient<LoginPage>();
-            builder.Services.AddTransient<ListingsPage>();
+        // 🔥 VIEWMODELS
+        builder.Services.AddTransient<LoginViewModel>();
+        builder.Services.AddTransient<ListingsViewModel>();
 
-            // 🔥 Shell
-            builder.Services.AddSingleton<AppShell>();
+        // 🔥 PAGES
+        builder.Services.AddTransient<LoginPage>();
+        builder.Services.AddTransient<ListingsPage>();
+        builder.Services.AddTransient<ListingDetailPage>(); // 🔥 KRİTİK
+
+        // 🔥 SHELL
+        builder.Services.AddSingleton<AppShell>();
 
 #if DEBUG
-            builder.Logging.AddDebug();
+        builder.Logging.AddDebug();
 #endif
 
-            return builder.Build();
-        }
+        return builder.Build();
     }
 }

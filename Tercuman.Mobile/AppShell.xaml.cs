@@ -18,20 +18,17 @@ public partial class AppShell : Shell
         Routing.RegisterRoute("listings", typeof(ListingsPage));
         Routing.RegisterRoute("detail", typeof(ListingDetailPage));
 
-        InitializeApp();
+        // 🔥 async fire & forget
+        _ = InitializeApp();
     }
 
-    private async void InitializeApp()
+    private async Task InitializeApp()
     {
         var isLoggedIn = await _authService.IsLoggedInAsync();
 
         if (isLoggedIn)
-        {
             await GoToAsync("//listings");
-        }
         else
-        {
             await GoToAsync("//login");
-        }
     }
 }

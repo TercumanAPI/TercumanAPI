@@ -54,19 +54,11 @@ public partial class LoginViewModel : ObservableObject
                 return;
             }
 
-            var request = new LoginDto
+            var response = await _apiService.Login(new LoginDto
             {
                 Email = Email,
                 Password = Password
-            };
-
-            var response = await _apiService.Login(request);
-
-            if (response == null)
-            {
-                await Shell.Current.DisplayAlert("Hata", "Sunucu hatası", "OK");
-                return;
-            }
+            });
 
             if (!response.Success)
             {
@@ -83,11 +75,19 @@ public partial class LoginViewModel : ObservableObject
             }
 
             await _tokenStorage.SaveTokenAsync(token);
+
+            Email = "";
+            Password = "";
+
             await Shell.Current.GoToAsync("//listings");
         }
-        catch (Exception ex)
+        catch (Refit.ApiException ex)
         {
-            await Shell.Current.DisplayAlert("Hata", ex.Message, "OK");
+            await Shell.Current.DisplayAlert("API Hatası", ex.Content ?? "Sunucu hatası", "OK");
+        }
+        catch (HttpRequestException)
+        {
+            await Shell.Current.DisplayAlert("Bağlantı", "İnternet yok", "OK");
         }
         finally
         {
