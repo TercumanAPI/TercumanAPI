@@ -1,4 +1,4 @@
-namespace Tercuman.Contracts.DTOs.Common;
+namespace Tercuman.Contracts.Responses;
 
 public class ApiResponse<T>
 {
