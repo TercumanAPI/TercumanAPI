@@ -32,7 +32,6 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateListingValidator>();
 // CONTROLLERS
 // =========================
 
-
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -72,9 +71,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-
-
-
 // =========================
 // SWAGGER + JWT
 // =========================
@@ -108,7 +104,7 @@ builder.Services.AddSwaggerGen(options =>
                     Id = "Bearer"
                 }
             },
-            new string[] {}
+            Array.Empty<string>()
         }
     });
 });
@@ -131,7 +127,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
 builder.Services.AddScoped<IContactMessageRepository, ContactMessageRepository>();
-
+builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
 
 // =========================
 // SERVICES
@@ -143,7 +139,6 @@ builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IPublicService, PublicService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<ITranslatorService, TranslatorService>();
-builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
 builder.Services.AddScoped<IFavoriteService, FavoriteService>();
 builder.Services.AddScoped<IEmailService, SmtpEmailService>();
 
@@ -199,12 +194,12 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
+
 // =========================
 // MIDDLEWARE
 // =========================
 
 var app = builder.Build();
-
 
 if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 {
@@ -224,7 +219,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapHub<ChatHub>("/chatHub");
-
 app.MapControllers();
 
 // Apply pending migrations on startup
@@ -234,14 +228,8 @@ using (var scope = app.Services.CreateScope())
     {
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        if (db.Database.IsSqlite())
-        {
-            db.Database.EnsureCreated();
-        }
-        else
-        {
-            db.Database.Migrate();
-        }
+        // SQL Server / SSMS setup
+        db.Database.Migrate();
     }
     catch (Exception ex)
     {
@@ -249,7 +237,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// 🔥 ADMIN SEED (ONLY YOU)
+// ADMIN SEED
 await app.Services.SeedInitialAdminAsync(builder.Configuration);
 
 app.Run();
