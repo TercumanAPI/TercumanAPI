@@ -1,3 +1,4 @@
+using Tercuman.Application.DTOs.Favorite;
 using Tercuman.Application.Interfaces;
 using Tercuman.Domain.Entities;
 
@@ -19,13 +20,13 @@ namespace Tercuman.Application.Services
             var listing = await _listingRepository.GetByIdAsync(listingId);
             if (listing == null)
             {
-                throw new Exception("İlan bulunamadı.");
+                throw new Exception("Listing not found.");
             }
 
             var exists = await _favoriteRepository.ExistsAsync(userId, listingId);
             if (exists)
             {
-                throw new Exception("Bu ilan zaten favorilerinize eklenmiş.");
+                throw new Exception("This listing is already in favorites.");
             }
 
             var favorite = new Favorite
@@ -43,13 +44,13 @@ namespace Tercuman.Application.Services
             var favorite = await _favoriteRepository.GetFavoriteAsync(userId, listingId);
             if (favorite == null)
             {
-                throw new Exception("Favori bulunamadı.");
+                throw new Exception("Favorite not found.");
             }
 
             await _favoriteRepository.RemoveFavoriteAsync(favorite);
         }
 
-        public async Task<IEnumerable<Favorite>> GetUserFavoritesAsync(Guid userId)
+        public async Task<List<FavoriteItemDto>> GetUserFavoritesAsync(Guid userId)
         {
             return await _favoriteRepository.GetUserFavoritesAsync(userId);
         }

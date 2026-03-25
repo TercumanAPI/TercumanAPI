@@ -5,8 +5,9 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Text;
 using System.Security.Claims;
+using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using Tercuman.API.Hubs;
 using Tercuman.API.Middlewares;
@@ -16,7 +17,6 @@ using Tercuman.Application.Validators;
 using Tercuman.Infrastructure.Persistence;
 using Tercuman.Infrastructure.Repositories;
 using Tercuman.Infrastructure.Services;
-
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.AddConsole();
@@ -32,7 +32,14 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateListingValidator>();
 // CONTROLLERS
 // =========================
 
-builder.Services.AddControllers();
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    });
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -64,6 +71,9 @@ builder.Services.AddCors(options =>
             .AllowCredentials();
     });
 });
+
+
+
 
 // =========================
 // SWAGGER + JWT

@@ -6,7 +6,7 @@ namespace Tercuman.Infrastructure.Persistence;
 
 public static class AdminSeedExtensions
 {
-    public static async Task SeedInitialAdminAsync(this IServiceProvider services)
+    public static async Task SeedInitialAdminAsync(this IServiceProvider services, Microsoft.Extensions.Configuration.ConfigurationManager configuration)
     {
         using var scope = services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
