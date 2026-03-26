@@ -1,10 +1,11 @@
-using Tercuman.Domain.Entities;
+using Tercuman.Application.DTOs.Favorite;
 
-namespace Tercuman.Application.Interfaces;
-
-public interface IFavoriteService
+namespace Tercuman.Application.Interfaces
 {
-    Task AddFavoriteAsync(Guid userId, Guid listingId);
-    Task RemoveFavoriteAsync(Guid userId, Guid listingId);
-    Task<IEnumerable<Favorite>> GetUserFavoritesAsync(Guid userId);
+    public interface IFavoriteService
+    {
+        Task AddFavoriteAsync(Guid userId, Guid listingId);
+        Task RemoveFavoriteAsync(Guid userId, Guid listingId);
+        Task<List<FavoriteItemDto>> GetUserFavoritesAsync(Guid userId);
+    }
 }

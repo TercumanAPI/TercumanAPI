@@ -25,7 +25,7 @@ namespace Tercuman.API.Controllers
             {
                 var userId = GetUserId();
                 await _favoriteService.AddFavoriteAsync(userId, listingId);
-                return Ok(ApiResponse<object>.Ok(null, "İlan favorilere eklendi."));
+                return Ok(ApiResponse<object>.Ok(null, "Listing added to favorites."));
             }
             catch (Exception ex)
             {
@@ -40,7 +40,7 @@ namespace Tercuman.API.Controllers
             {
                 var userId = GetUserId();
                 await _favoriteService.RemoveFavoriteAsync(userId, listingId);
-                return Ok(ApiResponse<object>.Ok(null, "İlan favorilerden çıkarıldı."));
+                return Ok(ApiResponse<object>.Ok(null, "Listing removed from favorites."));
             }
             catch (Exception ex)
             {
@@ -51,9 +51,16 @@ namespace Tercuman.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetMyFavorites()
         {
-            var userId = GetUserId();
-            var favorites = await _favoriteService.GetUserFavoritesAsync(userId);
-            return Ok(ApiResponse<object>.Ok(favorites));
+            try
+            {
+                var userId = GetUserId();
+                var favorites = await _favoriteService.GetUserFavoritesAsync(userId);
+                return Ok(ApiResponse<object>.Ok(favorites));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<object>.Fail(ex.Message));
+            }
         }
 
         [HttpGet("customer")]
@@ -65,9 +72,10 @@ namespace Tercuman.API.Controllers
         private Guid GetUserId()
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
             if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
             {
-                throw new UnauthorizedAccessException("Geçersiz veya eksik kullanıcı kimliği.");
+                throw new UnauthorizedAccessException("Invalid or missing user id.");
             }
 
             return userId;
