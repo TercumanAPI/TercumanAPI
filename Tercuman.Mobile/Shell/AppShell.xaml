@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Shell
+    x:Class="Tercuman.Mobile.Shell.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:authViews="clr-namespace:Tercuman.Mobile.Features.Auth.Views"
+    xmlns:dashboardViews="clr-namespace:Tercuman.Mobile.Features.Dashboard.Views"
+    xmlns:listingViews="clr-namespace:Tercuman.Mobile.Features.Listings.Views"
+    xmlns:profileViews="clr-namespace:Tercuman.Mobile.Features.Profile.Views"
+    xmlns:messagesViews="clr-namespace:Tercuman.Mobile.Features.Messages.Views"
+    xmlns:favoriteViews="clr-namespace:Tercuman.Mobile.Features.Favorites.Views"
+    xmlns:notificationsViews="clr-namespace:Tercuman.Mobile.Features.Notifications.Views"
+    xmlns:settingsViews="clr-namespace:Tercuman.Mobile.Features.Settings.Views"
+    FlyoutBehavior="Flyout">
+
+    <FlyoutItem Title="Dashboard" Route="dashboard">
+        <ShellContent ContentTemplate="{DataTemplate dashboardViews:DashboardPage}" />
+    </FlyoutItem>
+    <FlyoutItem Title="İlanlar" Route="listings">
+        <ShellContent ContentTemplate="{DataTemplate listingViews:ListingsPage}" />
+    </FlyoutItem>
+    <FlyoutItem Title="Mesajlar" Route="messages">
+        <ShellContent ContentTemplate="{DataTemplate messagesViews:MessagesPage}" />
+    </FlyoutItem>
+    <FlyoutItem Title="Profil" Route="profile">
+        <ShellContent ContentTemplate="{DataTemplate profileViews:ProfilePage}" />
+    </FlyoutItem>
+    <FlyoutItem Title="Favoriler" Route="favorites">
+        <ShellContent ContentTemplate="{DataTemplate favoriteViews:FavoritesPage}" />
+    </FlyoutItem>
+    <FlyoutItem Title="Bildirimler" Route="notifications">
+        <ShellContent ContentTemplate="{DataTemplate notificationsViews:NotificationsPage}" />
+    </FlyoutItem>
+    <FlyoutItem Title="Ayarlar" Route="settings">
+        <ShellContent ContentTemplate="{DataTemplate settingsViews:SettingsPage}" />
+    </FlyoutItem>
+
+    <ShellContent Route="splash" ContentTemplate="{DataTemplate authViews:SplashPage}" />
+</Shell>

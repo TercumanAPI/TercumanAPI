@@ -51,14 +51,13 @@
 
 	<ItemGroup>
 		<MauiXaml Update="App.xaml" />
-		<MauiXaml Update="AppShell.xaml" />
-		<MauiXaml Update="View\ListingDetailPage.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="View\LoginPage.xaml" />
-		<MauiXaml Update="View\ListingsPage.xaml" />
-		<MauiXaml Update="Resources\Styles\Colors.xaml" />
-		<MauiXaml Update="Resources\Styles\Styles.xaml" />
+		<MauiXaml Update="Shell\AppShell.xaml" />
+		<MauiXaml Update="Shared\Styles\Colors.xaml" />
+		<MauiXaml Update="Shared\Styles\Styles.xaml" />
+		<MauiXaml Update="Shared\Styles\Buttons.xaml" />
+		<MauiXaml Update="Shared\Styles\Inputs.xaml" />
+		<MauiXaml Update="Shared\Styles\Cards.xaml" />
+		<MauiXaml Update="Shared\Styles\Typography.xaml" />
 	</ItemGroup>
 
 	<!-- Packages -->
@@ -68,9 +67,8 @@
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
-		<PackageReference Include="Refit" Version="8.0.0" />
-		<PackageReference Include="Refit.HttpClientFactory" Version="8.0.0" />
-		<PackageReference Include="System.Text.Json" Version="8.0.6" />
+		<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.7" />
+				<PackageReference Include="System.Text.Json" Version="8.0.6" />
 	</ItemGroup>
 
 	<!-- Project References -->
