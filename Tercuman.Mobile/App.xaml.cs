@@ -1,18 +1,12 @@
-﻿using Microsoft.Maui.Controls;
-
-namespace Tercuman.Mobile;
-
-public partial class App : Application
+﻿namespace Tercuman.Mobile
 {
-    public static IServiceProvider Services { get; private set; } = default!;
-
-    public App(IServiceProvider serviceProvider)
+    public partial class App : Application
     {
-        InitializeComponent();
+        public App()
+        {
+            InitializeComponent();
 
-        Services = serviceProvider;
-
-        // 🔥 DI ile AppShell oluştur
-        MainPage = serviceProvider.GetRequiredService<AppShell>();
+            MainPage = new AppShell();
+        }
     }
 }
