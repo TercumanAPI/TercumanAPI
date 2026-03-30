@@ -6,13 +6,14 @@
     xmlns:dashboard="clr-namespace:Tercuman.Mobile.Features.Dashboard.Views"
     xmlns:ads="clr-namespace:Tercuman.Mobile.Features.Ads.Views"
     xmlns:auth="clr-namespace:Tercuman.Mobile.Features.Auth.Views"
+    xmlns:profile="clr-namespace:Tercuman.Mobile.Features.Profile.Views"
+    xmlns:messages="clr-namespace:Tercuman.Mobile.Features.Messages.Views"
     FlyoutBackgroundColor="#1E293B" 
     FlyoutHeaderBehavior="Fixed">
 
     <Shell.FlyoutHeader>
         <VerticalStackLayout Padding="30,50,20,30" BackgroundColor="#1E293B">
             <HorizontalStackLayout Spacing="10">
-                <Label Text="🏠" FontSize="24" TextColor="#6366F1"/>
                 <Label Text="MiftahTEA" FontSize="22" FontAttributes="Bold" TextColor="White" VerticalOptions="Center"/>
             </HorizontalStackLayout>
         </VerticalStackLayout>
@@ -35,15 +36,16 @@
         Shell.FlyoutItemIsVisible="False" />
 
     <FlyoutItem Title="Profilim" Icon="circle.svg">
-        <ShellContent ContentTemplate="{DataTemplate dashboard:DashboardPage}" />
+        <ShellContent ContentTemplate="{DataTemplate profile:ProfilePage}" />
     </FlyoutItem>
 
     <FlyoutItem Title="Mesajlarım" Icon="message.svg">
-        <ShellContent ContentTemplate="{DataTemplate dashboard:DashboardPage}" />
+        <ShellContent ContentTemplate="{DataTemplate messages:ConversationDetailPage}" />
     </FlyoutItem>
-
-    <MenuItem Text="➕ İlan Oluştur" 
-              Command="{Binding GoToCreateAdCommand}" />
+    
+    <FlyoutItem Title="ilan oluştur" Icon="plus.svg">
+        <ShellContent ContentTemplate="{DataTemplate ads:CreateAdPage}" />
+    </FlyoutItem>
 
     <MenuItem Text="🚪 Çıkış Yap" 
               Command="{Binding LogoutCommand}" />

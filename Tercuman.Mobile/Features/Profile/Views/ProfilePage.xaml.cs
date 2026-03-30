@@ -2,8 +2,9 @@ namespace Tercuman.Mobile.Features.Profile.Views;
 
 public partial class ProfilePage : ContentPage
 {
-	public ProfilePage()
-	{
-		InitializeComponent();
-	}
+    public ProfilePage(ViewModels.ProfileViewModel viewModel)
+    {
+        InitializeComponent();
+        BindingContext = viewModel;
+    }
 }

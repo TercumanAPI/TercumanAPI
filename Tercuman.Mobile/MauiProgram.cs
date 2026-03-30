@@ -7,6 +7,8 @@ using Tercuman.Mobile.Features.Dashboard.ViewModels;
 using Tercuman.Mobile.Features.Dashboard.Views;
 using Tercuman.Mobile.Features.Ads.ViewModels;
 using Tercuman.Mobile.Features.Ads.Views;
+using Tercuman.Mobile.Features.Profile.ViewModels;
+using Tercuman.Mobile.Features.Profile.Views;
 
 namespace Tercuman.Mobile;
 
@@ -43,6 +45,8 @@ public static class MauiProgram
         builder.Services.AddTransient<ForgotPasswordViewModel>();
         builder.Services.AddTransient<CreateAdPage>();
         builder.Services.AddTransient<CreateAdViewModel>();
+        builder.Services.AddTransient<ProfilePage>();
+        builder.Services.AddTransient<ProfileViewModel>();
 
         // Dashboard Modülü
         builder.Services.AddTransient<DashboardViewModel>();

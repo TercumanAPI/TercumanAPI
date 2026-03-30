@@ -1,12 +1,105 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:Tercuman.Mobile.Features.Profile.ViewModels"
              x:Class="Tercuman.Mobile.Features.Profile.Views.ProfilePage"
-             Title="ProfilePage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             x:DataType="viewmodels:ProfileViewModel"
+             Title="Profil Ayarları"
+             BackgroundColor="#F8FAFC">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <Frame BackgroundColor="White" CornerRadius="12" HasShadow="True" BorderColor="Transparent" Padding="15">
+                <Grid ColumnDefinitions="*, Auto">
+                    <VerticalStackLayout Grid.Column="0" Spacing="5">
+                        <Label Text="İlan Görünürlüğü" FontAttributes="Bold" FontSize="14" TextColor="#1E293B"/>
+                        <Label Text="● Pasif: Müşteriler sizi göremez" TextColor="#EF4444" FontSize="12"/>
+                    </VerticalStackLayout>
+                    <Button Grid.Column="1" Text="İlanı Yayınla" TextColor="White" BackgroundColor="#4F46E5" CornerRadius="20" FontSize="11" HeightRequest="35"/>
+                </Grid>
+            </Frame>
+
+            <Frame BackgroundColor="White" CornerRadius="12" HasShadow="True" BorderColor="Transparent" Padding="20">
+                <VerticalStackLayout Spacing="15">
+                    <Border StrokeShape="RoundRectangle 40" HeightRequest="80" WidthRequest="80" BackgroundColor="#F1F5F9" HorizontalOptions="Center">
+                        <Label Text="👤" FontSize="40" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Border>
+
+                    <Label Text="Ad Soyad" FontSize="13" TextColor="#64748B"/>
+                    <Border StrokeShape="RoundRectangle 8" Padding="10,0" Stroke="#E2E8F0">
+                        <Entry Text="{Binding FullName}" TextColor="#1E293B" Placeholder="Tam isminizi girin" PlaceholderColor="#94A3B8"/>
+                    </Border>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <VerticalStackLayout Grid.Column="0" Spacing="5">
+                            <HorizontalStackLayout Spacing="5">
+                                <Image Source="email.svg" WidthRequest="16" HeightRequest="16" VerticalOptions="Center"/>
+                                <Label Text="E-posta" FontSize="13" TextColor="#64748B" VerticalOptions="Center"/>
+                            </HorizontalStackLayout>
+                            <Border StrokeShape="RoundRectangle 8" Padding="10,0" Stroke="#E2E8F0">
+                                <Entry Text="{Binding Email}" TextColor="#1E293B" Keyboard="Email" Placeholder="mail@adres.com"/>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Grid.Column="1" Spacing="5">
+                            <HorizontalStackLayout Spacing="5">
+                                <Image Source="phone.svg" WidthRequest="16" HeightRequest="16" VerticalOptions="Center"/>
+                                <Label Text="Telefon" FontSize="13" TextColor="#64748B" VerticalOptions="Center"/>
+                            </HorizontalStackLayout>
+                            <Border StrokeShape="RoundRectangle 8" Padding="10,0" Stroke="#E2E8F0">
+                                <Entry Text="{Binding Phone}" TextColor="#1E293B" Keyboard="Telephone" Placeholder="+90..."/>
+                            </Border>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <Button Text="Bilgileri Güncelle" 
+                            Command="{Binding UpdateProfileCommand}" 
+                            TextColor="White"
+                            BackgroundColor="#4F46E5" 
+                            HeightRequest="50" 
+                            CornerRadius="8" 
+                            FontAttributes="Bold"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <Frame BackgroundColor="White" CornerRadius="12" HasShadow="True" BorderColor="Transparent" Padding="20">
+                <VerticalStackLayout Spacing="15">
+                    <HorizontalStackLayout Spacing="5">
+                        <Image Source="password.svg" WidthRequest="18" HeightRequest="18" VerticalOptions="Center"/>
+                        <Label Text="Şifre Değiştirme" FontAttributes="Bold" TextColor="#4F46E5" FontSize="16" VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+
+                    <Label Text="Mevcut Şifre" FontSize="13" TextColor="#64748B"/>
+                    <Border StrokeShape="RoundRectangle 8" Padding="10,0" Stroke="#E2E8F0">
+                        <Entry IsPassword="True" Text="{Binding CurrentPassword}" TextColor="#1E293B" Placeholder="••••••••"/>
+                    </Border>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <VerticalStackLayout Grid.Column="0" Spacing="5">
+                            <Label Text="Yeni Şifre" FontSize="13" TextColor="#64748B"/>
+                            <Border StrokeShape="RoundRectangle 8" Padding="10,0" Stroke="#E2E8F0">
+                                <Entry IsPassword="True" Text="{Binding NewPassword}" TextColor="#1E293B" Placeholder="••••••••"/>
+                            </Border>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="5">
+                            <Label Text="Yeni Şifre Tekrar" FontSize="13" TextColor="#64748B"/>
+                            <Border StrokeShape="RoundRectangle 8" Padding="10,0" Stroke="#E2E8F0">
+                                <Entry IsPassword="True" Text="{Binding ConfirmNewPassword}" TextColor="#1E293B" Placeholder="••••••••"/>
+                            </Border>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <Button Text="Şifreyi Güncelle" 
+                            Command="{Binding UpdatePasswordCommand}" 
+                            TextColor="White"
+                            BackgroundColor="#4F46E5" 
+                            HeightRequest="50" 
+                            CornerRadius="8" 
+                            FontAttributes="Bold"/>
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
