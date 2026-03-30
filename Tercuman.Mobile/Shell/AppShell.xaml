@@ -18,13 +18,13 @@
         </VerticalStackLayout>
     </Shell.FlyoutHeader>
 
-    <FlyoutItem Title="Ana Sayfaya Dön" Icon="home_icon.png">
+    <FlyoutItem Title="Ana Sayfaya Dön" Icon="home.svg">
         <ShellContent 
             ContentTemplate="{DataTemplate dashboard:DashboardPage}" 
             Route="DashboardPage" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Gösterge Paneli" Icon="dashboard_icon.png">
+    <FlyoutItem Title="Gösterge Paneli" Icon="gauge.svg">
         <ShellContent ContentTemplate="{DataTemplate dashboard:DashboardPage}" />
     </FlyoutItem>
 
@@ -34,11 +34,11 @@
         Route="LoginPage"
         Shell.FlyoutItemIsVisible="False" />
 
-    <FlyoutItem Title="Profilim" Icon="profile_icon.png">
+    <FlyoutItem Title="Profilim" Icon="circle.svg">
         <ShellContent ContentTemplate="{DataTemplate dashboard:DashboardPage}" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Mesajlarım" Icon="messages_icon.png">
+    <FlyoutItem Title="Mesajlarım" Icon="message.svg">
         <ShellContent ContentTemplate="{DataTemplate dashboard:DashboardPage}" />
     </FlyoutItem>
 
