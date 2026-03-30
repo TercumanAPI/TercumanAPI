@@ -1,12 +1,51 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Tercuman.Mobile.Shell.AppShell"
-             Title="AppShell">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
-</ContentPage>
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="Tercuman.Mobile.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:dashboard="clr-namespace:Tercuman.Mobile.Features.Dashboard.Views"
+    xmlns:ads="clr-namespace:Tercuman.Mobile.Features.Ads.Views"
+    xmlns:auth="clr-namespace:Tercuman.Mobile.Features.Auth.Views"
+    FlyoutBackgroundColor="#1E293B" 
+    FlyoutHeaderBehavior="Fixed">
+
+    <Shell.FlyoutHeader>
+        <VerticalStackLayout Padding="30,50,20,30" BackgroundColor="#1E293B">
+            <HorizontalStackLayout Spacing="10">
+                <Label Text="🏠" FontSize="24" TextColor="#6366F1"/>
+                <Label Text="MiftahTEA" FontSize="22" FontAttributes="Bold" TextColor="White" VerticalOptions="Center"/>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </Shell.FlyoutHeader>
+
+    <FlyoutItem Title="Ana Sayfaya Dön" Icon="home_icon.png">
+        <ShellContent 
+            ContentTemplate="{DataTemplate dashboard:DashboardPage}" 
+            Route="DashboardPage" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Gösterge Paneli" Icon="dashboard_icon.png">
+        <ShellContent ContentTemplate="{DataTemplate dashboard:DashboardPage}" />
+    </FlyoutItem>
+
+    <ShellContent
+        Title="Giriş"
+        ContentTemplate="{DataTemplate auth:LoginPage}"
+        Route="LoginPage"
+        Shell.FlyoutItemIsVisible="False" />
+
+    <FlyoutItem Title="Profilim" Icon="profile_icon.png">
+        <ShellContent ContentTemplate="{DataTemplate dashboard:DashboardPage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Mesajlarım" Icon="messages_icon.png">
+        <ShellContent ContentTemplate="{DataTemplate dashboard:DashboardPage}" />
+    </FlyoutItem>
+
+    <MenuItem Text="➕ İlan Oluştur" 
+              Command="{Binding GoToCreateAdCommand}" />
+
+    <MenuItem Text="🚪 Çıkış Yap" 
+              Command="{Binding LogoutCommand}" />
+
+</Shell>

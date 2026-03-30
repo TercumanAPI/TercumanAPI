@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Tercuman.Mobile.Shell
 {
-    internal class AppShellViewModel
+    public partial class AppShellViewModel
     {
     }
 }

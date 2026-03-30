@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Tercuman.Mobile.Core.Abstractions
 {
-    internal class IUserSession
+    public class IUserSession
     {
     }
 }

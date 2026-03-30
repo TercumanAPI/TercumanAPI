@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tercuman.Mobile.Core.Abstractions
+namespace Tercuman.Mobile.Core.Abstractions;
+
+public interface ITokenStorage
 {
-    internal class ITokenStorage
-    {
-    }
+    Task SaveTokenAsync(string token);
+    Task<string> GetTokenAsync();
+    void RemoveToken();
 }
