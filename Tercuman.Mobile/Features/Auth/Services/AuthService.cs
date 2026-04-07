@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Tercuman.Mobile.Core.Abstractions;
+﻿using Tercuman.Mobile.Core.Abstractions;
 using Tercuman.Contracts.DTOs.Auth;
 
 namespace Tercuman.Mobile.Core.Services;
@@ -17,26 +12,18 @@ public class AuthService : IAuthService
         _apiService = apiService;
     }
 
-    // HATA BURADAYDI: Interface'deki metodu burada 'public' ve 'async' olarak tanımlamalıyız.
-    // Parametre tipi 'LoginRequestDto' olmalı!
+    // DÜZELTME: LoginRequestDto yazan yeri LoginResponseDto olarak değiştir
     public async Task<bool> LoginAsync(LoginResponseDto request)
     {
         try
         {
-            // ApiService üzerinden backend'deki 'auth/login' endpoint'ine POST isteği atıyoruz.
-            // Backend'den 'bool' (true/false) beklediğimiz durum:
+            // Generic tiplerin (TRequest, TResponse) eşleştiğinden emin ol
             var result = await _apiService.PostAsync<LoginResponseDto, bool>("auth/login", request);
-
             return result;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            // Hata durumunda (bağlantı kopması, 401 vb.) false dönüyoruz.
-            // İleride buraya hata loglama ekleyebilirsin.
             return false;
         }
     }
-
-    // İleride Register için de buraya metot ekleyebilirsin:
-    // public async Task<bool> RegisterAsync(RegisterRequestDto request) { ... }
 }

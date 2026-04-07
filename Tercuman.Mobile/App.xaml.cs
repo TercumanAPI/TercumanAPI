@@ -1,6 +1,7 @@
 ﻿namespace Tercuman.Mobile
 {
-    public partial class App : Application
+    //  Microsoft.Maui.Controls ekleyerek sınıf olduğunu netleştirdik
+    public partial class App : Microsoft.Maui.Controls.Application
     {
         public App()
         {

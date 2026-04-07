@@ -1,12 +1,30 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:Tercuman.Mobile.Features.Messages.ViewModels"
+             xmlns:models="clr-namespace:Tercuman.Mobile.Features.Messages.Models"
              x:Class="Tercuman.Mobile.Features.Messages.Views.MessagesPage"
-             Title="MessagesPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             x:DataType="viewmodels:MessagesViewModel"
+             Title="Mesajlarım">
+
+    <RefreshView IsRefreshing="{Binding IsBusy}" Command="{Binding RefreshCommand}">
+        <CollectionView ItemsSource="{Binding Conversations}"
+                        SelectionMode="Single"
+                        SelectedItem="{Binding SelectedConversation}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:ConversationListItem">
+                    <Grid Padding="15" ColumnDefinitions="Auto, *">
+                        <Frame HeightRequest="50" WidthRequest="50" CornerRadius="25" Padding="0" IsClippedToBounds="True">
+                            <Image Source="user_placeholder.png" Aspect="AspectFill"/>
+                        </Frame>
+
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Margin="15,0,0,0">
+                            <Label Text="{Binding OtherUserName}" FontAttributes="Bold" FontSize="16"/>
+                            <Label Text="{Binding LastMessage}" TextColor="Gray" MaxLines="1" LineBreakMode="TailTruncation"/>
+                        </VerticalStackLayout>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </RefreshView>
 </ContentPage>

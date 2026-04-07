@@ -44,7 +44,7 @@
 
                         <VerticalStackLayout Grid.Column="1" Spacing="5">
                             <HorizontalStackLayout Spacing="5">
-                                <Image Source="phone.svg" WidthRequest="16" HeightRequest="16" VerticalOptions="Center"/>
+                                <Image Source="phone1.svg" WidthRequest="16" HeightRequest="16" VerticalOptions="Center"/>
                                 <Label Text="Telefon" FontSize="13" TextColor="#64748B" VerticalOptions="Center"/>
                             </HorizontalStackLayout>
                             <Border StrokeShape="RoundRectangle 8" Padding="10,0" Stroke="#E2E8F0">
@@ -66,7 +66,7 @@
             <Frame BackgroundColor="White" CornerRadius="12" HasShadow="True" BorderColor="Transparent" Padding="20">
                 <VerticalStackLayout Spacing="15">
                     <HorizontalStackLayout Spacing="5">
-                        <Image Source="password.svg" WidthRequest="18" HeightRequest="18" VerticalOptions="Center"/>
+                        <Image Source="password1.svg" WidthRequest="18" HeightRequest="18" VerticalOptions="Center"/>
                         <Label Text="Şifre Değiştirme" FontAttributes="Bold" TextColor="#4F46E5" FontSize="16" VerticalOptions="Center"/>
                     </HorizontalStackLayout>
 

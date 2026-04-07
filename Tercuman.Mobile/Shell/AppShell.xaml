@@ -25,7 +25,7 @@
             Route="DashboardPage" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Gösterge Paneli" Icon="gauge.svg">
+    <FlyoutItem Title="Gösterge Paneli" Icon="dashboard1.svg">
         <ShellContent ContentTemplate="{DataTemplate dashboard:DashboardPage}" />
     </FlyoutItem>
 
@@ -35,15 +35,15 @@
         Route="LoginPage"
         Shell.FlyoutItemIsVisible="False" />
 
-    <FlyoutItem Title="Profilim" Icon="circle.svg">
+    <FlyoutItem Title="Profilim" Icon="profile1.svg">
         <ShellContent ContentTemplate="{DataTemplate profile:ProfilePage}" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Mesajlarım" Icon="message.svg">
+    <FlyoutItem Title="Mesajlarım" Icon="messages1.svg">
         <ShellContent ContentTemplate="{DataTemplate messages:ConversationDetailPage}" />
     </FlyoutItem>
     
-    <FlyoutItem Title="ilan oluştur" Icon="plus.svg">
+    <FlyoutItem Title="ilan oluştur" Icon="add1.svg">
         <ShellContent ContentTemplate="{DataTemplate ads:CreateAdPage}" />
     </FlyoutItem>
 

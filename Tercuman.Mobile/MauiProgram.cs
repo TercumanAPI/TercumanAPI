@@ -9,6 +9,10 @@ using Tercuman.Mobile.Features.Ads.ViewModels;
 using Tercuman.Mobile.Features.Ads.Views;
 using Tercuman.Mobile.Features.Profile.ViewModels;
 using Tercuman.Mobile.Features.Profile.Views;
+using Tercuman.Mobile.Features.Messages.Services;
+using Tercuman.Mobile.Features.Messages.ViewModels;
+using Tercuman.Mobile.Features.Messages.Views;
+
 
 namespace Tercuman.Mobile;
 
@@ -35,6 +39,7 @@ public static class MauiProgram
 
         // İş mantığı servisleri
         builder.Services.AddSingleton<IAuthService, AuthService>();
+        builder.Services.AddSingleton<IChatService, ChatService>();
 
         // ==========================================
         // 2. VIEWMODELS (TRANSIENT)
@@ -47,6 +52,8 @@ public static class MauiProgram
         builder.Services.AddTransient<CreateAdViewModel>();
         builder.Services.AddTransient<ProfilePage>();
         builder.Services.AddTransient<ProfileViewModel>();
+        builder.Services.AddTransient<MessagesViewModel>();
+        builder.Services.AddTransient<ConversationDetailViewModel>();
 
         // Dashboard Modülü
         builder.Services.AddTransient<DashboardViewModel>();
@@ -58,6 +65,9 @@ public static class MauiProgram
         builder.Services.AddTransient<RegisterPage>();
         builder.Services.AddTransient<ForgotPasswordPage>();
         builder.Services.AddTransient<DashboardPage>();
+        builder.Services.AddTransient<MessagesPage>();
+        builder.Services.AddTransient<ConversationDetailPage>();
+
 
 #if DEBUG
         builder.Logging.AddDebug();
