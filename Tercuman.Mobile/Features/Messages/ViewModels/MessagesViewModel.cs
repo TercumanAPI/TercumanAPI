@@ -34,10 +34,11 @@ public partial class MessagesViewModel : BaseViewModel
         MainThread.BeginInvokeOnMainThread(async () =>
         {
             // HATA ÇÖZÜMÜ (CS0234): 'Tercuman.Mobile.Shell' ile çakışıyor. 
-            // Başına 'Microsoft.Maui.Controls' ekleyerek asıl Shell'i çağırıyoruz.
+            // Detay sayfasına conversationId parametresi ile git
+
             await Microsoft.Maui.Controls.Shell.Current.GoToAsync($"{nameof(ConversationDetailPage)}?conversationId={value.Id}");
 
-            SelectedConversation = null;
+            SelectedConversation = null;// Listeye geri dönüldüğünde tekrar seçilebilir olması için
         });
     }
 
@@ -48,6 +49,7 @@ public partial class MessagesViewModel : BaseViewModel
 
         try
         {
+            // Backend'deki "messages/conversations" endpoint'ine istek atar
             var result = await _chatService.GetConversationsAsync();
 
             Conversations.Clear();
@@ -61,8 +63,8 @@ public partial class MessagesViewModel : BaseViewModel
         }
         catch (Exception ex)
         {
-            // Shell hatası burada da olabilir, tam yol yazalım:
-            await Microsoft.Maui.Controls.Shell.Current.DisplayAlert("Hata", "Mesaj listesi alınamadı.", "Tamam");
+            // Hatayı mesaj kutusunda açıkça görelim (ex.Message ekledik)
+            await Microsoft.Maui.Controls.Shell.Current.DisplayAlert("Hata Detayı", ex.Message, "Tamam");
         }
         finally
         {

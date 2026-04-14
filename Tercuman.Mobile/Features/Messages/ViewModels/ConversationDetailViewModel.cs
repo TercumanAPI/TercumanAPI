@@ -25,6 +25,9 @@ public partial class ConversationDetailViewModel : BaseViewModel
     // Sayfa açıldığında tetiklenir
     public async Task InitializeAsync()
     {
+        // Eğer conversationId boş gelmişse (doğrudan sayfa açıldıysa) işlem yapma
+        if (ConversationId == Guid.Empty) return;
+
         if (IsBusy) return;
         IsBusy = true;
 

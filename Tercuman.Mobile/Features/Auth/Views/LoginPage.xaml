@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Tercuman.Mobile.Features.Auth.Views.LoginPage"
              BackgroundColor="#F5F7FF"
-             Shell.NavBarIsVisible="False">
+             Shell.FlyoutBehavior="Flyout"
+             Shell.NavBarIsVisible="True"
+             Shell.NavBarHasShadow="False">
 
     <ScrollView>
         <VerticalStackLayout Spacing="0" Padding="20" VerticalOptions="Center">
