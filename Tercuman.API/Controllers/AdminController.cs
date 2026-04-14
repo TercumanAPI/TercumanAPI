@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tercuman.API.Models;
@@ -17,7 +17,11 @@ public class AdminController : ControllerBase
     private readonly IReportService _reportService;
     private readonly IMessageRepository _messageRepository;
 
-    public AdminController(AppDbContext context, IUserRepository userRepository, IReportService reportService, IMessageRepository messageRepository)
+    public AdminController(
+        AppDbContext context,
+        IUserRepository userRepository,
+        IReportService reportService,
+        IMessageRepository messageRepository)
     {
         _context = context;
         _userRepository = userRepository;
@@ -25,6 +29,7 @@ public class AdminController : ControllerBase
         _messageRepository = messageRepository;
     }
 
+    // 📊 Dashboard stats
     [HttpGet("stats")]
     public async Task<IActionResult> GetStats()
     {
@@ -38,10 +43,12 @@ public class AdminController : ControllerBase
         return Ok(ApiResponse<object>.Ok(data));
     }
 
+    // 👥 User list
     [HttpGet("users")]
     public async Task<IActionResult> GetUsers()
     {
         var users = await _userRepository.GetAllAsync();
+
         var data = users.Select(u => new
         {
             u.Id,
@@ -56,34 +63,26 @@ public class AdminController : ControllerBase
         return Ok(ApiResponse<object>.Ok(data));
     }
 
-    public record UpdateRoleRequest(Guid UserId, string Role);
-
-    [HttpPut("users/role")]
-    public async Task<IActionResult> UpdateRole([FromBody] UpdateRoleRequest request)
-    {
-        var user = await _userRepository.GetByIdAsync(request.UserId);
-        if (user == null)
-            return NotFound(ApiResponse<object>.Fail("User not found"));
-
-        user.Role = request.Role;
-        await _userRepository.SaveChangesAsync();
-
-        return Ok(ApiResponse<object>.Ok(new { user.Id, user.Role }, "Role updated"));
-    }
-
+    // 🔄 Activate / Deactivate user
     [HttpPut("users/{id:guid}/toggle-status")]
     public async Task<IActionResult> ToggleUserStatus(Guid id)
     {
         var user = await _userRepository.GetByIdAsync(id);
+
         if (user == null)
             return NotFound(ApiResponse<object>.Fail("User not found"));
 
         user.IsActive = !user.IsActive;
         await _userRepository.SaveChangesAsync();
 
-        return Ok(ApiResponse<object>.Ok(new { user.Id, user.IsActive }));
+        return Ok(ApiResponse<object>.Ok(new
+        {
+            user.Id,
+            user.IsActive
+        }));
     }
 
+    // 📢 Reports list
     [HttpGet("reports")]
     public async Task<IActionResult> GetReports()
     {
@@ -91,20 +90,28 @@ public class AdminController : ControllerBase
         return Ok(ApiResponse<object>.Ok(reports));
     }
 
+    // ✅ Resolve report
     [HttpPut("reports/{id:guid}/resolve")]
     public async Task<IActionResult> ResolveReport(Guid id)
     {
         var resolved = await _reportService.ResolveReportAsync(id);
+
         if (!resolved)
             return NotFound(ApiResponse<object>.Fail("Report not found"));
 
-        return Ok(ApiResponse<object>.Ok(new { id, status = "Resolved" }));
+        return Ok(ApiResponse<object>.Ok(new
+        {
+            id,
+            status = "Resolved"
+        }));
     }
 
+    // 💬 Recent messages
     [HttpGet("messages")]
     public async Task<IActionResult> GetMessages()
     {
         var messages = await _messageRepository.GetAllAsync();
+
         var data = messages
             .OrderByDescending(m => m.CreatedDate)
             .Take(200)

@@ -1,11 +1,9 @@
-﻿using System;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Tercuman.API.Models;
-using Tercuman.Application.Services;
+using Tercuman.Application.Interfaces;
 
 namespace Tercuman.API.Controllers
 {
@@ -14,11 +12,11 @@ namespace Tercuman.API.Controllers
     [Route("api/[controller]")]
     public class FavoritesController : ControllerBase
     {
-        private readonly FavoriteService _favoriteService;
+        private readonly IFavoriteService _favoriteService;
         private readonly ILogger<FavoritesController> _logger;
 
         public FavoritesController(
-            FavoriteService favoriteService,
+            IFavoriteService favoriteService,
             ILogger<FavoritesController> logger)
         {
             _favoriteService = favoriteService;
@@ -37,40 +35,31 @@ namespace Tercuman.API.Controllers
             }
             catch (UnauthorizedAccessException ex)
             {
-                _logger.LogWarning(ex,
-                    "Unauthorized AddFavorite attempt. UserId: {UserId}, ListingId: {ListingId}",
-                    GetSafeUserId(),
-                    listingId);
+                _logger.LogWarning(ex, "Unauthorized AddFavorite attempt. UserId: {UserId}, ListingId: {ListingId}",
+                    GetSafeUserId(), listingId);
 
                 return Unauthorized(ApiResponse<object>.Fail(ex.Message));
             }
             catch (KeyNotFoundException ex)
             {
-                _logger.LogWarning(ex,
-                    "Listing/User not found while adding favorite. UserId: {UserId}, ListingId: {ListingId}",
-                    GetSafeUserId(),
-                    listingId);
+                _logger.LogWarning(ex, "Listing/User not found. UserId: {UserId}, ListingId: {ListingId}",
+                    GetSafeUserId(), listingId);
 
                 return NotFound(ApiResponse<object>.Fail(ex.Message));
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogWarning(ex,
-                    "Business rule error while adding favorite. UserId: {UserId}, ListingId: {ListingId}",
-                    GetSafeUserId(),
-                    listingId);
+                _logger.LogWarning(ex, "Business rule error. UserId: {UserId}, ListingId: {ListingId}",
+                    GetSafeUserId(), listingId);
 
                 return BadRequest(ApiResponse<object>.Fail(ex.Message));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex,
-                    "Unexpected error while adding favorite. UserId: {UserId}, ListingId: {ListingId}, InnerException: {InnerException}",
-                    GetSafeUserId(),
-                    listingId,
-                    ex.InnerException?.Message);
+                _logger.LogError(ex, "Unexpected error. UserId: {UserId}, ListingId: {ListingId}",
+                    GetSafeUserId(), listingId);
 
-                return StatusCode(500, ApiResponse<object>.Fail("Favoriye ekleme sırasında beklenmeyen bir hata oluştu."));
+                return StatusCode(500, ApiResponse<object>.Fail("Beklenmeyen bir hata oluştu."));
             }
         }
 
@@ -86,40 +75,25 @@ namespace Tercuman.API.Controllers
             }
             catch (UnauthorizedAccessException ex)
             {
-                _logger.LogWarning(ex,
-                    "Unauthorized RemoveFavorite attempt. UserId: {UserId}, ListingId: {ListingId}",
-                    GetSafeUserId(),
-                    listingId);
+                _logger.LogWarning(ex, "Unauthorized RemoveFavorite attempt. UserId: {UserId}, ListingId: {ListingId}",
+                    GetSafeUserId(), listingId);
 
                 return Unauthorized(ApiResponse<object>.Fail(ex.Message));
             }
             catch (KeyNotFoundException ex)
             {
-                _logger.LogWarning(ex,
-                    "Listing/User not found while removing favorite. UserId: {UserId}, ListingId: {ListingId}",
-                    GetSafeUserId(),
-                    listingId);
-
                 return NotFound(ApiResponse<object>.Fail(ex.Message));
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogWarning(ex,
-                    "Business rule error while removing favorite. UserId: {UserId}, ListingId: {ListingId}",
-                    GetSafeUserId(),
-                    listingId);
-
                 return BadRequest(ApiResponse<object>.Fail(ex.Message));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex,
-                    "Unexpected error while removing favorite. UserId: {UserId}, ListingId: {ListingId}, InnerException: {InnerException}",
-                    GetSafeUserId(),
-                    listingId,
-                    ex.InnerException?.Message);
+                _logger.LogError(ex, "Unexpected error. UserId: {UserId}, ListingId: {ListingId}",
+                    GetSafeUserId(), listingId);
 
-                return StatusCode(500, ApiResponse<object>.Fail("Favoriden çıkarma sırasında beklenmeyen bir hata oluştu."));
+                return StatusCode(500, ApiResponse<object>.Fail("Beklenmeyen bir hata oluştu."));
             }
         }
 
@@ -135,50 +109,21 @@ namespace Tercuman.API.Controllers
             }
             catch (UnauthorizedAccessException ex)
             {
-                _logger.LogWarning(ex,
-                    "Unauthorized GetMyFavorites attempt. UserId: {UserId}",
-                    GetSafeUserId());
-
                 return Unauthorized(ApiResponse<object>.Fail(ex.Message));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex,
-                    "Unexpected error while getting favorites. UserId: {UserId}, InnerException: {InnerException}",
-                    GetSafeUserId(),
-                    ex.InnerException?.Message);
+                _logger.LogError(ex, "Unexpected error while getting favorites. UserId: {UserId}",
+                    GetSafeUserId());
 
-                return StatusCode(500, ApiResponse<object>.Fail("Favoriler getirilirken beklenmeyen bir hata oluştu."));
+                return StatusCode(500, ApiResponse<object>.Fail("Favoriler alınamadı."));
             }
         }
 
         [HttpGet("customer")]
-        public async Task<IActionResult> GetCustomerFavorites()
+        public Task<IActionResult> GetCustomerFavorites()
         {
-            try
-            {
-                var userId = GetUserId();
-                var favorites = await _favoriteService.GetUserFavoritesAsync(userId);
-
-                return Ok(ApiResponse<object>.Ok(favorites));
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                _logger.LogWarning(ex,
-                    "Unauthorized GetCustomerFavorites attempt. UserId: {UserId}",
-                    GetSafeUserId());
-
-                return Unauthorized(ApiResponse<object>.Fail(ex.Message));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex,
-                    "Unexpected error while getting customer favorites. UserId: {UserId}, InnerException: {InnerException}",
-                    GetSafeUserId(),
-                    ex.InnerException?.Message);
-
-                return StatusCode(500, ApiResponse<object>.Fail("Favoriler getirilirken beklenmeyen bir hata oluştu."));
-            }
+            return GetMyFavorites();
         }
 
         private Guid GetUserId()
@@ -190,7 +135,7 @@ namespace Tercuman.API.Controllers
 
             if (string.IsNullOrWhiteSpace(userIdClaim) || !Guid.TryParse(userIdClaim, out Guid userId))
             {
-                throw new UnauthorizedAccessException("Geçersiz veya eksik kullanıcı kimliği.");
+                throw new UnauthorizedAccessException("Geçersiz kullanıcı ID.");
             }
 
             return userId;
