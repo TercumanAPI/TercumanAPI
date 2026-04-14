@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:Tercuman.Mobile.Features.Ads.ViewModels"
+             x:DataType="viewmodels:CreateAdViewModel"
+             x:Class="Tercuman.Mobile.Features.Ads.Views.CreateAdPage"
+             Title="Yeni İlan Oluştur"
+             BackgroundColor="#F8FAFC">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <Grid ColumnDefinitions="*,Auto,*,Auto,*" HorizontalOptions="FillAndExpand" Margin="0,10">
+                <VerticalStackLayout Grid.Column="0" Spacing="5" HorizontalOptions="Center">
+                    <Frame HeightRequest="40" WidthRequest="40" CornerRadius="20" Padding="0" 
+                           BackgroundColor="{Binding Step1Color}" BorderColor="Transparent">
+                        <Label Text="1" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center" FontAttributes="Bold"/>
+                    </Frame>
+                    <Label Text="Temel" FontSize="10" TextColor="{Binding Step1Color}" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+
+                <BoxView Grid.Column="1" WidthRequest="35" HeightRequest="3" Color="{Binding Step1LineColor}" 
+                         VerticalOptions="Center" Margin="0,0,0,15"/>
+
+                <VerticalStackLayout Grid.Column="2" Spacing="5" HorizontalOptions="Center">
+                    <Frame HeightRequest="40" WidthRequest="40" CornerRadius="20" Padding="0" 
+                           BackgroundColor="{Binding Step2Color}" BorderColor="Transparent">
+                        <Label Text="2" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center" FontAttributes="Bold"/>
+                    </Frame>
+                    <Label Text="Detay" FontSize="10" TextColor="{Binding Step2Color}" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+
+                <BoxView Grid.Column="3" WidthRequest="35" HeightRequest="3" Color="{Binding Step2LineColor}" 
+                         VerticalOptions="Center" Margin="0,0,0,15"/>
+
+                <VerticalStackLayout Grid.Column="4" Spacing="5" HorizontalOptions="Center">
+                    <Frame HeightRequest="40" WidthRequest="40" CornerRadius="20" Padding="0" 
+                           BackgroundColor="{Binding Step3Color}" BorderColor="Transparent">
+                        <Label Text="3" TextColor="White" HorizontalOptions="Center" VerticalOptions="Center" FontAttributes="Bold"/>
+                    </Frame>
+                    <Label Text="Onay" FontSize="10" TextColor="{Binding Step3Color}" HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </Grid>
+
+            <Frame BackgroundColor="White" CornerRadius="15" HasShadow="True" BorderColor="Transparent" Padding="20">
+                <VerticalStackLayout Spacing="20">
+
+                    <VerticalStackLayout Spacing="15" IsVisible="{Binding IsStep1}">
+                        <Label Text="Dil ve Bölge Tercihleriniz" FontSize="18" FontAttributes="Bold" TextColor="#1E293B"/>
+                        <Label Text="Kaynak Dil *" FontSize="13" TextColor="#64748B"/>
+                        <Border StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="#E2E8F0" Padding="10,0">
+                            <Picker Title="Seçiniz..." TextColor="#1E293B" TitleColor="#94A3B8"
+                                    ItemsSource="{Binding Languages}" SelectedItem="{Binding SourceLanguage}"/>
+                        </Border>
+                        <Label Text="Hedef Dil *" FontSize="13" TextColor="#64748B"/>
+                        <Border StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="#E2E8F0" Padding="10,0">
+                            <Picker Title="Seçiniz..." TextColor="#1E293B" TitleColor="#94A3B8"
+                                    ItemsSource="{Binding Languages}" SelectedItem="{Binding TargetLanguage}"/>
+                        </Border>
+                        <Label Text="Şehir *" FontSize="13" TextColor="#64748B"/>
+                        <Border StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="#E2E8F0" Padding="10,0">
+                            <Picker Title="Seçiniz..." TextColor="#1E293B" TitleColor="#94A3B8"
+                                    ItemsSource="{Binding Cities}" SelectedItem="{Binding City}"/>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="15" IsVisible="{Binding IsStep2}">
+                        <Label Text="Hizmetinizin Detayları" FontSize="18" FontAttributes="Bold" TextColor="#1E293B"/>
+                        <Label Text="İlan Başlığı *" FontSize="13" TextColor="#64748B"/>
+                        <Border StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="#E2E8F0" Padding="10,2">
+                            <Entry Placeholder="Örn: Arapça Çeviri" TextColor="#1E293B" Text="{Binding AdTitle}"/>
+                        </Border>
+                        <Label Text="İlan Açıklaması *" FontSize="13" TextColor="#64748B"/>
+                        <Border StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="#E2E8F0" HeightRequest="120">
+                            <Editor Placeholder="Deneyimlerinizi anlatın..." TextColor="#1E293B" Text="{Binding Description}"/>
+                        </Border>
+
+                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                            <VerticalStackLayout Grid.Column="0" Spacing="5">
+                                <Label Text="Deneyim" FontSize="11" TextColor="#64748B" HorizontalOptions="Center"/>
+                                <Border StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="#E2E8F0" HeightRequest="45" Padding="5,0">
+                                    <Picker Title="Seç" TextColor="#1E293B" TitleColor="#94A3B8" FontSize="12"
+                                            ItemsSource="{Binding ExperienceOptions}" SelectedItem="{Binding Experience}"/>
+                                </Border>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1" Spacing="5">
+                                <Label Text="Tür" FontSize="11" TextColor="#64748B" HorizontalOptions="Center"/>
+                                <Border StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="#E2E8F0" HeightRequest="45" Padding="5,0">
+                                    <Picker Title="Seç" TextColor="#1E293B" TitleColor="#94A3B8" FontSize="12"
+                                            ItemsSource="{Binding ServiceTypeOptions}" SelectedItem="{Binding ServiceType}"/>
+                                </Border>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="2" Spacing="5">
+                                <Label Text="Fiyat (₺)" FontSize="11" TextColor="#64748B" HorizontalOptions="Center"/>
+                                <Border StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="#E2E8F0" HeightRequest="45" Padding="5,0">
+                                    <Entry Keyboard="Numeric" TextColor="#1E293B" Placeholder="0" FontSize="13"
+                                           HorizontalTextAlignment="Center" Text="{Binding Price}"/>
+                                </Border>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="15" IsVisible="{Binding IsStep3}">
+                        <Label Text="🎉 İlanınız Hazır" FontSize="18" FontAttributes="Bold" TextColor="#22C55E" HorizontalOptions="Center"/>
+                        <Frame BackgroundColor="#F1F5F9" Padding="20" CornerRadius="10">
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="İlan Özeti" FontAttributes="Bold" FontSize="16" TextColor="#1E293B"/>
+                                <BoxView HeightRequest="1" Color="#CBD5E1"/>
+                                <Label Text="{Binding AdTitle, StringFormat='Başlık: {0}'}" TextColor="#1E293B"/>
+                                <Label Text="{Binding Price, StringFormat='Fiyat: {0} ₺'}" TextColor="#1E293B"/>
+                                <Label Text="{Binding ServiceType, StringFormat='Hizmet: {0}'}" TextColor="#1E293B"/>
+                                <Label Text="{Binding City, StringFormat='Şehir: {0}'}" TextColor="#1E293B"/>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="15" Margin="0,10,0,0">
+                        <Button Grid.Column="0" Text="Geri" Command="{Binding BackCommand}" 
+                                BackgroundColor="#F1F5F9" TextColor="#1E293B" CornerRadius="8"
+                                IsVisible="{Binding IsNotFirstStep}"/>
+                        <Button Grid.Column="1" Text="{Binding NextButtonText}" Command="{Binding NextCommand}" 
+                                BackgroundColor="{Binding NextButtonColor}" TextColor="White" CornerRadius="8"
+                                Grid.ColumnSpan="{Binding NextButtonSpan}"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

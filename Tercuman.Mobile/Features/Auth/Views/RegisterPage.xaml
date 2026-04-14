@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Tercuman.Mobile.Features.Auth.Views.RegisterPage"
+             xmlns:vm="clr-namespace:Tercuman.Mobile.Features.Auth.ViewModels"
+             BackgroundColor="#F5F7FF"
+             Shell.NavBarIsVisible="False">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="0" Padding="20" VerticalOptions="Center">
+
+            <Label Text="MiftahTEA" 
+                   TextColor="#6366F1" 
+                   FontSize="36" 
+                   FontAttributes="Bold" 
+                   HorizontalOptions="Center" 
+                   Margin="0,40,0,30"/>
+
+            <Frame CornerRadius="20" HasShadow="True" BorderColor="Transparent" Padding="25" BackgroundColor="White" Margin="10,0,10,20">
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="Kayıt Olun" FontSize="24" TextColor="#1E293B" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,0,0,10"/>
+
+                    <Border StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="#E2E8F0" Padding="10,2">
+                        <Entry Placeholder="Ad Soyad" Text="{Binding FullName}" 
+                               TextColor="#1E293B" PlaceholderColor="#94A3B8" BackgroundColor="Transparent"/>
+                    </Border>
+
+                    <Border StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="#E2E8F0" Padding="10,2">
+                        <Entry Placeholder="Email" Keyboard="Email" Text="{Binding Email}" 
+                               TextColor="#1E293B" PlaceholderColor="#94A3B8" BackgroundColor="Transparent"/>
+                    </Border>
+
+                    <Border StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="#E2E8F0" Padding="10,2">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <Entry Placeholder="Şifre" IsPassword="True" Text="{Binding Password}" 
+                                   TextColor="#1E293B" PlaceholderColor="#94A3B8" BackgroundColor="Transparent"/>
+                            <Image Grid.Column="1" Source="eye_icon.png" WidthRequest="20" VerticalOptions="Center"/>
+                        </Grid>
+                    </Border>
+
+                    <Border StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="#E2E8F0" Padding="10,2">
+                        <Picker Title="Cinsiyetinizi Seçin" SelectedItem="{Binding Gender}" 
+                                TitleColor="#94A3B8" TextColor="#1E293B">
+                            <Picker.Items>
+                                <x:String>Erkek</x:String>
+                                <x:String>Kadın</x:String>
+                            </Picker.Items>
+                        </Picker>
+                    </Border>
+
+                    <Grid ColumnDefinitions="100, *" ColumnSpacing="10">
+                        <Border Grid.Column="0" StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="#E2E8F0" Padding="5,0">
+                            <Picker Title="Kod" FontSize="12" TextColor="#1E293B" TitleColor="#94A3B8" VerticalOptions="Center">
+                                <Picker.Items>
+                                    <x:String>+90 TR</x:String>
+                                    <x:String>+1 US</x:String>
+                                    <x:String>+44 UK</x:String>
+                                </Picker.Items>
+                                <Picker.SelectedIndex>0</Picker.SelectedIndex>
+                            </Picker>
+                        </Border>
+                        <Border Grid.Column="1" StrokeShape="RoundRectangle 8" StrokeThickness="1" Stroke="#E2E8F0" Padding="10,2">
+                            <Entry Placeholder="Telefon Numarası" Keyboard="Telephone" Text="{Binding PhoneNumber}" 
+                                   TextColor="#1E293B" PlaceholderColor="#94A3B8" BackgroundColor="Transparent"/>
+                        </Border>
+                    </Grid>
+
+                    <Button Text="Kaydol" Command="{Binding RegisterCommand}" BackgroundColor="#512BD4" 
+                            TextColor="White" CornerRadius="12" HeightRequest="55" FontAttributes="Bold" Margin="0,10,0,0"/>
+
+                    <Label Text="Veya şununla kaydolun:" HorizontalOptions="Center" FontSize="13" TextColor="#64748B" Margin="0,15,0,0"/>
+
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="25" Margin="0,10,0,0">
+                        <Image Source="google_icon.png" WidthRequest="35" HeightRequest="35"/>
+                        <Image Source="apple_icon.png" WidthRequest="35" HeightRequest="35"/>
+                        <Image Source="twitter_icon.png" WidthRequest="35" HeightRequest="35"/>
+                    </HorizontalStackLayout>
+
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="5" Margin="0,20,0,0">
+                        <Label Text="Hesabınız var mı?" FontSize="14" TextColor="#64748B"/>
+                        <Label Text="Giriş Yapın" TextColor="#6366F1" FontAttributes="Bold" FontSize="14">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToLoginCommand}"/>
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Tercuman.API.Models;
 using Tercuman.Application.Interfaces;
 
@@ -12,39 +13,87 @@ namespace Tercuman.API.Controllers
     public class FavoritesController : ControllerBase
     {
         private readonly IFavoriteService _favoriteService;
+        private readonly ILogger<FavoritesController> _logger;
 
-        public FavoritesController(IFavoriteService favoriteService)
+        public FavoritesController(
+            IFavoriteService favoriteService,
+            ILogger<FavoritesController> logger)
         {
             _favoriteService = favoriteService;
+            _logger = logger;
         }
 
-        [HttpPost("{listingId}")]
-        public async Task<IActionResult> AddFavorite(Guid listingId)
+        [HttpPost("{listingId:guid}")]
+        public async Task<IActionResult> AddFavorite([FromRoute] Guid listingId)
         {
             try
             {
                 var userId = GetUserId();
                 await _favoriteService.AddFavoriteAsync(userId, listingId);
-                return Ok(ApiResponse<object>.Ok(null, "Listing added to favorites."));
+
+                return Ok(ApiResponse<object>.Ok(null, "İlan favorilere eklendi."));
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                _logger.LogWarning(ex, "Unauthorized AddFavorite attempt. UserId: {UserId}, ListingId: {ListingId}",
+                    GetSafeUserId(), listingId);
+
+                return Unauthorized(ApiResponse<object>.Fail(ex.Message));
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogWarning(ex, "Listing/User not found. UserId: {UserId}, ListingId: {ListingId}",
+                    GetSafeUserId(), listingId);
+
+                return NotFound(ApiResponse<object>.Fail(ex.Message));
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogWarning(ex, "Business rule error. UserId: {UserId}, ListingId: {ListingId}",
+                    GetSafeUserId(), listingId);
+
+                return BadRequest(ApiResponse<object>.Fail(ex.Message));
             }
             catch (Exception ex)
             {
-                return BadRequest(ApiResponse<object>.Fail(ex.Message));
+                _logger.LogError(ex, "Unexpected error. UserId: {UserId}, ListingId: {ListingId}",
+                    GetSafeUserId(), listingId);
+
+                return StatusCode(500, ApiResponse<object>.Fail("Beklenmeyen bir hata oluştu."));
             }
         }
 
-        [HttpDelete("{listingId}")]
-        public async Task<IActionResult> RemoveFavorite(Guid listingId)
+        [HttpDelete("{listingId:guid}")]
+        public async Task<IActionResult> RemoveFavorite([FromRoute] Guid listingId)
         {
             try
             {
                 var userId = GetUserId();
                 await _favoriteService.RemoveFavoriteAsync(userId, listingId);
-                return Ok(ApiResponse<object>.Ok(null, "Listing removed from favorites."));
+
+                return Ok(ApiResponse<object>.Ok(null, "İlan favorilerden çıkarıldı."));
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                _logger.LogWarning(ex, "Unauthorized RemoveFavorite attempt. UserId: {UserId}, ListingId: {ListingId}",
+                    GetSafeUserId(), listingId);
+
+                return Unauthorized(ApiResponse<object>.Fail(ex.Message));
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ApiResponse<object>.Fail(ex.Message));
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ApiResponse<object>.Fail(ex.Message));
             }
             catch (Exception ex)
             {
-                return BadRequest(ApiResponse<object>.Fail(ex.Message));
+                _logger.LogError(ex, "Unexpected error. UserId: {UserId}, ListingId: {ListingId}",
+                    GetSafeUserId(), listingId);
+
+                return StatusCode(500, ApiResponse<object>.Fail("Beklenmeyen bir hata oluştu."));
             }
         }
 
@@ -55,11 +104,19 @@ namespace Tercuman.API.Controllers
             {
                 var userId = GetUserId();
                 var favorites = await _favoriteService.GetUserFavoritesAsync(userId);
+
                 return Ok(ApiResponse<object>.Ok(favorites));
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ApiResponse<object>.Fail(ex.Message));
             }
             catch (Exception ex)
             {
-                return BadRequest(ApiResponse<object>.Fail(ex.Message));
+                _logger.LogError(ex, "Unexpected error while getting favorites. UserId: {UserId}",
+                    GetSafeUserId());
+
+                return StatusCode(500, ApiResponse<object>.Fail("Favoriler alınamadı."));
             }
         }
 
@@ -71,14 +128,25 @@ namespace Tercuman.API.Controllers
 
         private Guid GetUserId()
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userIdClaim =
+                User.FindFirst(ClaimTypes.NameIdentifier)?.Value ??
+                User.FindFirst("sub")?.Value ??
+                User.FindFirst("userId")?.Value;
 
-            if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+            if (string.IsNullOrWhiteSpace(userIdClaim) || !Guid.TryParse(userIdClaim, out Guid userId))
             {
-                throw new UnauthorizedAccessException("Invalid or missing user id.");
+                throw new UnauthorizedAccessException("Geçersiz kullanıcı ID.");
             }
 
             return userId;
+        }
+
+        private string GetSafeUserId()
+        {
+            return User.FindFirst(ClaimTypes.NameIdentifier)?.Value ??
+                   User.FindFirst("sub")?.Value ??
+                   User.FindFirst("userId")?.Value ??
+                   "unknown";
         }
     }
 }

@@ -1,88 +1,62 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<!-- Platforms -->
-		<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- Platforms -->
+    <TargetFrameworks>net8.0-android;net8.0-windows10.0.19041.0</TargetFrameworks>
 
-			<PropertyGroup>
-				<TargetFrameworks>net8.0-android;net8.0-windows10.0.19041.0</TargetFrameworks>
-				<OutputType>Exe</OutputType>
-				<RootNamespace>Tercuman.Mobile</RootNamespace>
-				<UseMaui>true</UseMaui>
-				<SingleProject>true</SingleProject>
-				<ImplicitUsings>enable</ImplicitUsings>
-				<Nullable>enable</Nullable>
-			</PropertyGroup>
+    <!-- Basic -->
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Tercuman.Mobile</RootNamespace>
+    <UseMaui>true</UseMaui>
+    <SingleProject>true</SingleProject>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
 
-		</Project>
+    <!-- App Info -->
+    <ApplicationTitle>Tercuman.Mobile</ApplicationTitle>
+    <ApplicationId>com.companyname.tercuman.mobile</ApplicationId>
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
 
-		<!-- Core -->
-		<OutputType>Exe</OutputType>
-		<RootNamespace>Tercuman.Mobile</RootNamespace>
-		<UseMaui>true</UseMaui>
-		<SingleProject>true</SingleProject>
+    <!-- Platform Minimum -->
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+    <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+  </PropertyGroup>
 
-		<!-- Clean coding -->
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
+  <!-- Resources -->
+  <ItemGroup>
+    <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+    <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+    <MauiImage Include="Resources\Images\*" />
+    <MauiFont Include="Resources\Fonts\*" />
+    <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
 
-		<!-- 🔥 CRITICAL -->
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  <!-- Packages -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
 
-		<!-- App Info -->
-		<ApplicationTitle>Tercuman</ApplicationTitle>
-		<ApplicationId>com.tercuman.mobile</ApplicationId>
+    <!-- Toolkit -->
+    <PackageReference Include="CommunityToolkit.Maui" Version="8.0.1" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
 
-		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-		<ApplicationVersion>1</ApplicationVersion>
+    <!-- Config -->
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0" />
+  </ItemGroup>
 
-		<!-- Platform minimums -->
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
-	</PropertyGroup>
+  <!-- Project Reference -->
+  <ItemGroup>
+    <ProjectReference Include="..\Tercuman.Contracts\Tercuman.Contracts.csproj" />
+  </ItemGroup>
 
-	<!-- Resources -->
-	<ItemGroup>
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
-
-		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
-
-		<MauiImage Include="Resources\Images\*" />
-		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
-
-		<MauiFont Include="Resources\Fonts\*" />
-
-		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<MauiXaml Update="App.xaml" />
-		<MauiXaml Update="AppShell.xaml" />
-		<MauiXaml Update="View\ListingDetailPage.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="View\LoginPage.xaml" />
-		<MauiXaml Update="View\ListingsPage.xaml" />
-		<MauiXaml Update="Resources\Styles\Colors.xaml" />
-		<MauiXaml Update="Resources\Styles\Styles.xaml" />
-	</ItemGroup>
-
-	<!-- Packages -->
-	<ItemGroup>
-		<PackageReference Include="CommunityToolkit.Maui" Version="8.0.1" />
-		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
-		<PackageReference Include="Refit" Version="8.0.0" />
-		<PackageReference Include="Refit.HttpClientFactory" Version="8.0.0" />
-		<PackageReference Include="System.Text.Json" Version="8.0.6" />
-	</ItemGroup>
-
-	<!-- Project References -->
-	<ItemGroup>
-		<ProjectReference Include="..\Tercuman.Contracts\Tercuman.Contracts.csproj" />
-	</ItemGroup>
+  <!-- XAML Compile -->
+  <ItemGroup>
+    <MauiXaml Update="**\*.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+  </ItemGroup>
 
 </Project>
