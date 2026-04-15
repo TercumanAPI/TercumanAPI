@@ -114,7 +114,9 @@ builder.Services.AddSwaggerGen(options =>
 // =========================
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.ConfigureTercumanDatabase(builder.Configuration));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
 
 // =========================
 // REPOSITORIES
