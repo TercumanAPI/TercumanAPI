@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Security.Claims;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using Tercuman.API.Hubs;
 using Tercuman.API.Middlewares;
@@ -15,7 +17,6 @@ using Tercuman.Application.Validators;
 using Tercuman.Infrastructure.Persistence;
 using Tercuman.Infrastructure.Repositories;
 using Tercuman.Infrastructure.Services;
-
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.AddConsole();
@@ -31,7 +32,13 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateListingValidator>();
 // CONTROLLERS
 // =========================
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    });
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -97,7 +104,7 @@ builder.Services.AddSwaggerGen(options =>
                     Id = "Bearer"
                 }
             },
-            new string[] {}
+            Array.Empty<string>()
         }
     });
 });
@@ -107,8 +114,7 @@ builder.Services.AddSwaggerGen(options =>
 // =========================
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.ConfigureTercumanDatabase(builder.Configuration));
 
 // =========================
 // REPOSITORIES
@@ -121,7 +127,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
 builder.Services.AddScoped<IContactMessageRepository, ContactMessageRepository>();
-
+builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
 
 // =========================
 // SERVICES
@@ -133,8 +139,7 @@ builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IPublicService, PublicService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<ITranslatorService, TranslatorService>();
-builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
-builder.Services.AddScoped<FavoriteService>();
+builder.Services.AddScoped<IFavoriteService, FavoriteService>();
 builder.Services.AddScoped<IEmailService, SmtpEmailService>();
 
 // =========================
@@ -158,7 +163,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = jwtSettings["Issuer"],
             ValidAudience = jwtSettings["Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(key)
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            NameClaimType = ClaimTypes.NameIdentifier,
+            RoleClaimType = ClaimTypes.Role
         };
 
         options.Events = new JwtBearerEvents
@@ -187,12 +194,12 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
+
 // =========================
 // MIDDLEWARE
 // =========================
 
 var app = builder.Build();
-
 
 if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 {
@@ -212,7 +219,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapHub<ChatHub>("/chatHub");
-
 app.MapControllers();
 
 // Apply pending migrations on startup
@@ -221,6 +227,8 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        // SQL Server / SSMS setup
         db.Database.Migrate();
     }
     catch (Exception ex)
@@ -228,5 +236,8 @@ using (var scope = app.Services.CreateScope())
         Console.WriteLine($"Migration error: {ex.Message}");
     }
 }
+
+// ADMIN SEED
+await app.Services.SeedInitialAdminAsync(builder.Configuration);
 
 app.Run();

@@ -1,4 +1,4 @@
-﻿using Tercuman.Application.Interfaces;
+using Tercuman.Application.Interfaces;
 using Tercuman.Contracts.DTOs.Translator;
 using Tercuman.Domain.Entities;
 
@@ -9,17 +9,20 @@ public class TranslatorService : ITranslatorService
     private readonly IGenericRepository<Message> _messageRepository;
     private readonly IGenericRepository<Listing> _listingRepository;
     private readonly IGenericRepository<Favorite> _favoriteRepository;
+    private readonly IGenericRepository<Language> _languageRepository;
     private readonly IUserRepository _userRepository;
 
     public TranslatorService(
         IGenericRepository<Message> messageRepository,
         IGenericRepository<Listing> listingRepository,
         IGenericRepository<Favorite> favoriteRepository,
+        IGenericRepository<Language> languageRepository,
         IUserRepository userRepository)
     {
         _messageRepository = messageRepository;
         _listingRepository = listingRepository;
         _favoriteRepository = favoriteRepository;
+        _languageRepository = languageRepository;
         _userRepository = userRepository;
     }
 
@@ -51,9 +54,27 @@ public class TranslatorService : ITranslatorService
         await _userRepository.SaveChangesAsync();
     }
 
-    public async Task<List<string>> GetLanguagesAsync(Guid userId)
+    public async Task<List<LanguageDto>> GetLanguagesAsync(Guid userId)
     {
-        await Task.CompletedTask;
-        return new List<string>();
+        var listings = (await _listingRepository.FindAsync(x => x.UserId == userId && !x.IsDeleted)).ToList();
+        if (listings.Count == 0)
+        {
+            return new List<LanguageDto>();
+        }
+
+        var languageIds = listings
+            .SelectMany(x => new[] { x.SourceLanguageId, x.TargetLanguageId })
+            .Distinct()
+            .ToList();
+
+        var languages = (await _languageRepository.FindAsync(x => languageIds.Contains(x.Id)))
+            .OrderBy(x => x.Name)
+            .ToList();
+
+        return languages.Select(x => new LanguageDto
+        {
+            Id = x.Id,
+            Name = x.Name
+        }).ToList();
     }
 }
