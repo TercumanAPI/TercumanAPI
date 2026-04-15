@@ -62,9 +62,9 @@ public static class MauiProgram
         // Dashboard Modülü
         builder.Services.AddTransient<DashboardViewModel>();
 
-        // ==========================================
+        // ==========================================.
         // 3. PAGES (TRANSIENT)
-        // ==========================================
+        // ==========================================.
         builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<RegisterPage>();
         builder.Services.AddTransient<ForgotPasswordPage>();
