@@ -1,7 +1,14 @@
 ﻿using Tercuman.Mobile.Core.Abstractions;
+
 using Tercuman.Contracts.DTOs.Auth;
 
+using System.Text.Json;
+
+
+
 namespace Tercuman.Mobile.Core.Services;
+
+
 
 public class AuthService : IAuthService
 {
@@ -12,60 +19,37 @@ public class AuthService : IAuthService
         _apiService = apiService;
     }
 
-    public async Task<bool> LoginAsync(LoginResponseDto request)
+    public async Task<bool> LoginAsync(object loginData) // Burayı object yaptık
     {
         try
         {
-            // Login isteği gönderiliyor
-            return await _apiService.PostAsync<LoginResponseDto, bool>("auth/login", request);
-        }
-        catch (Exception)
-        {
-            return false;
-        }
-    }
-
-    //1: RegisterAsync Metodu
-    public async Task<bool> RegisterAsync(object registerData)
-    {
-        try
-        {
-            return await _apiService.PostAsync<object, bool>("auth/register", registerData);
+            var response = await _apiService.PostAsync<object, JsonElement>("auth/login", loginData);
+            return response.TryGetProperty("success", out var success) && success.GetBoolean();
         }
         catch (Exception ex)
         {
-            // 1. BURAYA BREAKPOINT KOY: ex değişkeninin üzerine mouse ile gelip incele
-            // 2. Output (Çıktı) penceresine detaylı hatayı yazdırır
-            System.Diagnostics.Debug.WriteLine($"********** KAYIT HATASI: {ex.Message}");
-
-            if (ex.InnerException != null)
-                System.Diagnostics.Debug.WriteLine($"********** İÇ HATA: {ex.InnerException.Message}");
-
-            // Hatayı yukarı fırlatırsan ViewModel içindeki catch bloğunda uyarı mesajı çıkarabilirsin
-            throw;
+            // Register'daki gibi hata temizleme kodunu buraya da ekleyebilirsin
+            throw new Exception(ex.Message);
         }
-        //try
-        //{
-        //    // Kayıt isteği gönderiliyor
-        //    return await _apiService.PostAsync<object, bool>("auth/register", registerData);
-        //}
-        //catch (Exception ex)
-        //{
-        //    return false;
-        //}
     }
 
-    // 2: LogoutAsync Metodu
-    public async Task LogoutAsync()
+    public async Task<bool> RegisterAsync(object registerData)
     {
+        // Buraya sadece bir tane RegisterAsync metodu yaz, 
+        // 65. satırdaki hatayı almamak için kopyasını sil!
         try
         {
-            // Genelde çıkış işlemi için backend'e bir bildirim gönderilir veya sadece yerel veriler temizlenir
-            await _apiService.PostAsync<object, bool>("auth/logout", new { });
+            var response = await _apiService.PostAsync<object, JsonElement>("auth/register", registerData);
+            return response.TryGetProperty("success", out var success) && success.GetBoolean();
         }
-        catch
+        catch (Exception ex)
         {
-            // Çıkış hatası genelde kullanıcıya yansıtılmaz
+            throw new Exception(ex.Message);
         }
+    }
+
+    public async Task LogoutAsync()
+    {
+        await _apiService.PostAsync<object, object>("auth/logout", new { });
     }
 }

@@ -23,21 +23,18 @@ public partial class RegisterViewModel : BaseViewModel
     [RelayCommand]
     async Task Register()
     {
+        // 1. Cihaz taraflı hızlı kontrol (Burayı koruyoruz)
         if (string.IsNullOrWhiteSpace(this.Email) || string.IsNullOrWhiteSpace(this.Password))
         {
-            await Microsoft.Maui.Controls.Shell.Current.DisplayAlert("Uyarı", "Lütfen tüm alanları doldurun.", "Tamam");
+            await Microsoft.Maui.Controls.Shell.Current.DisplayAlert("Uyarı", "Lütfen e-posta ve şifre alanlarını doldurun.", "Tamam");
             return;
         }
 
         IsBusy = true;
         try
         {
-            // Swagger'a göre Erkek = 1, Kadın = 2
             int genderValue = this.Gender == "Erkek" ? 1 : 2;
 
-            // KRİTİK DÜZELTME: 
-            // Swagger'daki küçük harf (camelCase) yapısını birebir taklit ediyoruz.
-            // Sol taraftaki isimleri Swagger'daki JSON anahtarlarıyla aynı yaptık.
             var registerRequest = new
             {
                 fullName = this.FullName,
@@ -47,6 +44,7 @@ public partial class RegisterViewModel : BaseViewModel
                 phoneNumber = this.PhoneNumber
             };
 
+            // AuthService artık içindeki 'throw' sayesinde bize detaylı hata mesajı gönderecek
             var success = await _authService.RegisterAsync(registerRequest);
 
             if (success)
@@ -56,13 +54,15 @@ public partial class RegisterViewModel : BaseViewModel
             }
             else
             {
-                // API 200 dönmezse buraya düşer
-                await Microsoft.Maui.Controls.Shell.Current.DisplayAlert("Hata", "Kayıt başarısız. Bilgileri kontrol edin.", "Tamam");
+                // success false dönerse ama hata fırlatılmazsa buraya düşer
+                await Microsoft.Maui.Controls.Shell.Current.DisplayAlert("Hata", "Kayıt işlemi şu an gerçekleştirilemiyor.", "Tamam");
             }
         }
         catch (Exception ex)
         {
-            await Microsoft.Maui.Controls.Shell.Current.DisplayAlert("Sorgu Hatası", ex.Message, "Tamam");
+            // ÖNEMLİ: Artık buradaki ex.Message, AuthService'de yazdığımız 
+            // "Bu email zaten kayıtlı" veya "Şifre kurallara uymuyor" mesajını içeriyor.
+            await Microsoft.Maui.Controls.Shell.Current.DisplayAlert("Kayıt Sorunu", ex.Message, "Anladım");
         }
         finally
         {
