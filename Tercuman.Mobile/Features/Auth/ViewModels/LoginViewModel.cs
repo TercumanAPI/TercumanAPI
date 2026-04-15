@@ -38,29 +38,24 @@ public partial class LoginViewModel : BaseViewModel
         {
             IsBusy = true;
 
-            // HATA DÜZELTMESİ: Servisin beklediği DTO tipini burada eşleştiriyoruz.
-            // Eğer servis LoginResponseDto bekliyorsa nesneyi o tipte oluşturuyoruz.
-            var request = new LoginResponseDto
+            // Backend'in beklediği küçük harf yapısı (camelCase)
+            var request = new
             {
-                Email = Email,
-                Password = Password
+                email = this.Email,
+                password = this.Password
             };
 
             var success = await _authService.LoginAsync(request);
 
             if (success)
             {
-                // DashboardPage'e yönlendirme
                 await global::Microsoft.Maui.Controls.Shell.Current.GoToAsync("//DashboardPage");
-            }
-            else
-            {
-                await global::Microsoft.Maui.Controls.Shell.Current.DisplayAlert("Hata", "Giriş başarısız. Lütfen bilgilerinizi kontrol edin.", "Tamam");
             }
         }
         catch (Exception ex)
         {
-            await global::Microsoft.Maui.Controls.Shell.Current.DisplayAlert("Sistem Hatası", ex.Message, "Tamam");
+            // AuthService'deki 'throw' sayesinde artık hatanın nedenini göreceğiz
+            await global::Microsoft.Maui.Controls.Shell.Current.DisplayAlert("Giriş Hatası", ex.Message, "Tamam");
         }
         finally
         {

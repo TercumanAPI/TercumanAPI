@@ -1,7 +1,14 @@
 ﻿using Tercuman.Mobile.Core.Abstractions;
+
 using Tercuman.Contracts.DTOs.Auth;
 
+using System.Text.Json;
+
+
+
 namespace Tercuman.Mobile.Core.Services;
+
+
 
 public class AuthService : IAuthService
 {
@@ -12,18 +19,37 @@ public class AuthService : IAuthService
         _apiService = apiService;
     }
 
-    // DÜZELTME: LoginRequestDto yazan yeri LoginResponseDto olarak değiştir
-    public async Task<bool> LoginAsync(LoginResponseDto request)
+    public async Task<bool> LoginAsync(object loginData) // Burayı object yaptık
     {
         try
         {
-            // Generic tiplerin (TRequest, TResponse) eşleştiğinden emin ol
-            var result = await _apiService.PostAsync<LoginResponseDto, bool>("auth/login", request);
-            return result;
+            var response = await _apiService.PostAsync<object, JsonElement>("auth/login", loginData);
+            return response.TryGetProperty("success", out var success) && success.GetBoolean();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return false;
+            // Register'daki gibi hata temizleme kodunu buraya da ekleyebilirsin
+            throw new Exception(ex.Message);
         }
+    }
+
+    public async Task<bool> RegisterAsync(object registerData)
+    {
+        // Buraya sadece bir tane RegisterAsync metodu yaz, 
+        // 65. satırdaki hatayı almamak için kopyasını sil!
+        try
+        {
+            var response = await _apiService.PostAsync<object, JsonElement>("auth/register", registerData);
+            return response.TryGetProperty("success", out var success) && success.GetBoolean();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    public async Task LogoutAsync()
+    {
+        await _apiService.PostAsync<object, object>("auth/logout", new { });
     }
 }

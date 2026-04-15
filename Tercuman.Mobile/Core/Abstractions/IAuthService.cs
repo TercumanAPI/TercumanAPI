@@ -4,6 +4,7 @@ namespace Tercuman.Mobile.Core.Abstractions;
 
 public interface IAuthService
 {
-    // Buradaki parametre tipi (LoginResponseDto) AuthService ile AYNI olmalı
-    Task<bool> LoginAsync(LoginResponseDto request);
+    Task<bool> LoginAsync(object loginData); // LoginResponseDto yerine object yap
+    Task<bool> RegisterAsync(object registerData);
+    Task LogoutAsync();
 }

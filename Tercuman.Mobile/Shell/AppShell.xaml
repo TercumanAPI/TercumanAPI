@@ -9,45 +9,39 @@
     xmlns:profile="clr-namespace:Tercuman.Mobile.Features.Profile.Views"
     xmlns:messages="clr-namespace:Tercuman.Mobile.Features.Messages.Views"
     FlyoutBackgroundColor="#1E293B" 
-    FlyoutHeaderBehavior="Fixed">
+    FlyoutHeaderBehavior="Fixed"
+    Shell.FlyoutBehavior="Flyout">
 
     <Shell.FlyoutHeader>
         <VerticalStackLayout Padding="30,50,20,30" BackgroundColor="#1E293B">
-            <HorizontalStackLayout Spacing="10">
-                <Label Text="MiftahTEA" FontSize="22" FontAttributes="Bold" TextColor="White" VerticalOptions="Center"/>
-            </HorizontalStackLayout>
+            <Label Text="MiftahTEA" FontSize="22" FontAttributes="Bold" TextColor="White"/>
         </VerticalStackLayout>
     </Shell.FlyoutHeader>
 
-    <FlyoutItem Title="Ana Sayfaya Dön" Icon="home.svg">
-        <ShellContent 
-            ContentTemplate="{DataTemplate dashboard:DashboardPage}" 
-            Route="DashboardPage" />
+    <FlyoutItem Title="Giriş Yap" Icon="login_icon.png" FlyoutItemIsVisible="True">
+        <ShellContent ContentTemplate="{DataTemplate auth:LoginPage}" Route="LoginPage" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Gösterge Paneli" Icon="dashboard1.svg">
-        <ShellContent ContentTemplate="{DataTemplate dashboard:DashboardPage}" />
+    <FlyoutItem Title="Ana Sayfa" Icon="home.png">
+        <ShellContent ContentTemplate="{DataTemplate dashboard:DashboardPage}" Route="DashboardPage" />
     </FlyoutItem>
 
-    <ShellContent
-        Title="Giriş"
-        ContentTemplate="{DataTemplate auth:LoginPage}"
-        Route="LoginPage"
-        Shell.FlyoutItemIsVisible="False" />
-
-    <FlyoutItem Title="Profilim" Icon="profile1.svg">
-        <ShellContent ContentTemplate="{DataTemplate profile:ProfilePage}" />
+    <FlyoutItem Title="Profilim" Icon="profile1.png">
+        <ShellContent ContentTemplate="{DataTemplate profile:ProfilePage}" Route="ProfilePage" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Mesajlarım" Icon="messages1.svg">
-        <ShellContent ContentTemplate="{DataTemplate messages:ConversationDetailPage}" />
-    </FlyoutItem>
-    
-    <FlyoutItem Title="ilan oluştur" Icon="add1.svg">
-        <ShellContent ContentTemplate="{DataTemplate ads:CreateAdPage}" />
+    <FlyoutItem Title="Mesajlarım" Icon="messages1.png">
+        <ShellContent ContentTemplate="{DataTemplate messages:MessagesPage}" Route="MessagesPage" />
     </FlyoutItem>
 
-    <MenuItem Text="🚪 Çıkış Yap" 
-              Command="{Binding LogoutCommand}" />
+    <FlyoutItem Title="İlan Oluştur" Icon="add1.png">
+        <ShellContent ContentTemplate="{DataTemplate ads:CreateAdPage}" Route="CreateAdPage" />
+    </FlyoutItem>
+
+    <ShellItem FlyoutItemIsVisible="False">
+        <ShellContent ContentTemplate="{DataTemplate auth:RegisterPage}" Route="RegisterPage" />
+    </ShellItem>
+
+    <MenuItem Text="🚪 Çıkış Yap" Command="{Binding LogoutCommand}" />
 
 </Shell>
