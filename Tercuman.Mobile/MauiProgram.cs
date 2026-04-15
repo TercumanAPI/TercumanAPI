@@ -12,6 +12,7 @@ using Tercuman.Mobile.Features.Profile.Views;
 using Tercuman.Mobile.Features.Messages.Services;
 using Tercuman.Mobile.Features.Messages.ViewModels;
 using Tercuman.Mobile.Features.Messages.Views;
+using CommunityToolkit.Maui;
 
 
 namespace Tercuman.Mobile;
@@ -21,8 +22,11 @@ public static class MauiProgram
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
+
         builder
             .UseMauiApp<App>()
+            // ÖNEMLİ: Hata buradan kaynaklanıyor. Zincirleme şu şekilde olmalı:
+            .UseMauiCommunityToolkit()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
