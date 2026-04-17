@@ -11,7 +11,7 @@ using Tercuman.Infrastructure.Persistence;
 namespace Tercuman.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260415131735_InitialCreate")]
+    [Migration("20260417194500_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -1389,6 +1389,12 @@ namespace Tercuman.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("AppleId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AuthenticationProvider")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Bio")
                         .HasColumnType("TEXT");
 
@@ -1409,6 +1415,9 @@ namespace Tercuman.Infrastructure.Migrations
                     b.Property<int>("Gender")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("GoogleId")
+                        .HasColumnType("TEXT");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
 
@@ -1419,7 +1428,6 @@ namespace Tercuman.Infrastructure.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("PasswordHash")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PhoneNumber")
