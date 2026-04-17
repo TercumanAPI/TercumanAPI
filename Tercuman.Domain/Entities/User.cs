@@ -8,7 +8,6 @@ using Tercuman.Domain.Common;
 using Tercuman.Domain.Enums;
 using System.Text.Json.Serialization;
 
-
 namespace Tercuman.Domain.Entities
 {
     public class User : BaseEntity
@@ -16,7 +15,12 @@ namespace Tercuman.Domain.Entities
         // Auth
         public string FullName { get; set; }
         public string Email { get; set; }
-        public string PasswordHash { get; set; }
+        public string? PasswordHash { get; set; } // Sosyal medya girişinde null olabilir
+
+        // Social Auth Fields
+        public string? GoogleId { get; set; }
+        public string? AppleId { get; set; }
+        public string? AuthenticationProvider { get; set; } // "Google", "Apple", "Local"
 
         // Profile
         public string? Bio { get; set; }
@@ -32,11 +36,9 @@ namespace Tercuman.Domain.Entities
         public ICollection<Message> ReceivedMessages { get; set; }
         public ICollection<Favorite> Favorites { get; set; }
 
-       
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
         public bool IsApproved { get; set; } = false; // Çevirmen varsayılan olarak onaysız başlar
         public string? Role { get; set; }
-
     }
 }

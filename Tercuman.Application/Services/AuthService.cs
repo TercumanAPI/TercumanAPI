@@ -176,4 +176,58 @@ public class AuthService : IAuthService
             throw new Exception("Forgot password failed: " + ex.Message);
         }
     }
+    public async Task<TokenDto> ExternalLoginAsync(string email, string name, string? externalId, string provider)
+    {
+        try
+        {
+            var user = await _userRepository.GetByEmailAsync(email);
+
+            if (user == null)
+            {
+                // Kullanıcı yoksa yeni oluştur
+                user = new User
+                {
+                    Id = Guid.NewGuid(),
+                    FullName = name,
+                    Email = email,
+                    AuthenticationProvider = provider,
+                    GoogleId = provider == "Google" ? externalId : null,
+                    AppleId = provider == "Apple" ? externalId : null,
+                    IsActive = true,
+                    Role = "Customer",
+                    CreatedDate = DateTime.UtcNow,
+                    PasswordHash = "" // Sosyal medya girişinde şifre olmaz
+                };
+                await _userRepository.AddAsync(user);
+            }
+            else
+            {
+                // Kullanıcı varsa external ID'leri güncelle
+                user.AuthenticationProvider = provider;
+                if (provider == "Google") user.GoogleId = externalId;
+                if (provider == "Apple") user.AppleId = externalId;
+            }
+
+            // Mevcut Token üretim mantığını kullanıyoruz
+            var accessToken = GenerateJwtToken(user);
+            var refreshToken = Convert.ToBase64String(
+                System.Security.Cryptography.RandomNumberGenerator.GetBytes(64)
+            );
+
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+
+            await _userRepository.SaveChangesAsync();
+
+            return new TokenDto
+            {
+                AccessToken = accessToken,
+                RefreshToken = refreshToken
+            };
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"{provider} login failed: " + ex.Message);
+        }
+    }
 }

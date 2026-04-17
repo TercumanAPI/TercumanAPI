@@ -25,7 +25,7 @@ public static class MauiProgram
 
         builder
             .UseMauiApp<App>()
-            // ÖNEMLİ: Hata buradan kaynaklanıyor. Zincirleme şu şekilde olmalı:
+            
             .UseMauiCommunityToolkit()
             .ConfigureFonts(fonts =>
             {

@@ -24,14 +24,12 @@ builder.Logging.AddConsole();
 // =========================
 // VALIDATION
 // =========================
-
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateListingValidator>();
 
 // =========================
 // CONTROLLERS
 // =========================
-
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -74,7 +72,6 @@ builder.Services.AddCors(options =>
 // =========================
 // SWAGGER + JWT
 // =========================
-
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -112,18 +109,13 @@ builder.Services.AddSwaggerGen(options =>
 // =========================
 // DATABASE
 // =========================
-
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-
 
 // =========================
 // REPOSITORIES
 // =========================
-
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-
 builder.Services.AddScoped<IListingRepository, ListingRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
@@ -134,7 +126,6 @@ builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
 // =========================
 // SERVICES
 // =========================
-
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IListingService, ListingService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
@@ -145,62 +136,70 @@ builder.Services.AddScoped<IFavoriteService, FavoriteService>();
 builder.Services.AddScoped<IEmailService, SmtpEmailService>();
 
 // =========================
-// AUTHENTICATION
+// AUTHENTICATION (Kritik Alan)
 // =========================
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    var jwtSettings = builder.Configuration.GetSection("Jwt");
+    var keyString = jwtSettings["Key"] ?? throw new Exception("JWT Key not found");
+    var key = Encoding.UTF8.GetBytes(keyString);
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+    options.TokenValidationParameters = new TokenValidationParameters
     {
-        var jwtSettings = builder.Configuration.GetSection("Jwt");
-        var keyString = jwtSettings["Key"]
-            ?? throw new Exception("JWT Key not found");
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidAudience = jwtSettings["Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        NameClaimType = ClaimTypes.NameIdentifier,
+        RoleClaimType = ClaimTypes.Role
+    };
 
-        var key = Encoding.UTF8.GetBytes(keyString);
-
-        options.TokenValidationParameters = new TokenValidationParameters
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
         {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtSettings["Issuer"],
-            ValidAudience = jwtSettings["Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(key),
-            NameClaimType = ClaimTypes.NameIdentifier,
-            RoleClaimType = ClaimTypes.Role
-        };
+            var accessToken = context.Request.Query["access_token"];
+            var path = context.HttpContext.Request.Path;
 
-        options.Events = new JwtBearerEvents
-        {
-            OnMessageReceived = context =>
+            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/chatHub"))
             {
-                var accessToken = context.Request.Query["access_token"];
-                var path = context.HttpContext.Request.Path;
-
-                if (!string.IsNullOrEmpty(accessToken) &&
-                    path.StartsWithSegments("/chatHub"))
-                {
-                    context.Token = accessToken;
-                }
-
-                return Task.CompletedTask;
+                context.Token = accessToken;
             }
-        };
-    });
+            return Task.CompletedTask;
+        }
+    };
+}) // Noktalı virgül silindi, nokta ile devam ediliyor
+.AddApple(options =>
+{
+    options.ClientId = builder.Configuration["Authentication:Apple:ClientId"] ?? "";
+    options.KeyId = builder.Configuration["Authentication:Apple:KeyId"] ?? "";
+    options.TeamId = builder.Configuration["Authentication:Apple:TeamId"] ?? "";
+
+    // Hata buradaydı; string'i Func'a çeviriyoruz:
+    var privateKeyPath = builder.Configuration["Authentication:Apple:PrivateKey"] ?? "";
+    options.PrivateKey = (keyId, cancellationToken) =>
+        Task.FromResult(System.IO.File.ReadAllText(privateKeyPath).AsMemory());
+});
 
 builder.Services.AddAuthorization();
 
 // =========================
 // SIGNALR
 // =========================
-
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 
 // =========================
 // MIDDLEWARE
 // =========================
-
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
@@ -211,7 +210,6 @@ if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
 app.UseRouting();
 app.UseCors("FrontendCors");
@@ -223,14 +221,12 @@ app.UseAuthorization();
 app.MapHub<ChatHub>("/chatHub");
 app.MapControllers();
 
-// Apply pending migrations on startup
+// Apply migrations
 using (var scope = app.Services.CreateScope())
 {
     try
     {
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-        // SQL Server / SSMS setup
         db.Database.Migrate();
     }
     catch (Exception ex)
