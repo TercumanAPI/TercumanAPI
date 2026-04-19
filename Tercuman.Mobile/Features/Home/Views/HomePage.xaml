@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Tercuman.Mobile.Features.Home.ViewModels"
+             xmlns:models="clr-namespace:Tercuman.Mobile.Features.Home.Models"
+             x:Class="Tercuman.Mobile.Features.Home.Views.HomePage"
+             x:DataType="vm:HomeViewModel"
+             BackgroundColor="#F8FAFC"
+             Title="MiftahTEA">
+
+    <ContentPage.BindingContext>
+        <vm:HomeViewModel />
+    </ContentPage.BindingContext>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <Label Text="Çevirmen Ara" FontSize="20" FontAttributes="Bold" TextColor="#1E293B" />
+
+            <Frame Padding="5" BackgroundColor="White" CornerRadius="12" HasShadow="False" BorderColor="#E2E8F0">
+                <Grid ColumnDefinitions="*, Auto">
+                    <Entry Placeholder="Kelime veya isim yazın..." 
+                           Text="{Binding SearchQuery}"
+                           PlaceholderColor="#94A3B8"
+                           TextColor="#1E293B"
+                           VerticalOptions="Center"
+                           Margin="10,0" />
+                    <Button Grid.Column="1" 
+                            Text="Ara" 
+                            Command="{Binding SearchCommand}" 
+                            BackgroundColor="#4F46E5" 
+                            TextColor="White"
+                            CornerRadius="8"
+                            HeightRequest="45"
+                            Padding="15,0"/>
+                </Grid>
+            </Frame>
+
+            <Frame BackgroundColor="White" CornerRadius="12" HasShadow="False" BorderColor="#E2E8F0" Padding="15">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Gelişmiş Filtreleme" FontSize="16" FontAttributes="Bold" TextColor="#4F46E5" />
+                    <BoxView HeightRequest="1" Color="#F1F5F9" Margin="0,5" />
+
+                    <Grid ColumnDefinitions="*, *" ColumnSpacing="10">
+                        <VerticalStackLayout Grid.Column="0" Spacing="5">
+                            <Label Text="Kaynak Dil" FontSize="11" TextColor="#64748B" Margin="2,0"/>
+                            <Picker Title="Seçiniz" ItemsSource="{Binding Languages}" SelectedItem="{Binding SelectedSourceLanguage}"
+                        TextColor="#1E293B" TitleColor="#94A3B8" BackgroundColor="#F8FAFC" HeightRequest="45"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="5">
+                            <Label Text="Hedef Dil" FontSize="11" TextColor="#64748B" Margin="2,0"/>
+                            <Picker Title="Seçiniz" ItemsSource="{Binding Languages}" SelectedItem="{Binding SelectedTargetLanguage}"
+                        TextColor="#1E293B" TitleColor="#94A3B8" BackgroundColor="#F8FAFC" HeightRequest="45"/>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*, *" ColumnSpacing="10">
+                        <VerticalStackLayout Grid.Column="0" Spacing="5">
+                            <Label Text="Hizmet Türü" FontSize="11" TextColor="#64748B" Margin="2,0"/>
+                            <Picker Title="Tümü" ItemsSource="{Binding ServiceTypeOptions}" SelectedItem="{Binding SelectedServiceType}"
+                        TextColor="#1E293B" TitleColor="#94A3B8" BackgroundColor="#F8FAFC" HeightRequest="45"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="5">
+                            <Label Text="Deneyim" FontSize="11" TextColor="#64748B" Margin="2,0"/>
+                            <Picker Title="Tümü" ItemsSource="{Binding ExperienceOptions}" SelectedItem="{Binding SelectedExperience}"
+                        TextColor="#1E293B" TitleColor="#94A3B8" BackgroundColor="#F8FAFC" HeightRequest="45"/>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*, *" ColumnSpacing="10">
+                        <VerticalStackLayout Grid.Column="0" Spacing="5">
+                            <Label Text="Şehir" FontSize="11" TextColor="#64748B" Margin="2,0"/>
+                            <Picker Title="Şehir Seç" ItemsSource="{Binding Cities}" SelectedItem="{Binding SelectedCity}"
+                        TextColor="#1E293B" TitleColor="#94A3B8" BackgroundColor="#F8FAFC" HeightRequest="45"/>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="5">
+                            <Label Text="Cinsiyet" FontSize="11" TextColor="#64748B" Margin="2,0"/>
+                            <Picker Title="Farketmez" ItemsSource="{Binding GenderOptions}" SelectedItem="{Binding SelectedGender}"
+                        TextColor="#1E293B" TitleColor="#94A3B8" BackgroundColor="#F8FAFC" HeightRequest="45"/>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <Button Text="Sonuçları Göster" 
+                        Command="{Binding ApplyFiltersCommand}" 
+                        BackgroundColor="#4F46E5" 
+                        TextColor="White"
+                        FontAttributes="Bold"
+                        Margin="0,10,0,0"
+                        CornerRadius="10"
+                        HeightRequest="50"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <Label Text="Tüm Çevirmenler" FontAttributes="Bold" FontSize="18" TextColor="#1E293B" Margin="5,0" />
+
+            <CollectionView ItemsSource="{Binding Translators}">
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Padding="40" Spacing="15">
+                        <Label Text="Sonuç bulunamadı." HorizontalTextAlignment="Center" TextColor="#94A3B8" FontSize="14"/>
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:TranslatorModel">
+                        <Frame Margin="0,5" Padding="15" BackgroundColor="White" CornerRadius="10" HasShadow="False" BorderColor="#E2E8F0">
+                            <HorizontalStackLayout Spacing="15">
+                                <Border StrokeShape="RoundRectangle 25" HeightRequest="50" WidthRequest="50" BackgroundColor="#F1F5F9">
+                                    <Label Text="👤" HorizontalOptions="Center" VerticalOptions="Center" />
+                                </Border>
+
+                                <VerticalStackLayout VerticalOptions="Center">
+                                    <Label Text="{Binding FullName}" FontAttributes="Bold" FontSize="16" TextColor="#1E293B" />
+                                    <Label Text="{Binding City}" FontSize="12" TextColor="#64748B" />
+                                </VerticalStackLayout>
+                            </HorizontalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

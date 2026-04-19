@@ -5,6 +5,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     
     xmlns:dashboard="clr-namespace:Tercuman.Mobile.Features.Dashboard.Views"
+    xmlns:home="clr-namespace:Tercuman.Mobile.Features.Home.Views"
+    xmlns:vm="clr-namespace:Tercuman.Mobile.Features.Home.ViewModels"
     xmlns:ads="clr-namespace:Tercuman.Mobile.Features.Ads.Views"
     xmlns:auth="clr-namespace:Tercuman.Mobile.Features.Auth.Views"
     xmlns:profile="clr-namespace:Tercuman.Mobile.Features.Profile.Views"
@@ -19,17 +21,21 @@
     Shell.FlyoutBehavior="Flyout">
 
     <Shell.FlyoutHeader>
-        <VerticalStackLayout Padding="30,50,20,30" BackgroundColor="#1E293B">
-            <Label Text="EKTA" FontSize="24" FontAttributes="Bold" TextColor="White"/>
-            <Label Text="Mobilya &amp; Montaj" FontSize="12" TextColor="#94A3B8"/>
+        <VerticalStackLayout Padding="30,50,20,30" BackgroundColor="#1E293B" Spacing="10">
+            <Image Source="miftah_logo.png" 
+                   HeightRequest="50" 
+                   HorizontalOptions="Start"
+                   Aspect="AspectFit"/>
+
+            <Label Text="MiftahTEA" FontSize="24" FontAttributes="Bold" TextColor="White"/>
         </VerticalStackLayout>
     </Shell.FlyoutHeader>
 
-    <FlyoutItem Title="Giriş Yap" Icon="login_icon.png">
-        <ShellContent ContentTemplate="{DataTemplate auth:LoginPage}" Route="LoginPage" />
+    <FlyoutItem Title="Ana Sayfa" Icon="home.png">
+        <ShellContent ContentTemplate="{DataTemplate home:HomePage}" Route="HomePage" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Ana Sayfa" Icon="home.png">
+    <FlyoutItem Title="Gösterge Paneli" Icon="home.png">
         <ShellContent ContentTemplate="{DataTemplate dashboard:DashboardPage}" Route="DashboardPage" />
     </FlyoutItem>
 
@@ -37,20 +43,20 @@
         <ShellContent ContentTemplate="{DataTemplate listings:ListingsPage}" Route="ListingsPage" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Favorilerim" Icon="heart_icon.png">
-        <ShellContent ContentTemplate="{DataTemplate favorites:FavoritesPage}" Route="FavoritesPage" />
-    </FlyoutItem>
-
     <FlyoutItem Title="Mesajlarım" Icon="messages1.png">
         <ShellContent ContentTemplate="{DataTemplate messages:MessagesPage}" Route="MessagesPage" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Bildirimler" Icon="bell_icon.png">
-        <ShellContent ContentTemplate="{DataTemplate notifications:NotificationsPage}" Route="NotificationsPage" />
-    </FlyoutItem>
-
     <FlyoutItem Title="İlan Oluştur" Icon="add1.png">
         <ShellContent ContentTemplate="{DataTemplate ads:CreateAdPage}" Route="CreateAdPage" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Favorilerim" Icon="heart_icon.png">
+        <ShellContent ContentTemplate="{DataTemplate favorites:FavoritesPage}" Route="FavoritesPage" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Bildirimler" Icon="bell_icon.png">
+        <ShellContent ContentTemplate="{DataTemplate notifications:NotificationsPage}" Route="NotificationsPage" />
     </FlyoutItem>
 
     <FlyoutItem Title="Profilim" Icon="profile1.png">
@@ -59,6 +65,10 @@
 
     <FlyoutItem Title="Ayarlar" Icon="settings_icon.png">
         <ShellContent ContentTemplate="{DataTemplate settings:SettingsPage}" Route="SettingsPage" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Giriş Yap" Icon="login_icon.png">
+        <ShellContent ContentTemplate="{DataTemplate auth:LoginPage}" Route="LoginPage" />
     </FlyoutItem>
 
     <ShellItem FlyoutItemIsVisible="False">
