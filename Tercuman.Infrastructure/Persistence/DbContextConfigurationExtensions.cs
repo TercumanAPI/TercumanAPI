@@ -27,7 +27,7 @@ public static class DbContextConfigurationExtensions
     {
         if (IsSqliteConnectionString(connectionString))
         {
-            optionsBuilder.UseSqlite(connectionString);
+            optionsBuilder.UseSqlServer(connectionString);
             return optionsBuilder;
         }
 

@@ -133,7 +133,7 @@ using (var scope = app.Services.CreateScope())
     {
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        if (db.Database.IsSqlite())
+        if (db.Database.IsSqlServer())
         {
             db.Database.EnsureCreated();
         }
