@@ -12,7 +12,7 @@ using Tercuman.Infrastructure.Persistence;
 namespace Tercuman.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260420113545_InitialCreate")]
+    [Migration("20260420195712_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
