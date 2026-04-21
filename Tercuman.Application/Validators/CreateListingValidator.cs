@@ -15,9 +15,9 @@ namespace Tercuman.Application.Validators
             {
                 RuleFor(x => x.Title)
                     .NotEmpty().WithMessage("Başlık boş olamaz")
-                    .MaximumLength(100).WithMessage("Başlık en fazla 100 karakter olabilir");
+                    .MaximumLength(700).WithMessage("Başlık en fazla 700 karakter olabilir");
 
-                RuleFor(x => x.Description)
+            RuleFor(x => x.Description)
                     .NotEmpty().WithMessage("Açıklama boş olamaz")
                     .MaximumLength(1000).WithMessage("Açıklama en fazla 1000 karakter olabilir");
 

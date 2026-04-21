@@ -1,238 +1,95 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+﻿using Microsoft.AspNetCore.Mvc;
 using Tercuman.Application.Interfaces;
 using Tercuman.Contracts.DTOs.Auth;
-using Tercuman.Domain.Entities;
 
-namespace Tercuman.Application.Services;
+namespace Tercuman.API.Controllers;
 
-public class AuthService : IAuthService
+[ApiController]
+[Route("api/[controller]")]
+public class AuthController : ControllerBase
 {
-    private readonly IUserRepository _userRepository;
-    private readonly IConfiguration _configuration;
-    private readonly IEmailService _emailService;
+    private readonly IAuthService _authService;
 
-    public AuthService(IUserRepository userRepository, IConfiguration configuration, IEmailService emailService)
+    public AuthController(IAuthService authService)
     {
-        _userRepository = userRepository;
-        _configuration = configuration;
-        _emailService = emailService;
+        _authService = authService;
     }
 
     // ==========================================
     // EXTERNAL LOGIN (GOOGLE & APPLE)
     // ==========================================
-    public async Task<TokenDto> ExternalLoginAsync(string email, string name, string? externalId, string provider)
+    [HttpPost("external-login")]
+    public async Task<IActionResult> ExternalLogin([FromBody] ExternalLoginDto dto)
     {
         try
         {
-            var user = await _userRepository.GetByEmailAsync(email);
-
-            if (user == null)
-            {
-                // Kullanıcı yoksa otomatik oluştur (Raporundaki mantık)
-                user = new User
-                {
-                    Id = Guid.NewGuid(),
-                    FullName = name,
-                    Email = email,
-                    AuthenticationProvider = provider,
-                    GoogleId = provider == "Google" ? externalId : null,
-                    AppleId = provider == "Apple" ? externalId : null,
-                    IsActive = true,
-                    Role = "Customer", // Varsayılan rol
-                    CreatedDate = DateTime.UtcNow,
-                    PasswordHash = "" // Sosyal medya girişinde şifre olmaz
-                };
-                await _userRepository.AddAsync(user);
-            }
-            else
-            {
-                // Kullanıcı varsa Provider bilgisini güncelle (Örn: Local'den Google'a geçiş)
-                user.AuthenticationProvider = provider;
-                if (provider == "Google") user.GoogleId = externalId;
-                if (provider == "Apple") user.AppleId = externalId;
-            }
-
-            // Mevcut Token üretim mantığını kullanıyoruz
-            var accessToken = GenerateJwtToken(user);
-            var refreshToken = Convert.ToBase64String(
-                System.Security.Cryptography.RandomNumberGenerator.GetBytes(64)
+            var token = await _authService.ExternalLoginAsync(
+                dto.Email,
+                dto.Name,
+                dto.ExternalId,
+                dto.Provider
             );
-
-            user.RefreshToken = refreshToken;
-            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
-
-            await _userRepository.SaveChangesAsync();
-
-            return new TokenDto
-            {
-                AccessToken = accessToken,
-                RefreshToken = refreshToken
-            };
+            return Ok(token);
         }
         catch (Exception ex)
         {
-            throw new Exception($"{provider} login failed: " + ex.Message);
+            return BadRequest(new { message = ex.Message });
         }
     }
 
-    public async Task RegisterAsync(RegisterDto dto)
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] RegisterDto dto)
     {
         try
         {
-            var existingUser = await _userRepository.GetByEmailAsync(dto.Email);
-
-            if (existingUser != null)
-                throw new Exception("Bu email zaten kayıtlı");
-
-            var user = new User
-            {
-                Id = Guid.NewGuid(),
-                FullName = dto.FullName,
-                Email = dto.Email,
-                Gender = dto.Gender,
-                PhoneNumber = dto.PhoneNumber,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-                Role = "Customer",
-                AuthenticationProvider = "Local", // Manuel kayıt
-                CreatedDate = DateTime.UtcNow
-            };
-
-            await _userRepository.AddAsync(user);
-            await _userRepository.SaveChangesAsync();
+            await _authService.RegisterAsync(dto);
+            return Ok(new { message = "Kayıt başarılı" });
         }
         catch (Exception ex)
         {
-            throw new Exception("Register failed: " + ex.Message);
+            return BadRequest(new { message = ex.Message });
         }
     }
 
-    public async Task<TokenDto> LoginAsync(LoginDto dto)
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginDto dto)
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(dto.Email))
-                throw new Exception("Email boş olamaz");
-
-            if (string.IsNullOrWhiteSpace(dto.Password))
-                throw new Exception("Şifre boş olamaz");
-
-            var user = await _userRepository.GetByEmailAsync(dto.Email);
-
-            if (user == null)
-                throw new Exception("User not found");
-
-            if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
-                throw new Exception("Invalid password");
-
-            var accessToken = GenerateJwtToken(user);
-            var refreshToken = Convert.ToBase64String(
-                System.Security.Cryptography.RandomNumberGenerator.GetBytes(64)
-            );
-
-            user.RefreshToken = refreshToken;
-            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
-
-            await _userRepository.SaveChangesAsync();
-
-            return new TokenDto
-            {
-                AccessToken = accessToken,
-                RefreshToken = refreshToken
-            };
+            var token = await _authService.LoginAsync(dto);
+            return Ok(token);
         }
         catch (Exception ex)
         {
-            throw new Exception("Login failed: " + ex.Message);
+            return BadRequest(new { message = ex.Message });
         }
     }
 
-    public async Task<TokenDto> RefreshTokenAsync(string refreshToken)
+    [HttpPost("refresh-token")]
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest dto)
     {
         try
         {
-            var user = await _userRepository.GetByRefreshTokenAsync(refreshToken);
-
-            if (user == null || user.RefreshTokenExpiryTime == null || user.RefreshTokenExpiryTime < DateTime.UtcNow)
-                throw new Exception("Invalid token");
-
-            var newRefreshToken = Convert.ToBase64String(
-                System.Security.Cryptography.RandomNumberGenerator.GetBytes(64)
-            );
-
-            user.RefreshToken = newRefreshToken;
-            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
-
-            await _userRepository.SaveChangesAsync();
-
-            return new TokenDto
-            {
-                AccessToken = GenerateJwtToken(user),
-                RefreshToken = newRefreshToken
-            };
+            var token = await _authService.RefreshTokenAsync(dto.RefreshToken);
+            return Ok(token);
         }
         catch (Exception ex)
         {
-            throw new Exception("Refresh token failed: " + ex.Message);
+            return BadRequest(new { message = ex.Message });
         }
     }
 
-    private string GenerateJwtToken(User user)
-    {
-        var jwtSettings = _configuration.GetSection("Jwt");
-
-        var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(jwtSettings["Key"]!)
-        );
-
-        var claimList = new List<Claim>
-        {
-            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new(ClaimTypes.Email, user.Email),
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        };
-
-        if (!string.IsNullOrEmpty(user.Role))
-        {
-            claimList.Add(new Claim(ClaimTypes.Role, user.Role));
-        }
-
-        var token = new JwtSecurityToken(
-            issuer: jwtSettings["Issuer"],
-            audience: jwtSettings["Audience"],
-            claims: claimList.ToArray(),
-            expires: DateTime.UtcNow.AddMinutes(
-                int.Parse(jwtSettings["ExpiryMinutes"]!)
-            ),
-            signingCredentials:
-                new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
-        );
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
-    }
-
-    public async Task ForgotPasswordAsync(string email)
+    [HttpPost("forgot-password")]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto dto)
     {
         try
         {
-            var user = await _userRepository.GetByEmailAsync(email);
-
-            if (user == null)
-                throw new Exception("User not found");
-
-            await _emailService.SendAsync(
-                user.Email,
-                "Tercuman - Password Reset",
-                "Şifre sıfırlama talebiniz alınmıştır. Lütfen panelden şifre yenileme adımlarını takip edin."
-            );
+            await _authService.ForgotPasswordAsync(dto.Email);
+            return Ok(new { message = "Şifre sıfırlama emaili gönderildi" });
         }
         catch (Exception ex)
         {
-            throw new Exception("Forgot password failed: " + ex.Message);
+            return BadRequest(new { message = ex.Message });
         }
     }
 }
