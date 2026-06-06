@@ -1,8 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Tercuman.Mobile.Base;
+using Tercuman.Contracts.DTOs.Auth;
 using Tercuman.Mobile.Core.Abstractions;
-
+using Tercuman.Domain.Enums;
 namespace Tercuman.Mobile.Features.Auth.ViewModels;
 
 public partial class RegisterViewModel : BaseViewModel
@@ -35,13 +36,13 @@ public partial class RegisterViewModel : BaseViewModel
         {
             int genderValue = this.Gender == "Erkek" ? 1 : 2;
 
-            var registerRequest = new
+            var registerRequest = new RegisterDto
             {
-                fullName = this.FullName,
-                email = this.Email,
-                password = this.Password,
-                gender = genderValue,
-                phoneNumber = this.PhoneNumber
+                FullName = this.FullName,
+                Email = this.Email,
+                Password = this.Password,
+                Gender = (Gender)genderValue,
+                PhoneNumber = this.PhoneNumber
             };
 
             // AuthService artık içindeki 'throw' sayesinde bize detaylı hata mesajı gönderecek

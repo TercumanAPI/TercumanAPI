@@ -13,6 +13,7 @@ using Tercuman.Mobile.Features.Messages.Services;
 using Tercuman.Mobile.Features.Messages.ViewModels;
 using Tercuman.Mobile.Features.Messages.Views;
 using CommunityToolkit.Maui;
+using Microsoft.Extensions.DependencyInjection;
 
 
 namespace Tercuman.Mobile;
@@ -36,7 +37,25 @@ public static class MauiProgram
         // ==========================================
         // 1. CORE & INFRASTRUCTURE (SINGLETON)
         // ==========================================
-        builder.Services.AddSingleton<HttpClient>();
+        builder.Services.AddSingleton(sp =>
+        {
+            // 1. Sertifika hatalarını es geçmek için bir handler oluşturuyoruz
+            var handler = new HttpClientHandler();
+
+#if DEBUG
+            // Geliştirme aşamasında emülatörün SSL hatası vermesini engeller
+            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+#endif
+
+            // 2. HttpClient'ı bu handler ile oluşturuyoruz
+            var client = new HttpClient(handler)
+            {
+                // Senin ApiSettings dosendaki 10.0.2.2 veya localhost adresini otomatik alır
+                BaseAddress = new Uri(Tercuman.Mobile.Core.Config.ApiSettings.BaseUrl)
+            };
+
+            return client;
+        });
         builder.Services.AddSingleton<ITokenStorage, TokenStorage>();
         builder.Services.AddSingleton<IUserSession, UserSession>();
         builder.Services.AddSingleton<IApiService, ApiService>();
@@ -58,6 +77,7 @@ public static class MauiProgram
         builder.Services.AddTransient<ProfileViewModel>();
         builder.Services.AddTransient<MessagesViewModel>();
         builder.Services.AddTransient<ConversationDetailViewModel>();
+        builder.Services.AddTransient<Features.Listings.ViewModels.ListingDetailViewModel>();
 
         // Dashboard Modülü
         builder.Services.AddTransient<DashboardViewModel>();
@@ -71,6 +91,7 @@ public static class MauiProgram
         builder.Services.AddTransient<DashboardPage>();
         builder.Services.AddTransient<MessagesPage>();
         builder.Services.AddTransient<ConversationDetailPage>();
+        builder.Services.AddTransient<Features.Listings.Views.ListingDetailPage>();
 
 
 #if DEBUG

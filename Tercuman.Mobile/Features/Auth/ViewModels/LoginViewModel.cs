@@ -1,9 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System;
+using System.Threading.Tasks;
 using Tercuman.Mobile.Base;
 using Tercuman.Mobile.Core.Abstractions;
 using Tercuman.Contracts.DTOs.Auth;
-using Tercuman.Mobile.Features.Auth.ViewModels;
 
 namespace Tercuman.Mobile.Features.Auth.ViewModels;
 
@@ -38,7 +39,7 @@ public partial class LoginViewModel : BaseViewModel
         {
             IsBusy = true;
 
-            // Backend'in beklediği küçük harf yapısı (camelCase)
+            // Backend'in beklediği camelCase yapısı
             var request = new
             {
                 email = this.Email,
@@ -54,7 +55,6 @@ public partial class LoginViewModel : BaseViewModel
         }
         catch (Exception ex)
         {
-            // AuthService'deki 'throw' sayesinde artık hatanın nedenini göreceğiz
             await global::Microsoft.Maui.Controls.Shell.Current.DisplayAlert("Giriş Hatası", ex.Message, "Tamam");
         }
         finally
@@ -66,13 +66,14 @@ public partial class LoginViewModel : BaseViewModel
     [RelayCommand]
     private async Task GoToRegister()
     {
-        // Namespace çakışmasını önlemek için global:: kullanıyoruz
-        await global::Microsoft.Maui.Controls.Shell.Current.GoToAsync("RegisterPage");
+        // Rota çözünürlük hatasını ve donmayı önlemek için mutlak // eklendi
+        await global::Microsoft.Maui.Controls.Shell.Current.GoToAsync("//RegisterPage");
     }
+
     [RelayCommand]
-    async Task GoToForgotPassword()
+    private async Task GoToForgotPassword()
     {
-        // AppShell'de kaydettiğimiz isimle çağırıyoruz
+        // Alt rota olarak AppShell'de kayıtlı olduğu için direkt çağrılabilir
         await global::Microsoft.Maui.Controls.Shell.Current.GoToAsync("ForgotPasswordPage");
     }
 }

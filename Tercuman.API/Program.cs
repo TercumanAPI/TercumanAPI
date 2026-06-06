@@ -175,18 +175,18 @@ builder.Services.AddAuthentication(options =>
             return Task.CompletedTask;
         }
     };
-}) // Noktalı virgül silindi, nokta ile devam ediliyor
-.AddApple(options =>
-{
-    options.ClientId = builder.Configuration["Authentication:Apple:ClientId"] ?? "";
-    options.KeyId = builder.Configuration["Authentication:Apple:KeyId"] ?? "";
-    options.TeamId = builder.Configuration["Authentication:Apple:TeamId"] ?? "";
+}); // Noktalı virgül silindi, nokta ile devam ediliyor
+//.AddApple(options =>
+//{
+//    options.ClientId = builder.Configuration["Authentication:Apple:ClientId"] ?? "";
+//    options.KeyId = builder.Configuration["Authentication:Apple:KeyId"] ?? "";
+//    options.TeamId = builder.Configuration["Authentication:Apple:TeamId"] ?? "";
 
-    // Hata buradaydı; string'i Func'a çeviriyoruz:
-    var privateKeyPath = builder.Configuration["Authentication:Apple:PrivateKey"] ?? "";
-    options.PrivateKey = (keyId, cancellationToken) =>
-        Task.FromResult(System.IO.File.ReadAllText(privateKeyPath).AsMemory());
-});
+//    // Hata buradaydı; string'i Func'a çeviriyoruz:
+//    var privateKeyPath = builder.Configuration["Authentication:Apple:PrivateKey"] ?? "";
+//    options.PrivateKey = (keyId, cancellationToken) =>
+//        Task.FromResult(System.IO.File.ReadAllText(privateKeyPath).AsMemory());
+//});
 
 builder.Services.AddAuthorization();
 
