@@ -1,4 +1,22 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="456" height="456" viewBox="0 0 456 456" version="1.1" xmlns="http://www.w3.org/2000/svg">
-    <rect x="0" y="0" width="456" height="456" fill="#512BD4" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4CB5F5"/>
+      <stop offset="100%" stop-color="#0284C7"/>
+    </linearGradient>
+    
+    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#A78BFA"/>
+      <stop offset="100%" stop-color="#4F46E5"/>
+    </linearGradient>
+  </defs>
+
+  <path d="M126.9,288.1A159.5,159.5,0,0,0,320,413.4V448l64-48-64-48v31.4A127.6,127.6,0,0,1,155.2,288.1Z" fill="#818CF8"/>
+  <path d="M385.1,223.9A159.5,159.5,0,0,0,192,98.6V64L128,112l64,48V128.6A127.6,127.6,0,0,1,356.8,223.9Z" fill="#818CF8"/>
+
+  <circle cx="176" cy="176" r="96" fill="url(#blueGrad)" stroke="#FFFFFF" stroke-width="6"/>
+  <text x="176" y="212" font-family="'Segoe UI', Roboto, sans-serif" font-size="100" font-weight="bold" fill="#FFFFFF" text-anchor="middle">A</text>
+
+  <circle cx="336" cy="336" r="96" fill="url(#purpleGrad)" stroke="#FFFFFF" stroke-width="6"/>
+  <text x="336" y="372" font-family="'Segoe UI', Roboto, sans-serif" font-size="90" font-weight="bold" fill="#FFFFFF" text-anchor="middle">文</text>
 </svg>
