@@ -7,114 +7,110 @@
              Title="Profil Ayarları"
              BackgroundColor="#F8FAFC">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="20">
+    <RefreshView IsRefreshing="{Binding IsRefreshing}" 
+                 Command="{Binding RefreshAsyncCommand}" 
+                 RefreshColor="#4F46E5">
 
-            <Frame BackgroundColor="White" CornerRadius="12" HasShadow="True" Padding="15">
-                <Grid ColumnDefinitions="*, Auto">
-                    <VerticalStackLayout Spacing="5">
-                        <Label Text="Hesap Durumu" FontAttributes="Bold" FontSize="14" TextColor="#1E293B"/>
-                        <Label Text="● Profiliniz %80 oranında tamamlandı" TextColor="#4F46E5" FontSize="12"/>
-                    </VerticalStackLayout>
-                    <Button Grid.Column="1" Text="Yayına Al" TextColor="White" BackgroundColor="#4F46E5" CornerRadius="20" FontSize="11" HeightRequest="35"/>
-                </Grid>
-            </Frame>
+        <ScrollView>
+            <VerticalStackLayout Padding="20" Spacing="20">
 
-            <Frame BackgroundColor="White" CornerRadius="12" HasShadow="True" Padding="20">
-                <VerticalStackLayout Spacing="15">
+                <Frame BackgroundColor="White" CornerRadius="12" HasShadow="True" Padding="15">
+                    <Grid ColumnDefinitions="*, Auto">
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Hesap Durumu" FontAttributes="Bold" FontSize="14" TextColor="#1E293B"/>
+                            <Label Text="● Profiliniz %80 oranında tamamlandı" TextColor="#4F46E5" FontSize="12"/>
+                        </VerticalStackLayout>
+                        <Button Grid.Column="1" Text="Yayına Al" TextColor="White" BackgroundColor="#4F46E5" CornerRadius="20" FontSize="11" HeightRequest="35"/>
+                    </Grid>
+                </Frame>
 
-                    <!-- PROFİL FOTO -->
-                    <VerticalStackLayout Spacing="5" HorizontalOptions="Center">
-                        <Border StrokeShape="RoundRectangle 60"
-                                HeightRequest="120"
-                                WidthRequest="120"
-                                BackgroundColor="#F1F5F9"
-                                StrokeThickness="0">
+                <Frame BackgroundColor="White" CornerRadius="12" HasShadow="True" Padding="20">
+                    <VerticalStackLayout Spacing="15">
 
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding ChangeProfilePictureCommand}" />
-                            </Border.GestureRecognizers>
+                        <VerticalStackLayout Spacing="5" HorizontalOptions="Center">
+                            <Border StrokeShape="RoundRectangle 60"
+                                    HeightRequest="120"
+                                    WidthRequest="120"
+                                    BackgroundColor="#F1F5F9"
+                                    StrokeThickness="0">
 
-                            <Image Source="{Binding ProfilePictureSource}"
-                                   Aspect="AspectFill"/>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ChangeProfilePictureCommand}" />
+                                </Border.GestureRecognizers>
+
+                                <Image Source="{Binding ProfilePictureSource}"
+                                       Aspect="AspectFill"/>
+                            </Border>
+
+                            <Label Text="Fotoğrafı Değiştir" FontSize="11" TextColor="#4F46E5"/>
+                        </VerticalStackLayout>
+
+                        <Label Text="Ad Soyad" FontSize="13" TextColor="#64748B"/>
+                        <Border StrokeShape="RoundRectangle 8" Padding="10,0" Stroke="#E2E8F0">
+                            <Entry Text="{Binding FullName}" TextColor="#1E293B"/>
                         </Border>
 
-                        <Label Text="Fotoğrafı Değiştir" FontSize="11" TextColor="#4F46E5"/>
+                        <Label Text="Cinsiyet" FontSize="13" TextColor="#64748B"/>
+                        <Border StrokeShape="RoundRectangle 8" Padding="10,0" Stroke="#E2E8F0">
+                            <Picker SelectedItem="{Binding Gender}" Title="Cinsiyet Seçin">
+                                <Picker.ItemsSource>
+                                    <x:Array Type="{x:Type x:String}">
+                                        <x:String>Belirtilmemiş</x:String>
+                                        <x:String>Erkek</x:String>
+                                        <x:String>Kadın</x:String>
+                                    </x:Array>
+                                </Picker.ItemsSource>
+                            </Picker>
+                        </Border>
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                            <VerticalStackLayout Spacing="5">
+                                <Label Text="E-posta" FontSize="13" TextColor="#64748B"/>
+                                <Border StrokeShape="RoundRectangle 8" Padding="10,0" Stroke="#E2E8F0">
+                                    <Entry Text="{Binding Email}" IsReadOnly="True" BackgroundColor="#F8FAFC"/>
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Spacing="5">
+                                <Label Text="Telefon" FontSize="13" TextColor="#64748B"/>
+                                <Border StrokeShape="RoundRectangle 8" Padding="10,0" Stroke="#E2E8F0">
+                                    <Entry Text="{Binding Phone}" Keyboard="Telephone"/>
+                                </Border>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <Label Text="Hakkımda" FontSize="13" TextColor="#64748B"/>
+                        <Border StrokeShape="RoundRectangle 8" Padding="10" Stroke="#E2E8F0">
+                            <Editor Text="{Binding Bio}" AutoSize="TextChanges" MinimumHeightRequest="80"/>
+                        </Border>
+
+                        <Button Text="Bilgileri Güncelle"
+                                Command="{Binding UpdateProfileCommand}"
+                                TextColor="White"
+                                BackgroundColor="#4F46E5"
+                                HeightRequest="50"
+                                CornerRadius="8"/>
+
                     </VerticalStackLayout>
+                </Frame>
 
-                    <!-- AD SOYAD -->
-                    <Label Text="Ad Soyad" FontSize="13" TextColor="#64748B"/>
-                    <Border StrokeShape="RoundRectangle 8" Padding="10,0" Stroke="#E2E8F0">
-                        <Entry Text="{Binding FullName}" TextColor="#1E293B"/>
-                    </Border>
+                <Frame BackgroundColor="White" CornerRadius="12" HasShadow="True" Padding="20">
+                    <VerticalStackLayout Spacing="15">
+                        <Label Text="Şifre Değiştirme" FontAttributes="Bold" TextColor="#4F46E5"/>
 
-                    <!-- CİNSİYET -->
-                    <Label Text="Cinsiyet" FontSize="13" TextColor="#64748B"/>
-                    <Border StrokeShape="RoundRectangle 8" Padding="10,0" Stroke="#E2E8F0">
-                        <Picker SelectedItem="{Binding Gender}" Title="Cinsiyet Seçin">
-                            <Picker.ItemsSource>
-                                <x:Array Type="{x:Type x:String}">
-                                    <x:String>Belirtilmemiş</x:String>
-                                    <x:String>Erkek</x:String>
-                                    <x:String>Kadın</x:String>
-                                </x:Array>
-                            </Picker.ItemsSource>
-                        </Picker>
-                    </Border>
+                        <Border StrokeShape="RoundRectangle 8" Padding="10,0" Stroke="#E2E8F0">
+                            <Entry IsPassword="True" Text="{Binding NewPassword}" Placeholder="••••••••"/>
+                        </Border>
 
-                    <!-- EMAIL + TELEFON -->
-                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button Text="Şifreyi Güncelle"
+                                Command="{Binding UpdatePasswordCommand}"
+                                BackgroundColor="#4F46E5"
+                                TextColor="White"/>
+                    </VerticalStackLayout>
+                </Frame>
 
-                        <VerticalStackLayout Spacing="5">
-                            <Label Text="E-posta" FontSize="13" TextColor="#64748B"/>
-                            <Border StrokeShape="RoundRectangle 8" Padding="10,0" Stroke="#E2E8F0">
-                                <Entry Text="{Binding Email}" IsReadOnly="True" BackgroundColor="#F8FAFC"/>
-                            </Border>
-                        </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
 
-                        <VerticalStackLayout Spacing="5">
-                            <Label Text="Telefon" FontSize="13" TextColor="#64748B"/>
-                            <Border StrokeShape="RoundRectangle 8" Padding="10,0" Stroke="#E2E8F0">
-                                <Entry Text="{Binding Phone}" Keyboard="Telephone"/>
-                            </Border>
-                        </VerticalStackLayout>
-
-                    </Grid>
-
-                    <!-- BIO -->
-                    <Label Text="Hakkımda" FontSize="13" TextColor="#64748B"/>
-                    <Border StrokeShape="RoundRectangle 8" Padding="10" Stroke="#E2E8F0">
-                        <Editor Text="{Binding Bio}" AutoSize="TextChanges" MinimumHeightRequest="80"/>
-                    </Border>
-
-                    <!-- GÜNCELLE -->
-                    <Button Text="Bilgileri Güncelle"
-                            Command="{Binding UpdateProfileCommand}"
-                            TextColor="White"
-                            BackgroundColor="#4F46E5"
-                            HeightRequest="50"
-                            CornerRadius="8"/>
-
-                </VerticalStackLayout>
-            </Frame>
-
-            <!-- ŞİFRE -->
-            <Frame BackgroundColor="White" CornerRadius="12" HasShadow="True" Padding="20">
-                <VerticalStackLayout Spacing="15">
-
-                    <Label Text="Şifre Değiştirme" FontAttributes="Bold" TextColor="#4F46E5"/>
-
-                    <Border StrokeShape="RoundRectangle 8" Padding="10,0" Stroke="#E2E8F0">
-                        <Entry IsPassword="True" Text="{Binding NewPassword}" Placeholder="••••••••"/>
-                    </Border>
-
-                    <Button Text="Şifreyi Güncelle"
-                            Command="{Binding UpdatePasswordCommand}"
-                            BackgroundColor="#4F46E5"
-                            TextColor="White"/>
-                </VerticalStackLayout>
-            </Frame>
-
-        </VerticalStackLayout>
-    </ScrollView>
+    </RefreshView>
 </ContentPage>

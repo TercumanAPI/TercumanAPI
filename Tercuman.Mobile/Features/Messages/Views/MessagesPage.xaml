@@ -8,8 +8,8 @@
              Title="Mesajlarım"
              BackgroundColor="#F8FAFC">
 
-    <RefreshView IsRefreshing="{Binding IsBusy}" 
-                 Command="{Binding RefreshCommand}"
+    <RefreshView IsRefreshing="{Binding IsRefreshing}" 
+                 Command="{Binding RefreshAsyncCommand}"
                  RefreshColor="#6366F1">
 
         <CollectionView ItemsSource="{Binding Conversations}"
@@ -18,24 +18,22 @@
 
             <CollectionView.EmptyView>
                 <VerticalStackLayout VerticalOptions="Center" 
-                         HorizontalOptions="Center" 
-                         Padding="30"
-                         Spacing="15">
+                                     HorizontalOptions="Center" 
+                                     Padding="30"
+                                     Spacing="15">
 
                     <Image Source="message1.svg" 
-               HeightRequest="120" 
-               WidthRequest="120"
-               HorizontalOptions="Center"
-               VerticalOptions="Center"
-               Margin="0,0,0,10" />
+                           HeightRequest="120" 
+                           WidthRequest="120"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           Margin="0,0,0,10" />
 
                     <Label Text="Henüz hiç mesajınız yok." 
-               FontAttributes="Bold"
-               FontSize="18"
-               TextColor="#475569"
-               HorizontalTextAlignment="Center"/>
-
-                    
+                           FontAttributes="Bold"
+                           FontSize="18"
+                           TextColor="#475569"
+                           HorizontalTextAlignment="Center"/>
 
                 </VerticalStackLayout>
             </CollectionView.EmptyView>

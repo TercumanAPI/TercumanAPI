@@ -1,5 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System;
+using System.Threading.Tasks;
+using Microsoft.Maui.Storage;
 using Tercuman.Mobile.Base;
 
 namespace Tercuman.Mobile.Features.Profile.ViewModels;
@@ -26,6 +29,7 @@ public partial class ProfileViewModel : BaseViewModel
     [ObservableProperty] private string newPassword;
     [ObservableProperty] private string confirmNewPassword;
     [ObservableProperty] private string profilePictureSource;
+    [ObservableProperty] private bool _isRefreshing;
 
     /// <summary>
     /// Preferences üzerinden kayıtlı kullanıcı verilerini çeken metot
@@ -114,5 +118,30 @@ public partial class ProfileViewModel : BaseViewModel
         }
         // Şifre güncelleme API isteği buraya gelecek
         await Microsoft.Maui.Controls.Shell.Current.DisplayAlert("Bilgi", "Şifre başarıyla değiştirildi.", "Tamam");
+    }
+
+    [RelayCommand]
+    private async Task RefreshAsync()
+    {
+        // Çarkı döndürmeye başla
+        IsRefreshing = true;
+
+        try
+        {
+            // DÜZELTİLDİ: Var olmayan geçici metot yerine senin asıl metodun çağrıldı
+            LoadUserData();
+
+            // Lokal veri çok hızlı yüklendiği için çarkın dönüşünü 1 saniye simüle ediyoruz
+            await Task.Delay(1000);
+        }
+        catch (Exception ex)
+        {
+            await global::Microsoft.Maui.Controls.Shell.Current.DisplayAlert("Hata", "Veriler güncellenirken bir hata oluştu: " + ex.Message, "Tamam");
+        }
+        finally
+        {
+            // İşlem bitince veya hata alınca çarkı gizle
+            IsRefreshing = false;
+        }
     }
 }

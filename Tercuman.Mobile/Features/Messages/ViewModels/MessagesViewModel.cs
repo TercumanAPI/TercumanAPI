@@ -25,6 +25,10 @@ public partial class MessagesViewModel : BaseViewModel
     [ObservableProperty]
     private ConversationListItem selectedConversation;
 
+    // 1. YENİ: Yenileme çarkını kontrol eden değişken (Standarda uygun alt tireli)
+    [ObservableProperty]
+    private bool _isRefreshing;
+
     // HATA ÇÖZÜMÜ (CS0759): OnSelectedConversationChanged metodu 
     // küçük harfli değişken ismine göre otomatik üretilir.
     partial void OnSelectedConversationChanged(ConversationListItem value)
@@ -35,7 +39,6 @@ public partial class MessagesViewModel : BaseViewModel
         {
             // HATA ÇÖZÜMÜ (CS0234): 'Tercuman.Mobile.Shell' ile çakışıyor. 
             // Detay sayfasına conversationId parametresi ile git
-
             await Microsoft.Maui.Controls.Shell.Current.GoToAsync($"{nameof(ConversationDetailPage)}?conversationId={value.Id}");
 
             SelectedConversation = null;// Listeye geri dönüldüğünde tekrar seçilebilir olması için
@@ -72,9 +75,21 @@ public partial class MessagesViewModel : BaseViewModel
         }
     }
 
+    // 2. YENİ: Aşağı çekildiğinde tetiklenecek olan komut
     [RelayCommand]
-    private async Task Refresh()
+    private async Task RefreshAsync()
     {
-        await InitializeAsync();
+        IsRefreshing = true;
+
+        try
+        {
+            // Zaten verileri çeken kusursuz bir metodun var, direkt onu çağırıyoruz
+            await InitializeAsync();
+        }
+        finally
+        {
+            // İşlem bittiğinde çark dönmeyi bırakır
+            IsRefreshing = false;
+        }
     }
 }
