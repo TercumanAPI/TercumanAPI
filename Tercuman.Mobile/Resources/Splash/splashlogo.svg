@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4CB5F5"/>
+      <stop offset="100%" stop-color="#0284C7"/>
+    </linearGradient>
+    
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#A78BFA"/>
+      <stop offset="100%" stop-color="#4F46E5"/>
+    </linearGradient>
+  </defs>
+
+  <path d="M330,350 Q330,420 400,420" fill="none" stroke="#818CF8" stroke-width="6" stroke-linecap="round"/>
+  <polygon points="388,408 410,420 388,432" fill="#818CF8" />
+
+  <path d="M470,350 Q470,280 400,280" fill="none" stroke="#818CF8" stroke-width="6" stroke-linecap="round"/>
+  <polygon points="412,268 390,280 412,292" fill="#818CF8" />
+
+  <circle cx="350" cy="300" r="50" fill="url(#grad1)" stroke="#FFFFFF" stroke-width="4"/>
+  <text x="350" y="318" font-family="'Segoe UI', Arial, sans-serif" font-size="52" font-weight="bold" fill="#FFFFFF" text-anchor="middle">A</text>
+
+  <circle cx="450" cy="400" r="50" fill="url(#grad2)" stroke="#FFFFFF" stroke-width="4"/>
+  <text x="450" y="417" font-family="'Segoe UI', Arial, sans-serif" font-size="46" font-weight="bold" fill="#FFFFFF" text-anchor="middle">文</text>
+
+  <text x="400" y="520" font-family="'Segoe UI', Tahoma, Arial, sans-serif" font-size="70" font-weight="900" fill="#4B49AC" letter-spacing="2" text-anchor="middle">MiftahTEA</text>
+</svg>

@@ -7,7 +7,7 @@
         {
             InitializeComponent();
 
-            MainPage = new AppShell();
+            MainPage = new Features.Splash.SplashPage();
         }
     }
 }

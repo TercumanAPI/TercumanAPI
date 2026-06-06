@@ -23,6 +23,7 @@ public partial class HomeViewModel : ObservableObject
     [ObservableProperty] private string _searchQuery;
     [ObservableProperty] private string _selectedGender;
     [ObservableProperty] private string _selectedServiceType;
+    [ObservableProperty] private bool _isRefreshing;
 
     [ObservableProperty]
     private ObservableCollection<TranslatorModel> _translators;
@@ -53,6 +54,30 @@ public partial class HomeViewModel : ObservableObject
     {
         // Filtreleri uygula butonuna basınca çalışacak mantık
         // SelectedSourceLanguage, SelectedCity gibi değerleri kullanarak listeyi süzebilirsin
+    }
+    // 2. Aşağı çekildiğinde tetiklenecek olan komut
+    [RelayCommand]
+    private async Task RefreshAsync()
+    {
+        // Animasyonu başlat (Çark dönmeye başlar)
+        IsRefreshing = true;
+
+        try
+        {
+            // Ana sayfadaki verileri çektiğin asıl metodunu buraya yazacaksın.
+            // Örneğin metodunun adı LoadListingsAsync() veya LoadHomeData() olabilir:
+
+            // await LoadHomeDataAsync(); 
+        }
+        catch (Exception ex)
+        {
+            await global::Microsoft.Maui.Controls.Shell.Current.DisplayAlert("Hata", "Veriler yenilenemedi: " + ex.Message, "Tamam");
+        }
+        finally
+        {
+            // İşlem bitince (veya hata alsa bile) animasyonu mutlaka durdur
+            IsRefreshing = false;
+        }
     }
 
     private void LoadMockData()
