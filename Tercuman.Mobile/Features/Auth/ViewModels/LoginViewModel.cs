@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using Tercuman.Mobile.Base;
 using Tercuman.Mobile.Core.Abstractions;
 using Tercuman.Contracts.DTOs.Auth;
+using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Alerts;
+
 
 namespace Tercuman.Mobile.Features.Auth.ViewModels;
 
@@ -39,23 +42,35 @@ public partial class LoginViewModel : BaseViewModel
         {
             IsBusy = true;
 
-            // Backend'in beklediği camelCase yapısı
             var request = new
             {
-                email = this.Email,
-                password = this.Password
+                Email = this.Email,
+                Password = this.Password
             };
 
+            // Servise istek gönderiliyor
             var success = await _authService.LoginAsync(request);
 
             if (success)
             {
-                await global::Microsoft.Maui.Controls.Shell.Current.GoToAsync("//DashboardPage");
+                // İSTEDİĞİN YEŞİL EKRAN BİLDİRİMİ (CommunityToolkit.Maui Toast kullanılarak)
+                // Kısa süreli, alt/orta-üst kısımda şık bir başarı mesajı fırlatır.
+                var toast = Toast.Make("Giriş başarılı, profilinize yönlendiriliyorsunuz...", ToastDuration.Short, 14);
+                await toast.Show();
+
+                // PROFİL SAYFASINA YÖNLENDİRME
+                // AppShell.xaml içindeki rotana göre tetiklenir.
+                await global::Microsoft.Maui.Controls.Shell.Current.GoToAsync("//ProfilePage");
+            }
+            else
+            {
+                await global::Microsoft.Maui.Controls.Shell.Current.DisplayAlert("Hata", "Giriş işlemi gerçekleştirilemedi.", "Tamam");
             }
         }
         catch (Exception ex)
         {
-            await global::Microsoft.Maui.Controls.Shell.Current.DisplayAlert("Giriş Hatası", ex.Message, "Tamam");
+            // Backend'den gelen "E-posta veya şifre hatalı" gibi mesajlar direkt buraya düşer.
+            await global::Microsoft.Maui.Controls.Shell.Current.DisplayAlert("Hata", ex.Message, "Tamam");
         }
         finally
         {
