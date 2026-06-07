@@ -37,23 +37,18 @@ public class AuthService : IAuthService
     {
         try
         {
-            var response = await _httpClient.PostAsJsonAsync("api/auth/register", model);
+            // _httpClient yerine merkezi _apiService altyapısını kullanıyoruz.
+            // Yolu Login'deki gibi "auth/register" olarak standartlaştırıyoruz.
+            var response = await _apiService.PostAsync<RegisterDto, object>("auth/register", model);
 
-            if (response.IsSuccessStatusCode)
-            {
-                return true;
-            }
-
-            var errorJson = await response.Content.ReadAsStringAsync();
-            throw new Exception($"Sunucu Hatası ({response.StatusCode}): {errorJson}");
-        }
-        catch (HttpRequestException ex)
-        {
-            throw new Exception($"Bağlantı kurulamadı! Lütfen interneti ve API adresini kontrol et. Detay: {ex.Message}");
+            // _apiService zaten 404 veya 500 gibi hatalarda otomatik Exception fırlatır.
+            // Buraya ulaştıysa işlem başarılı demektir.
+            return true;
         }
         catch (Exception ex)
         {
-            throw new Exception(ex.Message);
+            // _apiService'den dönen temiz backend hata mesajını (örneğin "Bu email zaten kayıtlı") yakalar.
+            throw new Exception($"Kayıt işlemi başarısız: {ex.Message}");
         }
     }
 

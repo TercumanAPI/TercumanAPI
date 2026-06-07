@@ -8,8 +8,8 @@
              BackgroundColor="#F8FAFC">
 
     <RefreshView IsRefreshing="{Binding IsRefreshing}" 
-                 Command="{Binding RefreshAsyncCommand}" 
-                 RefreshColor="#4F46E5">
+             Command="{Binding RefreshCommand}" 
+             RefreshColor="#4F46E5">
 
         <ScrollView>
             <VerticalStackLayout Padding="20" Spacing="20">
