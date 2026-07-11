@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Tercuman.Domain.Common;
 using Tercuman.Domain.Enums;
+using System.Text.Json.Serialization;
 
 
 namespace Tercuman.Domain.Entities
@@ -36,5 +37,6 @@ namespace Tercuman.Domain.Entities
         public DateTime? RefreshTokenExpiryTime { get; set; }
         public bool IsApproved { get; set; } = false; // Çevirmen varsayılan olarak onaysız başlar
         public string? Role { get; set; }
+
     }
 }

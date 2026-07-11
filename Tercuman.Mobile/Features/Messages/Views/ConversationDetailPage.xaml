@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:Tercuman.Mobile.Features.Messages.ViewModels"
+             xmlns:models="clr-namespace:Tercuman.Mobile.Features.Messages.Models"
+             xmlns:converters="clr-namespace:Tercuman.Mobile.Shared.Converters"
+             x:DataType="viewmodels:ConversationDetailViewModel"
+             x:Class="Tercuman.Mobile.Features.Messages.Views.ConversationDetailPage"
+             Title="Mesajlaşma"
+             BackgroundColor="#F5F5F5">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:IngoingToAlignmentConverter x:Key="IngoingAlignConverter" />
+            <converters:IngoingToColorConverter x:Key="IngoingColorConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="*, Auto">
+
+        <CollectionView Grid.Row="0" 
+                        ItemsSource="{Binding Messages}" 
+                        ItemsUpdatingScrollMode="KeepLastItemInView">
+
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="2" />
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:MessageBubbleItem">
+                    <Grid Padding="10,5">
+                        <Frame CornerRadius="15" 
+                               Padding="12" 
+                               HasShadow="False"
+                               HorizontalOptions="{Binding IsIncoming, Converter={StaticResource IngoingAlignConverter}}"
+                               BackgroundColor="{Binding IsIncoming, Converter={StaticResource IngoingColorConverter}}">
+
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="{Binding Text}" 
+                                       TextColor="White" 
+                                       FontSize="14"/>
+                                <Label Text="{Binding SentDate, StringFormat='{0:HH:mm}'}" 
+                                       TextColor="#EEEEEE" 
+                                       FontSize="10" 
+                                       HorizontalOptions="End"/>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <Border Grid.Row="1" 
+                StrokeThickness="1" 
+                Stroke="#E2E8F0" 
+                Padding="10" 
+                BackgroundColor="White">
+            <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
+                <Entry Placeholder="Bir mesaj yazın..." 
+                       Text="{Binding NewMessageText}"
+                       VerticalOptions="Center"
+                       TextColor="#1E293B"/>
+
+                <Button Grid.Column="1" 
+                        Text="Gönder" 
+                        Command="{Binding SendMessageCommand}"
+                        CornerRadius="20" 
+                        BackgroundColor="#6366F1"
+                        TextColor="White"
+                        HeightRequest="40"
+                        WidthRequest="80"/>
+            </Grid>
+        </Border>
+    </Grid>
+</ContentPage>

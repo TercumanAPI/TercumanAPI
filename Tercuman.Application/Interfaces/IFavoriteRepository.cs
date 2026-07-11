@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Tercuman.Domain.Entities; // Entity katmanının doğru namespace'i
+﻿using Tercuman.Application.DTOs.Favorite;
+using Tercuman.Domain.Entities;
 
 namespace Tercuman.Application.Interfaces
 {
@@ -10,7 +8,7 @@ namespace Tercuman.Application.Interfaces
         Task AddFavoriteAsync(Favorite favorite);
         Task RemoveFavoriteAsync(Favorite favorite);
         Task<bool> ExistsAsync(Guid userId, Guid listingId);
-        Task<IEnumerable<Favorite>> GetUserFavoritesAsync(Guid userId);
+        Task<List<FavoriteItemDto>> GetUserFavoritesAsync(Guid userId);
         Task<Favorite?> GetFavoriteAsync(Guid userId, Guid listingId);
     }
 }

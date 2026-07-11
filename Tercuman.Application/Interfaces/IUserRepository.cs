@@ -1,8 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Tercuman.Domain.Entities;
 
 namespace Tercuman.Application.Interfaces
@@ -11,6 +6,7 @@ namespace Tercuman.Application.Interfaces
     {
         Task<User?> GetByEmailAsync(string email);
         Task<User?> GetByIdAsync(Guid id);
+        Task<User?> GetByRefreshTokenAsync(string refreshToken);
         Task<List<User>> GetAllAsync();
         IQueryable<User> Query();
         Task AddAsync(User user);

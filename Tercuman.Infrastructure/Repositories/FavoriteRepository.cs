@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Tercuman.Application.Interfaces; 
+using Tercuman.Application.DTOs.Favorite;
+using Tercuman.Application.Interfaces;
 using Tercuman.Domain.Entities;
 using Tercuman.Infrastructure.Persistence;
 
@@ -40,12 +37,26 @@ namespace Tercuman.Infrastructure.Repositories
             return await _context.Favorites.FirstOrDefaultAsync(f => f.UserId == userId && f.ListingId == listingId);
         }
 
-        public async Task<IEnumerable<Favorite>> GetUserFavoritesAsync(Guid userId)
+        public async Task<List<FavoriteItemDto>> GetUserFavoritesAsync(Guid userId)
         {
             return await _context.Favorites
-                .Include(f => f.Listing)
-                    .ThenInclude(l => l.User) // Frontend'in beklediği Tercüman bilgisi için bu satırı ekledik
+                .AsNoTracking()
                 .Where(f => f.UserId == userId)
+                .Select(f => new FavoriteItemDto
+                {
+                    FavoriteId = f.Id,
+                    ListingId = f.ListingId,
+                    ListingNo = f.Listing.ListingNo,
+                    Title = f.Listing.Title ?? f.Listing.Name ?? string.Empty,
+                    Description = f.Listing.Description,
+                    Price = f.Listing.Price,
+                    TranslatorName = f.Listing.User.FullName,
+                    TranslatorEmail = f.Listing.User.Email,
+                    TranslatorPhoneNumber = f.Listing.User.PhoneNumber,
+                    TranslatorProfileImageUrl = f.Listing.User.ProfileImageUrl,
+                    City = f.Listing.City != null ? f.Listing.City.Name : null,
+                    CreatedDate = f.CreatedDate
+                })
                 .ToListAsync();
         }
     }
